@@ -8,7 +8,7 @@
 import Foundation
 import CryptoKit
 
-func calculateTOTP(secret: String) -> String {
+public func calculateTOTP(secret: String) -> String {
     let unixTime = Date().timeIntervalSince1970
     let period = TimeInterval(30)
     // 8byteのデータに変換
