@@ -18,10 +18,8 @@ import Foundation
 */
 
 @Test func testTOTP() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
     let account = ScienceTokyoPortalAccount(username: "username", password: "password", totpSecret: "xxxxxxxx")
     let portal = ScienceTokyoPortal(urlSession: .shared)
-    //ログイン
     let loginPageHtml = try await portal.loginCommon(account: account)
     try await portal.loginTOTP(account: account, methodSelectionPageHtml: loginPageHtml)
 }
