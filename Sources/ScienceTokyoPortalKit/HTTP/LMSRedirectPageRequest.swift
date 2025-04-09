@@ -37,7 +37,6 @@ struct LMSRedirectPageRequest: HTTPRequest {
         body = htmlInputs.reduce(into: [String: String]()) {
             $0[$1.name] = $1.value
         }
-        print("body:", body)
         // headerFieldsにhtmlMetasを追加
         htmlMetas.forEach {
             headerFields?[$0.name] = $0.content

@@ -20,7 +20,7 @@ func createCredential(from input: String) throws -> [String: Any]? {
           let displayName = userDict["displayName"] as? String,
           let challengeStr = publicKeyDict["challenge"] as? String
     else {
-        print("入力JSONのパースに失敗")
+        //入力JSONのパースに失敗
         return nil
     }
     
@@ -43,7 +43,7 @@ func createCredential(from input: String) throws -> [String: Any]? {
     guard let clientDataJSONData = try? JSONSerialization.data(withJSONObject: clientData, options: []),
           let clientDataJSONString = String(data: clientDataJSONData, encoding: .utf8)
     else {
-        print("clientDataJSONの生成に失敗")
+        //clientDataJSONの生成に失敗
         return nil
     }
     let clientDataBase64 = clientDataJSONString.data(using: .utf8)!.base64EncodedString()

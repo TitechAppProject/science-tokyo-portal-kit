@@ -113,7 +113,6 @@ public struct ScienceTokyoPortal {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
         let lmsPageHtml = try await fetchLMSPage()
-        print("lmsPageHtml:", lmsPageHtml)
         guard validateLMSPage() else {
             throw ScienceTokyoPortalLoginError.invalidLMSPage
         }
@@ -137,7 +136,6 @@ public struct ScienceTokyoPortal {
             throw ScienceTokyoPortalLoginError.invalidWaitingPage
         }
         let waitingPageHtmlInputs = try parseHTMLInput(html: waitingPageHtml)
-        print("waitingPageHtmlInputs:", waitingPageHtmlInputs)
         let resourceListPageHtml = try await fetchResourceListPage(htmlInputs: waitingPageHtmlInputs, referer: otpPageSubmitURL)
         guard try validateResourceListPage(html: resourceListPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
@@ -157,19 +155,12 @@ public struct ScienceTokyoPortal {
     
     public func setFIDO2() async throws {
         let fido2PageHtml = try await fetchFIDO2Page()
-        print("fido2PageHtml:", fido2PageHtml)
         let fido2HtmlInput = try parseHTMLInput(html: fido2PageHtml)
         let fido2SettingsJson = try await submitFIDO2Settings(htmlInput: fido2HtmlInput)
-        print("fido2SettingsJson:", fido2SettingsJson)
         let fido2Relay1Json = try await submitFIDO2Relay1(htmlInput: fido2HtmlInput)
-        print("fido2RelayJson:", fido2Relay1Json)
         if let outputJSON = try createCredential(from: fido2Relay1Json) {
-            print("生成された出力JSON:")
-            print(outputJSON)
             let fido2Relay2Json = try await submitFIDO2Relay2(htmlInput: fido2HtmlInput, jsonBody: outputJSON)
-            print("fido2Relay2Json:", fido2Relay2Json)
         } else {
-            print("クレデンシャル生成に失敗しました")
         }
     }
     
