@@ -15,6 +15,7 @@ public enum ScienceTokyoPortalLoginError: Error, Equatable {
     case invalidWaitingPage
     case invalidResourceListPage
     case invalidEmailSending
+    case invalidLMSPage
     
     case alreadyLoggedin
 }
@@ -111,6 +112,10 @@ public struct ScienceTokyoPortal {
         guard try validateResourceListPage(html: resourceListPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
+        _ = try await fetchLMSPage()
+        guard validateLMSPage() else {
+            throw ScienceTokyoPortalLoginError.invalidLMSPage
+        }
     }
     
     public func latterEmailLogin(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], otp: String) async throws {
@@ -129,6 +134,10 @@ public struct ScienceTokyoPortal {
         let resourceListPageHtml = try await fetchResourceListPage(htmlInputs: waitingPageHtmlInputs, referer: otpPageSubmitURL)
         guard try validateResourceListPage(html: resourceListPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
+        }
+        _ = try await fetchLMSPage()
+        guard validateLMSPage() else {
+            throw ScienceTokyoPortalLoginError.invalidLMSPage
         }
     }
     
@@ -254,6 +263,12 @@ public struct ScienceTokyoPortal {
         return try await httpClient.send(request)
     }
     
+    func fetchLMSPage() async throws -> String {
+        let request = LMSPageRequest()
+        return try await httpClient.send(request)
+    }
+        
+    
     func fetchFIDO2Page() async throws -> String {
         let request = FIDO2PageRequest()
         return try await httpClient.send(request)
@@ -325,6 +340,10 @@ public struct ScienceTokyoPortal {
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
         
         return bodyHtml.contains("Account") || bodyHtml.contains("アカウント")
+    }
+    
+    private func validateLMSPage() -> Bool {
+        return httpClient.cookies().contains(where: { $0.name == "MoodleSession" })
     }
     
     func validateEmailSending(result: String) -> Bool {

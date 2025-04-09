@@ -11,27 +11,28 @@ import FoundationNetworking
 protocol HTTPClient {
     func send(_ request: HTTPRequest) async throws -> String
     func statusCode(_ request: HTTPRequest) async throws -> Int
+    func cookies() -> [HTTPCookie]
 }
 
 struct HTTPClientImpl: HTTPClient {
     private let urlSession: URLSession
-    #if !canImport(FoundationNetworking)
+#if !canImport(FoundationNetworking)
     private let urlSessionDelegate: URLSessionTaskDelegate
     private let urlSessionDelegateWithoutRedirect: URLSessionTaskDelegate
-    #endif
+#endif
     private let userAgent: String
-
+    
     init(urlSession: URLSession, userAgent: String) {
         self.urlSession = urlSession
-        #if !canImport(FoundationNetworking)
+#if !canImport(FoundationNetworking)
         self.urlSessionDelegate = HTTPClientDelegate()
         self.urlSessionDelegateWithoutRedirect = HTTPClientDelegateWithoutRedirect()
-        #endif
+#endif
         self.userAgent = userAgent
     }
-
+    
     func send(_ request: HTTPRequest) async throws -> String {
-        #if canImport(FoundationNetworking)
+#if canImport(FoundationNetworking)
         let data: Data = try await withCheckedThrowingContinuation { continuation in
             urlSession.dataTask(with: request.generate(userAgent: userAgent)) { data, _, error in
                 if let error = error {
@@ -41,18 +42,18 @@ struct HTTPClientImpl: HTTPClient {
                 }
             }.resume()
         }
-        #else
+#else
         let (data, _) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
             delegate: urlSessionDelegate
         )
-        #endif
-
+#endif
+        
         return String(data: data, encoding: .utf8) ?? ""
     }
-
+    
     func statusCode(_ request: HTTPRequest) async throws -> Int {
-        #if canImport(FoundationNetworking)
+#if canImport(FoundationNetworking)
         let response: URLResponse = try await withCheckedThrowingContinuation { continuation in
             urlSession.dataTask(with: request.generate(userAgent: userAgent)) { _, response, error in
                 if let error = error {
@@ -62,14 +63,19 @@ struct HTTPClientImpl: HTTPClient {
                 }
             }.resume()
         }
-        #else
+#else
         let (_, response) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
             delegate: urlSessionDelegateWithoutRedirect
         )
-        #endif
-
+#endif
+        
         return (response as? HTTPURLResponse)?.statusCode ?? 0
+    }
+    
+    func cookies() -> [HTTPCookie] {
+        let cookies = urlSession.configuration.httpCookieStorage?.cookies ?? []
+        return cookies
     }
 }
 
@@ -80,6 +86,10 @@ struct HTTPClientMock: HTTPClient {
 
     func statusCode(_ request: HTTPRequest) async throws -> Int {
         0
+    }
+    
+    func cookies() -> [HTTPCookie] {
+        return []
     }
 }
 
