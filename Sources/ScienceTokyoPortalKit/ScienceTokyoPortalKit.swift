@@ -112,8 +112,15 @@ public struct ScienceTokyoPortal {
         guard try validateResourceListPage(html: resourceListPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
-        _ = try await fetchLMSPage()
+        let lmsPageHtml = try await fetchLMSPage()
+        print("lmsPageHtml:", lmsPageHtml)
         guard validateLMSPage() else {
+            throw ScienceTokyoPortalLoginError.invalidLMSPage
+        }
+        
+        let lmsPageHtmlInputs = try parseHTMLInput(html: lmsPageHtml)
+        let lmsRedirectPageHtml = try await fetchLMSRedirectPage(htmlInputs: lmsPageHtmlInputs)
+        guard try validateLMSRedirectPage(html: lmsRedirectPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidLMSPage
         }
     }
@@ -135,10 +142,17 @@ public struct ScienceTokyoPortal {
         guard try validateResourceListPage(html: resourceListPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
-        _ = try await fetchLMSPage()
+        let lmsPageHtml = try await fetchLMSPage()
         guard validateLMSPage() else {
             throw ScienceTokyoPortalLoginError.invalidLMSPage
         }
+        
+        let lmsPageHtmlInputs = try parseHTMLInput(html: lmsPageHtml)
+        let lmsRedirectPageHtml = try await fetchLMSRedirectPage(htmlInputs: lmsPageHtmlInputs)
+        guard try validateLMSRedirectPage(html: lmsRedirectPageHtml) else {
+            throw ScienceTokyoPortalLoginError.invalidLMSPage
+        }
+
     }
     
     public func setFIDO2() async throws {
@@ -199,14 +213,14 @@ public struct ScienceTokyoPortal {
 
 
     
-    func fetchUserNamePage() async throws -> String {
+    private func fetchUserNamePage() async throws -> String {
         let request = UserNamePageRequest()
         
         return try await httpClient.send(request)
     }
     
     
-    func submitUserName(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], username: String) async throws -> String {
+    private func submitUserName(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], username: String) async throws -> String {
         let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
         let htmlInputs = inject(htmlInputs, username: username, password: "")
         let request = UserNameSubmitRequest(htmlInputs: htmlInputs, htmlMetas: htmlMetas)
@@ -214,7 +228,7 @@ public struct ScienceTokyoPortal {
         return try await httpClient.send(request)
     }
     
-    func submitPassword(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], username: String, password: String) async throws -> String {
+    private func submitPassword(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], username: String, password: String) async throws -> String {
         let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
         let injectedHtmlInputs = inject(htmlInputs, username: username, password: password)
         
@@ -223,26 +237,26 @@ public struct ScienceTokyoPortal {
         return try await httpClient.send(request)
     }
     
-    func fetchAuthorizationMethodSelectionPage() async throws -> String {
+    private func fetchAuthorizationMethodSelectionPage() async throws -> String {
         let request = AuthorizationMethodSelectionPageRequest()
         
         return try await httpClient.send(request)
     }
     
-    func submitEmailSending(htmlMetas: [HTMLMeta]) async throws -> String {
+    private func submitEmailSending(htmlMetas: [HTMLMeta]) async throws -> String {
         let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
         let request = EmailSendingSubmitRequest(htmlMetas: htmlMetas)
         return try await httpClient.send(request)
     }
     
-    func submitEmail(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], otp: String) async throws -> String {
+    private func submitEmail(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], otp: String) async throws -> String {
         let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
         let injectedHtmlInputs = inject(htmlInputs, username: otp, password: "")
         let request = OTPSubmitRequest(htmlInputs: injectedHtmlInputs, htmlMetas: htmlMetas)
         return try await httpClient.send(request)
     }
     
-    func submitTOTP(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], account: ScienceTokyoPortalAccount) async throws -> String {
+    private func submitTOTP(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], account: ScienceTokyoPortalAccount) async throws -> String {
         let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
         guard let accountTotp = account.totpSecret else {
             throw ScienceTokyoPortalLoginError.invalidUserNamePage
@@ -253,46 +267,51 @@ public struct ScienceTokyoPortal {
         return try await httpClient.send(request)
     }
     
-    func fetchWaitingPage(url: String) async throws -> String {
+    private func fetchWaitingPage(url: String) async throws -> String {
         let request = WaitingPageRequest(url: URL(string: url)!)
         return try await httpClient.send(request)
     }
     
-    func fetchResourceListPage(htmlInputs: [HTMLInput], referer: String) async throws -> String {
+    private func fetchResourceListPage(htmlInputs: [HTMLInput], referer: String) async throws -> String {
         let request = ResourceListPageRequest(htmlInputs: htmlInputs, referer: referer)
         return try await httpClient.send(request)
     }
     
-    func fetchLMSPage() async throws -> String {
+    private func fetchLMSPage() async throws -> String {
         let request = LMSPageRequest()
         return try await httpClient.send(request)
     }
         
-    
-    func fetchFIDO2Page() async throws -> String {
+    private func fetchLMSRedirectPage(htmlInputs: [HTMLInput]) async throws -> String {
+        let request = LMSRedirectPageRequest(htmlInputs: htmlInputs, htmlMetas: [])
+        return try await httpClient.send(request)
+    }
+        
+
+    private func fetchFIDO2Page() async throws -> String {
         let request = FIDO2PageRequest()
         return try await httpClient.send(request)
     }
     
-    func submitFIDO2Settings(htmlInput: [HTMLInput]) async throws -> String {
+    private func submitFIDO2Settings(htmlInput: [HTMLInput]) async throws -> String {
         let htmlMetas = htmlInput.filter{ $0.name == "_csrf" }.map{ HTMLMeta(name: "x-csrf-token", content: $0.value )} // csrf-tokenを取り出す
         let request = FIDO2SettingsRequest(htmlMetas: htmlMetas)
         return try await httpClient.send(request)
     }
     
-    func submitFIDO2Relay1(htmlInput: [HTMLInput]) async throws -> String {
+    private func submitFIDO2Relay1(htmlInput: [HTMLInput]) async throws -> String {
         let htmlMetas = htmlInput.filter{ $0.name == "_csrf" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.value )} // csrf-tokenを取り出す
         let request = FIDO2Relay1Request(htmlMetas: htmlMetas)
         return try await httpClient.send(request)
     }
     
-    func submitFIDO2Relay2(htmlInput: [HTMLInput], jsonBody: [String: Any]) async throws -> String {
+    private func submitFIDO2Relay2(htmlInput: [HTMLInput], jsonBody: [String: Any]) async throws -> String {
         let htmlMetas = htmlInput.filter{ $0.name == "_csrf" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.value )} // csrf-tokenを取り出す
         let request = FIDO2Relay2Request(htmlMetas: htmlMetas, jsonBody: jsonBody)
         return try await httpClient.send(request)
     }
     
-    func validateUserNamePage(html: String) throws -> Bool {
+    private func validateUserNamePage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
         
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -300,7 +319,7 @@ public struct ScienceTokyoPortal {
         return bodyHtml.contains("Please set your e-mail address for password reissue to an e-mail other than m.isct.ac.jp.") || bodyHtml.contains("パスワード再発行用メールアドレスをm.isct.ac.jp以外のメールアドレスに忘れず必ず設定してください。")
     }
     
-    func validateUserNamePageSubmitJson(json: String, account: ScienceTokyoPortalAccount) throws -> Bool {
+    private func validateUserNamePageSubmitJson(json: String, account: ScienceTokyoPortalAccount) throws -> Bool {
         let jsonObject = try JSONSerialization.jsonObject(with: Data(json.utf8), options: [])
         guard let jsonDict = jsonObject as? [String: Any] else {
             return false
@@ -314,11 +333,11 @@ public struct ScienceTokyoPortal {
         return password && username == account.username
     }
         
-    func validateSubmitScript(script: String) -> Bool {
+    private func validateSubmitScript(script: String) -> Bool {
         return script.contains("window.location=")
     }
     
-    func validateMethodSelectionPage(html: String) throws -> Bool {
+    private func validateMethodSelectionPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
         
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -326,7 +345,7 @@ public struct ScienceTokyoPortal {
         return bodyHtml.contains("Please select an authentication method.") || bodyHtml.contains("認証方法を選択してください。")
     }
 
-    func validateWaitingPage(html: String) throws -> Bool {
+    private func validateWaitingPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
         
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -334,7 +353,7 @@ public struct ScienceTokyoPortal {
         return bodyHtml.contains("Please wait for a moment") || bodyHtml.contains("しばらくお待ちください。")
     }
     
-    func validateResourceListPage(html: String) throws -> Bool {
+    private func validateResourceListPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
         
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -346,7 +365,15 @@ public struct ScienceTokyoPortal {
         return httpClient.cookies().contains(where: { $0.name == "MoodleSession" })
     }
     
-    func validateEmailSending(result: String) -> Bool {
+    private func validateLMSRedirectPage(html: String) throws -> Bool {
+        let doc = try HTML(html: html, encoding: .utf8)
+        
+        let bodyHtml = doc.css("body").first?.innerHTML ?? ""
+        
+        return bodyHtml.contains("ダッシュボード") || bodyHtml.contains("Dashboard")
+    }
+    
+    private func validateEmailSending(result: String) -> Bool {
         return result.contains("succeeded")
     }
     

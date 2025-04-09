@@ -11,7 +11,7 @@ enum BaseURL {
 
 enum LMSBaseURL {
     static let origin = "https://lms.s.isct.ac.jp/2025/"
-    static let host = "lms.s.isct.ac.jp/2025/"
+    static let host = "lms.s.isct.ac.jp"
 }
 
 enum HTTPMethod: String {
