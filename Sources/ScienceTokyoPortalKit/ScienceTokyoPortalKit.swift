@@ -112,16 +112,6 @@ public struct ScienceTokyoPortal {
         guard try validateResourceListPage(html: resourceListPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
-        let lmsPageHtml = try await fetchLMSPage()
-        guard validateLMSPage() else {
-            throw ScienceTokyoPortalLoginError.invalidLMSPage
-        }
-        
-        let lmsPageHtmlInputs = try parseHTMLInput(html: lmsPageHtml)
-        let lmsRedirectPageHtml = try await fetchLMSRedirectPage(htmlInputs: lmsPageHtmlInputs)
-        guard try validateLMSRedirectPage(html: lmsRedirectPageHtml) else {
-            throw ScienceTokyoPortalLoginError.invalidLMSPage
-        }
     }
     
     public func latterEmailLogin(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], otp: String) async throws {
@@ -140,17 +130,6 @@ public struct ScienceTokyoPortal {
         guard try validateResourceListPage(html: resourceListPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
-        let lmsPageHtml = try await fetchLMSPage()
-        guard validateLMSPage() else {
-            throw ScienceTokyoPortalLoginError.invalidLMSPage
-        }
-        
-        let lmsPageHtmlInputs = try parseHTMLInput(html: lmsPageHtml)
-        let lmsRedirectPageHtml = try await fetchLMSRedirectPage(htmlInputs: lmsPageHtmlInputs)
-        guard try validateLMSRedirectPage(html: lmsRedirectPageHtml) else {
-            throw ScienceTokyoPortalLoginError.invalidLMSPage
-        }
-
     }
     
     public func setFIDO2() async throws {
@@ -268,17 +247,6 @@ public struct ScienceTokyoPortal {
         return try await httpClient.send(request)
     }
     
-    private func fetchLMSPage() async throws -> String {
-        let request = LMSPageRequest()
-        return try await httpClient.send(request)
-    }
-        
-    private func fetchLMSRedirectPage(htmlInputs: [HTMLInput]) async throws -> String {
-        let request = LMSRedirectPageRequest(htmlInputs: htmlInputs, htmlMetas: [])
-        return try await httpClient.send(request)
-    }
-        
-
     private func fetchFIDO2Page() async throws -> String {
         let request = FIDO2PageRequest()
         return try await httpClient.send(request)
@@ -350,18 +318,6 @@ public struct ScienceTokyoPortal {
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
         
         return bodyHtml.contains("Account") || bodyHtml.contains("アカウント")
-    }
-    
-    private func validateLMSPage() -> Bool {
-        return httpClient.cookies().contains(where: { $0.name == "MoodleSession" })
-    }
-    
-    private func validateLMSRedirectPage(html: String) throws -> Bool {
-        let doc = try HTML(html: html, encoding: .utf8)
-        
-        let bodyHtml = doc.css("body").first?.innerHTML ?? ""
-        
-        return bodyHtml.contains("ダッシュボード") || bodyHtml.contains("Dashboard")
     }
     
     private func validateEmailSending(result: String) -> Bool {
