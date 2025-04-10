@@ -9,11 +9,6 @@ enum BaseURL {
     static let host = "isct.ex-tic.com"
 }
 
-enum LMSBaseURL {
-    static let origin = "https://lms.s.isct.ac.jp/2025/"
-    static let host = "lms.s.isct.ac.jp"
-}
-
 enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"

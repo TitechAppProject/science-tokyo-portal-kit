@@ -15,7 +15,6 @@ public enum ScienceTokyoPortalLoginError: Error, Equatable {
     case invalidWaitingPage
     case invalidResourceListPage
     case invalidEmailSending
-    case invalidLMSPage
     
     case alreadyLoggedin
 }
