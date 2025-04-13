@@ -17,11 +17,18 @@ import Foundation
 }
 */
 
-@Test func testTOTP() async throws {
+@Test func testTOTPLogin() async throws {
     let account = ScienceTokyoPortalAccount(username: "username", password: "password", totpSecret: "xxxxxxxx")
     let portal = ScienceTokyoPortal(urlSession: .shared)
     let loginPageHtml = try await portal.loginCommon(account: account)
     try await portal.loginTOTP(account: account, methodSelectionPageHtml: loginPageHtml)
+}
+
+@Test func testTOTPGeneration() async throws {
+    let totpSecret = "@"
+    #expect(throws: TOTPError.invalidBase32) {
+        try calculateTOTP(secret: totpSecret)
+    }
 }
  
 /*

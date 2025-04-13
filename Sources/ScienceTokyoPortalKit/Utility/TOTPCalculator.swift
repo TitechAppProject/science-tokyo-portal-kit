@@ -8,14 +8,20 @@
 import Foundation
 import CryptoKit
 
-public func calculateTOTP(secret: String) -> String {
+public enum TOTPError: Error, Equatable {
+    case invalidBase32
+}
+
+public func calculateTOTP(secret: String) throws -> String {
     let unixTime = Date().timeIntervalSince1970
     let period = TimeInterval(30)
     // 8byteのデータに変換
     var time = UInt64(unixTime / period).bigEndian
     let timeData = withUnsafeBytes(of: &time) { Array($0) }
     let digits = 6
-    let secretKey = base32Decode(secret)!
+    guard let secretKey = base32Decode(secret) else {
+        throw TOTPError.invalidBase32
+    }
     let hash = HMAC<Insecure.SHA1>.authenticationCode(for: timeData, using: SymmetricKey(data: secretKey))
  
     var truncatedHash = hash.withUnsafeBytes { ptr -> UInt32 in
