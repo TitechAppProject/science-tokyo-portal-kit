@@ -11,7 +11,6 @@ public enum ScienceTokyoPortalLoginError: Error, Equatable {
     case invalidMethodSelectionPage
     case invalidEmailPage
     case invalidTOTPPage
-    case invalidFIDO2Page
     case invalidWaitingPage
     case invalidResourceListPage
     case invalidEmailSending
@@ -157,19 +156,6 @@ public struct ScienceTokyoPortal {
         }
     }
     
-    /// ログイン済みの状態でFIDO2を設定する
-    /// 現在のところ，fido2Relay2Jsonでエラーコードが返ってくる
-    public func setFIDO2() async throws {
-        let fido2PageHtml = try await fetchFIDO2Page()
-        let fido2HtmlInput = try parseHTMLInput(html: fido2PageHtml)
-        let fido2SettingsJson = try await submitFIDO2Settings(htmlInput: fido2HtmlInput)
-        let fido2Relay1Json = try await submitFIDO2Relay1(htmlInput: fido2HtmlInput)
-        if let outputJSON = try createCredential(from: fido2Relay1Json) {
-            let fido2Relay2Json = try await submitFIDO2Relay2(htmlInput: fido2HtmlInput, jsonBody: outputJSON)
-        } else {
-        }
-    }
-    
     /// UsernameとPasswordのみが正しいかチェック
     /// - Parameter username: ユーザー名
     /// - Parameter password: パスワード
@@ -312,43 +298,7 @@ public struct ScienceTokyoPortal {
         let request = ResourceListPageRequest(htmlInputs: htmlInputs, referer: referer)
         return try await httpClient.send(request)
     }
-    
-    /// FIDO2設定ページを取得
-    /// - Returns: FIDO2設定ページのHTML
-    private func fetchFIDO2Page() async throws -> String {
-        let request = FIDO2PageRequest()
-        return try await httpClient.send(request)
-    }
-    
-    /// FIDO2設定を送信
-    /// - Parameter htmlInput: FIDO2設定ページのInputタグ
-    /// - Returns: FIDO2設定の送信結果
-    private func submitFIDO2Settings(htmlInput: [HTMLInput]) async throws -> String {
-        let htmlMetas = htmlInput.filter{ $0.name == "_csrf" }.map{ HTMLMeta(name: "x-csrf-token", content: $0.value )} // csrf-tokenを取り出す
-        let request = FIDO2SettingsRequest(htmlMetas: htmlMetas)
-        return try await httpClient.send(request)
-    }
-    
-    /// FIDO2 Relay(1回目)を送信
-    /// - Parameter htmlInput: FIDO2設定ページのInputタグ
-    /// - Returns: FIDO2 Relay1の送信結果
-    private func submitFIDO2Relay1(htmlInput: [HTMLInput]) async throws -> String {
-        let htmlMetas = htmlInput.filter{ $0.name == "_csrf" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.value )} // csrf-tokenを取り出す
-        let request = FIDO2Relay1Request(htmlMetas: htmlMetas)
-        return try await httpClient.send(request)
-    }
-    
-    /// FIDO2 Relay(2回目)を送信
-    /// - Parameters:
-    ///   - htmlInput: FIDO2設定ページのInputタグ
-    ///   - jsonBody: FIDO2 Relay1のレスポンスから計算したJSON
-    /// - Returns: FIDO2 Relay2の送信結果
-    private func submitFIDO2Relay2(htmlInput: [HTMLInput], jsonBody: [String: Any]) async throws -> String {
-        let htmlMetas = htmlInput.filter{ $0.name == "_csrf" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.value )} // csrf-tokenを取り出す
-        let request = FIDO2Relay2Request(htmlMetas: htmlMetas, jsonBody: jsonBody)
-        return try await httpClient.send(request)
-    }
-    
+
     /// ユーザー名ページのバリデーション
     /// - Parameter html: ユーザー名ページのHTML
     /// - Returns: ユーザー名ページが正しい場合はtrue, エラーであればfalseを返す
