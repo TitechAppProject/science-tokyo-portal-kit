@@ -14,7 +14,8 @@ public enum ScienceTokyoPortalLoginError: Error, Equatable {
     case invalidWaitingPage
     case invalidResourceListPage
     case invalidEmailSending
-    
+    case invalidLMSPage
+
     case alreadyLoggedin
 }
 
@@ -123,6 +124,19 @@ public struct ScienceTokyoPortal {
         let resourceListPageHtml = try await fetchResourceListPage(htmlInputs: waitingPageHtmlInputs, referer: otpPageSubmitURL)
         guard try validateResourceListPage(html: resourceListPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
+        }
+    }
+    
+    public func activateLMS() async throws {
+        let lmsPageHtml = try await fetchLMSPage()
+        guard validateLMSPage() else {
+            throw ScienceTokyoPortalLoginError.invalidLMSPage
+        }
+        
+        let lmsPageHtmlInputs = try parseHTMLInput(html: lmsPageHtml)
+        let lmsRedirectPageHtml = try await fetchLMSRedirectPage(htmlInputs: lmsPageHtmlInputs)
+        guard try validateLMSRedirectPage(html: lmsRedirectPageHtml) else {
+            throw ScienceTokyoPortalLoginError.invalidLMSPage
         }
     }
     
@@ -298,6 +312,22 @@ public struct ScienceTokyoPortal {
         let request = ResourceListPageRequest(htmlInputs: htmlInputs, referer: referer)
         return try await httpClient.send(request)
     }
+    
+    /// LMSページの取得(前半)
+    /// ログイン後にLMSに初めてアクセスする際は、LMS→Extic→LMSの遷移を経てLMSへのアクセスが成功する。
+    /// この関数はその前半部分を担う
+    private func fetchLMSPage() async throws -> String {
+        let request = LMSPageRequest()
+        return try await httpClient.send(request)
+    }
+    
+    /// LMSページの取得(後半)
+    /// ログイン後にLMSに初めてアクセスする際は、LMS→Extic→LMSの遷移を経てLMSへのアクセスが成功する。
+    /// この関数はその後半部分を担う
+    private func fetchLMSRedirectPage(htmlInputs: [HTMLInput]) async throws -> String {
+        let request = LMSRedirectPageRequest(htmlInputs: htmlInputs, htmlMetas: [])
+        return try await httpClient.send(request)
+    }
 
     /// ユーザー名ページのバリデーション
     /// - Parameter html: ユーザー名ページのHTML
@@ -368,6 +398,23 @@ public struct ScienceTokyoPortal {
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
         
         return bodyHtml.contains("Account") || bodyHtml.contains("アカウント")
+    }
+    
+    /// LMSページへのリクエストのバリデーション
+    /// - Returns: Cookieの内容が正しい場合はtrue, エラーであればfalseを返す
+    private func validateLMSPage() -> Bool {
+        return httpClient.cookies().contains(where: { $0.name == "MoodleSession" })
+    }
+    
+    /// LMSページのバリデーション
+    /// - Parameter html: LMS一覧ページのHTML
+    /// - Returns: LMS一覧ページが正しい場合はtrue, エラーであればfalseを返す
+    private func validateLMSRedirectPage(html: String) throws -> Bool {
+        let doc = try HTML(html: html, encoding: .utf8)
+        
+        let bodyHtml = doc.css("body").first?.innerHTML ?? ""
+        
+        return bodyHtml.contains("ダッシュボード") || bodyHtml.contains("Dashboard")
     }
     
     /// Email送信のバリデーション

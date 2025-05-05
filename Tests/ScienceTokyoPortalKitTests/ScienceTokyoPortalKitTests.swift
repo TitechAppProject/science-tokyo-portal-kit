@@ -29,3 +29,8 @@ import Foundation
         try calculateTOTP(secret: totpSecret)
     }
 }
+
+@Test func testLMSActivation() async throws {
+    let portal = ScienceTokyoPortal(urlSession: .shared)
+    try await portal.activateLMS()
+}
