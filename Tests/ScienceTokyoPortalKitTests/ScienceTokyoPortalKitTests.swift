@@ -21,6 +21,8 @@ import Foundation
     let portal = ScienceTokyoPortal(urlSession: .shared)
     let loginPageHtml = try await portal.loginCommon(account: account)
     try await portal.loginTOTP(account: account, methodSelectionPageHtml: loginPageHtml)
+    try await portal.activateLMS()
+    print("wstoken=", try await portal.getLMSToken())
 }
 
 @Test func testTOTPGeneration() async throws {
@@ -28,9 +30,4 @@ import Foundation
     #expect(throws: TOTPError.invalidBase32) {
         try calculateTOTP(secret: totpSecret)
     }
-}
-
-@Test func testLMSActivation() async throws {
-    let portal = ScienceTokyoPortal(urlSession: .shared)
-    try await portal.activateLMS()
 }

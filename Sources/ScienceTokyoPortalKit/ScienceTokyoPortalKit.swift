@@ -14,9 +14,16 @@ public enum ScienceTokyoPortalLoginError: Error, Equatable {
     case invalidWaitingPage
     case invalidResourceListPage
     case invalidEmailSending
-    case invalidLMSPage
 
     case alreadyLoggedin
+}
+
+public enum LMSLoginError: Error, Equatable {
+    case policy
+    case invalidDashboardPage
+    case parseHtml
+    case parseUrlScheme(responseHTML: String)
+    case parseToken(responseHTML: String)
 }
 
 public struct ScienceTokyoPortal {
@@ -130,13 +137,47 @@ public struct ScienceTokyoPortal {
     public func activateLMS() async throws {
         let lmsPageHtml = try await fetchLMSPage()
         guard validateLMSPage() else {
-            throw ScienceTokyoPortalLoginError.invalidLMSPage
+            throw LMSLoginError.invalidDashboardPage
         }
         
         let lmsPageHtmlInputs = try parseHTMLInput(html: lmsPageHtml)
         let lmsRedirectPageHtml = try await fetchLMSRedirectPage(htmlInputs: lmsPageHtmlInputs)
+        guard try !detectPolicyError(html: lmsRedirectPageHtml) else {
+            throw LMSLoginError.policy
+        }
         guard try validateLMSRedirectPage(html: lmsRedirectPageHtml) else {
-            throw ScienceTokyoPortalLoginError.invalidLMSPage
+            throw LMSLoginError.invalidDashboardPage
+        }
+    }
+    
+    public func getLMSToken() async throws -> String {
+        let lmsTokenHtml = try await fetchLMSTokenPage()
+        guard
+            let doc = { () -> HTMLDocument? in
+                do {
+                    return try HTML(html: lmsTokenHtml, encoding: .utf8)
+                } catch {
+                    return nil
+                }
+            }()
+        else {
+            throw LMSLoginError.parseHtml
+        }
+        guard
+            let launchapp = doc.css("a#launchapp").first,
+            let href = launchapp["href"],
+            let decodedData = Data(base64Encoded: href.replacingOccurrences(of: "moodlemobile://token=", with: "")),
+            let decodedStr = String(data: decodedData, encoding: .utf8)
+        else {
+            throw LMSLoginError.parseUrlScheme(responseHTML: lmsTokenHtml)
+        }
+
+        let splitedToken = decodedStr.components(separatedBy: ":::")
+
+        if splitedToken.count > 1 {
+            return splitedToken[1]
+        } else {
+            throw LMSLoginError.parseToken(responseHTML: lmsTokenHtml)
         }
     }
     
@@ -324,8 +365,16 @@ public struct ScienceTokyoPortal {
     /// LMSページの取得(後半)
     /// ログイン後にLMSに初めてアクセスする際は、LMS→Extic→LMSの遷移を経てLMSへのアクセスが成功する。
     /// この関数はその後半部分を担う
+    /// - Returns: LMSページのHTML
     private func fetchLMSRedirectPage(htmlInputs: [HTMLInput]) async throws -> String {
         let request = LMSRedirectPageRequest(htmlInputs: htmlInputs, htmlMetas: [])
+        return try await httpClient.send(request)
+    }
+    
+    /// LMS wsTokenの取得
+    /// - Returns: LMSTokenページのHTML
+    private func fetchLMSTokenPage() async throws -> String {
+        let request = LMSTokenRequest()
         return try await httpClient.send(request)
     }
 
@@ -404,6 +453,19 @@ public struct ScienceTokyoPortal {
     /// - Returns: Cookieの内容が正しい場合はtrue, エラーであればfalseを返す
     private func validateLMSPage() -> Bool {
         return httpClient.cookies().contains(where: { $0.name == "MoodleSession" })
+    }
+    
+    /// ポリシーエラーの検出
+    /// - Parameter html: LMS一覧ページのHTML
+    /// - Returns: ポリシーエラーであればtrue, そうでなければfalseを返す
+    private func detectPolicyError(html: String) throws -> Bool {
+        let doc = try HTML(html: html, encoding: .utf8)
+        
+        let bodyHtml = doc.css("body").first?.innerHTML ?? ""
+        if let title = doc.title, title.contains("ポリシー") || title.contains("Policies") {
+            return true
+        }
+        return false
     }
     
     /// LMSページのバリデーション
