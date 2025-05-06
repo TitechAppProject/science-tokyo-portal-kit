@@ -134,7 +134,7 @@ public struct ScienceTokyoPortal {
         }
     }
     
-    public func activateLMS() async throws {
+    public func getLMSDashboard() async throws {
         let lmsPageHtml = try await fetchLMSPage()
         guard validateLMSPage() else {
             throw LMSLoginError.invalidDashboardPage

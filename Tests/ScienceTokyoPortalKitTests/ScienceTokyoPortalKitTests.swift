@@ -21,7 +21,7 @@ import Foundation
     let portal = ScienceTokyoPortal(urlSession: .shared)
     let loginPageHtml = try await portal.loginCommon(account: account)
     try await portal.loginTOTP(account: account, methodSelectionPageHtml: loginPageHtml)
-    try await portal.activateLMS()
+    try await portal.getLMSDashboard()
     print("wstoken=", try await portal.getLMSToken())
 }
 
