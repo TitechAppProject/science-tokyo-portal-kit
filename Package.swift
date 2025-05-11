@@ -19,20 +19,21 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.3.0"),
+        .package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "ScienceTokyoPortalKit",
-            dependencies: ["Kanna"]
+            dependencies: [
+                .product(name: "Kanna", package: "Kanna"),
+                .product(name: "Crypto", package: "swift-crypto"),
+            ]
         ),
         .testTarget(
             name: "ScienceTokyoPortalKitTests",
-            dependencies: ["ScienceTokyoPortalKit"],
-            resources: [
-                .process("HTML"),
-            ]
+            dependencies: ["ScienceTokyoPortalKit"]
         ),
     ]
 )
