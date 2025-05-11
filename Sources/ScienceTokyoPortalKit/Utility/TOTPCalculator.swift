@@ -16,8 +16,8 @@ public enum TOTPError: Error, Equatable {
     case invalidBase32
 }
 
-public func calculateTOTP(secret: String) throws -> String {
-    let unixTime = Date().timeIntervalSince1970
+public func calculateTOTP(secret: String, current: Date) throws -> String {
+    let unixTime = current.timeIntervalSince1970
     let period = TimeInterval(30)
     // 8byteのデータに変換
     var time = UInt64(unixTime / period).bigEndian
@@ -40,5 +40,3 @@ public func calculateTOTP(secret: String) throws -> String {
     truncatedHash = truncatedHash % UInt32(pow(10, Float(digits)))
     return String(format: "%06d", truncatedHash)
 }
-
-
