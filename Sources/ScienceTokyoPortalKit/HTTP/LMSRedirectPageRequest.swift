@@ -28,7 +28,7 @@ struct LMSRedirectPageRequest: HTTPRequest {
         "Sec-Fetch-Dest": "document",
         "Sec-Fetch-Mode": "navigate",
         "Sec-Fetch-Site": "cross-site",
-        "Priority": "u=3, i"
+        "Priority": "u=3, i",
     ]
 
     var body: [String: String]?

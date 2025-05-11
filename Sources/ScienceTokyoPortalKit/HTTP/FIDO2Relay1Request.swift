@@ -8,7 +8,7 @@ struct FIDO2Relay1Request: HTTPRequest {
     let url: URL = URL(string: BaseURL.origin + "/idm/user/fido2_setting/add/relay1")!
 
     var method: HTTPMethod = .post
-    
+
     var postContentType: PostContentType = .json
 
     var headerFields: [String: String]? = [
@@ -23,11 +23,11 @@ struct FIDO2Relay1Request: HTTPRequest {
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
         "Priority": "u=3, i",
-        "Content-Type": "application/json;charset=UTF-8"
+        "Content-Type": "application/json;charset=UTF-8",
     ]
 
     var body: [String: String]? = nil
-    
+
     var jsonBody: [String: Any]?
 
     init(htmlMetas: [HTMLMeta]) {
@@ -47,7 +47,7 @@ struct FIDO2Relay1Request: HTTPRequest {
             ],
             "authnrAttachment": "",
             "credentialAlias": "TitechApp",
-            "reqProtocolType": "1"
-        ] // JSON文字列に変換
+            "reqProtocolType": "1",
+        ]  // JSON文字列に変換
     }
 }

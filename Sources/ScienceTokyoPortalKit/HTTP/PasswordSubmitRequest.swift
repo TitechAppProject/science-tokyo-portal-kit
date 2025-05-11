@@ -8,7 +8,7 @@ struct PasswordSubmitRequest: HTTPRequest {
     let url: URL = URL(string: BaseURL.origin + "/auth/session")!
 
     var method: HTTPMethod = .post
-    
+
     var postContentType: PostContentType = .form
 
     var headerFields: [String: String]? = [
@@ -23,9 +23,9 @@ struct PasswordSubmitRequest: HTTPRequest {
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
         "X-Requested-With": "XMLHttpRequest",
-        "Priority": "u=3, i"
+        "Priority": "u=3, i",
     ]
-    var body: [String : String]?
+    var body: [String: String]?
 
     var jsonBody: [String: Any]?
 

@@ -22,7 +22,7 @@ struct OTPSubmitRequest: HTTPRequest {
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
         "X-Requested-With": "XMLHttpRequest",
-        "Priority": "u=3, i"
+        "Priority": "u=3, i",
     ]
 
     var body: [String: String]?
