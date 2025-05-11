@@ -9,7 +9,7 @@ import FoundationNetworking
 #endif
 
 protocol HTTPClient {
-    func send(_ request: HTTPRequest) async throws -> String
+    func send(_ request: HTTPRequest) async throws -> (html: String, responseUrl: URL?)
     func statusCode(_ request: HTTPRequest) async throws -> Int
     func cookies() -> [HTTPCookie]
 }
@@ -31,25 +31,27 @@ struct HTTPClientImpl: HTTPClient {
         self.userAgent = userAgent
     }
     
-    func send(_ request: HTTPRequest) async throws -> String {
-#if canImport(FoundationNetworking)
-        let data: Data = try await withCheckedThrowingContinuation { continuation in
-            urlSession.dataTask(with: request.generate(userAgent: userAgent)) { data, _, error in
+    func send(_ request: HTTPRequest) async throws -> (html: String, responseUrl: URL?) {
+        #if canImport(FoundationNetworking)
+        let (data,response): (Data, URLResponse) = try await withCheckedThrowingContinuation { continuation in
+            urlSession.dataTask(with: request.generate(userAgent: userAgent)) { data, response, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else {
-                    continuation.resume(returning: data ?? Data())
+                    continuation.resume(returning: (data ?? Data(), response!))
                 }
             }.resume()
         }
-#else
-        let (data, _) = try await urlSession.data(
+        let httpResponse = response as? HTTPURLResponse
+        #else
+        let (data, response) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
             delegate: urlSessionDelegate
         )
-#endif
+        let httpResponse = response as? HTTPURLResponse
+        #endif
         
-        return String(data: data, encoding: .utf8) ?? ""
+        return (String(data: data, encoding: .utf8) ?? "", httpResponse?.url)
     }
     
     func statusCode(_ request: HTTPRequest) async throws -> Int {
@@ -80,8 +82,8 @@ struct HTTPClientImpl: HTTPClient {
 }
 
 struct HTTPClientMock: HTTPClient {
-    func send(_ request: HTTPRequest) async throws -> String {
-        ""
+    func send(_ request: HTTPRequest) async throws -> (html: String, responseUrl: URL?) {
+        ("", nil)
     }
 
     func statusCode(_ request: HTTPRequest) async throws -> Int {
