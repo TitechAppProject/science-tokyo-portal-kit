@@ -22,8 +22,8 @@ public enum LMSLoginError: Error, Equatable {
     case policy
     case invalidDashboardPage
     case parseHtml
-    case parseUrlScheme(responseHTML: String)
-    case parseToken(responseHTML: String)
+    case parseUrlScheme(responseHTML: String, responseUrl: URL?)
+    case parseToken(responseHTML: String, responseUrl: URL?)
 }
 
 public struct ScienceTokyoPortal {
@@ -151,7 +151,7 @@ public struct ScienceTokyoPortal {
     }
     
     public func getLMSToken() async throws -> String {
-        let lmsTokenHtml = try await fetchLMSTokenPage()
+        let (lmsTokenHtml, responseUrl) = try await fetchLMSTokenPage()
         guard
             let doc = { () -> HTMLDocument? in
                 do {
@@ -169,7 +169,7 @@ public struct ScienceTokyoPortal {
             let decodedData = Data(base64Encoded: href.replacingOccurrences(of: "moodlemobile://token=", with: "")),
             let decodedStr = String(data: decodedData, encoding: .utf8)
         else {
-            throw LMSLoginError.parseUrlScheme(responseHTML: lmsTokenHtml)
+            throw LMSLoginError.parseUrlScheme(responseHTML: lmsTokenHtml, responseUrl: responseUrl)
         }
 
         let splitedToken = decodedStr.components(separatedBy: ":::")
@@ -177,7 +177,7 @@ public struct ScienceTokyoPortal {
         if splitedToken.count > 1 {
             return splitedToken[1]
         } else {
-            throw LMSLoginError.parseToken(responseHTML: lmsTokenHtml)
+            throw LMSLoginError.parseToken(responseHTML: lmsTokenHtml, responseUrl: responseUrl)
         }
     }
     
@@ -256,7 +256,7 @@ public struct ScienceTokyoPortal {
     private func fetchUserNamePage() async throws -> String {
         let request = UserNamePageRequest()
         
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// ユーザー名formを送信
@@ -270,7 +270,7 @@ public struct ScienceTokyoPortal {
         let htmlInputs = inject(htmlInputs, username: username, password: "")
         let request = UserNameSubmitRequest(htmlInputs: htmlInputs, htmlMetas: htmlMetas)
         
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// PasswordFormを送信
@@ -286,7 +286,7 @@ public struct ScienceTokyoPortal {
         
         let request = PasswordSubmitRequest(htmlInputs: injectedHtmlInputs, htmlMetas: htmlMetas)
         
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// 認証方法選択ページを取得
@@ -294,7 +294,7 @@ public struct ScienceTokyoPortal {
     private func fetchAuthorizationMethodSelectionPage() async throws -> String {
         let request = AuthorizationMethodSelectionPageRequest()
         
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// EmailでOTPを送信
@@ -303,7 +303,7 @@ public struct ScienceTokyoPortal {
     private func submitEmailSending(htmlMetas: [HTMLMeta]) async throws -> String {
         let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
         let request = EmailSendingSubmitRequest(htmlMetas: htmlMetas)
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// OTPを送信
@@ -316,7 +316,7 @@ public struct ScienceTokyoPortal {
         let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
         let injectedHtmlInputs = inject(htmlInputs, username: otp, password: "")
         let request = OTPSubmitRequest(htmlInputs: injectedHtmlInputs, htmlMetas: htmlMetas)
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// TOTPを送信
@@ -333,7 +333,7 @@ public struct ScienceTokyoPortal {
         let otp = try calculateTOTP(secret: accountTotp)
         let injectedHtmlInputs = inject(htmlInputs, username: otp, password: "")
         let request = OTPSubmitRequest(htmlInputs: injectedHtmlInputs, htmlMetas: htmlMetas)
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// 待機ページを取得
@@ -341,7 +341,7 @@ public struct ScienceTokyoPortal {
     /// - Returns: 待機ページのHTML
     private func fetchWaitingPage(url: String) async throws -> String {
         let request = WaitingPageRequest(url: URL(string: url)!)
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// リソース一覧ページを取得
@@ -351,7 +351,7 @@ public struct ScienceTokyoPortal {
     /// - Returns: リソース一覧ページのHTML
     private func fetchResourceListPage(htmlInputs: [HTMLInput], referer: String) async throws -> String {
         let request = ResourceListPageRequest(htmlInputs: htmlInputs, referer: referer)
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// LMSページの取得(前半)
@@ -359,7 +359,7 @@ public struct ScienceTokyoPortal {
     /// この関数はその前半部分を担う
     private func fetchLMSPage() async throws -> String {
         let request = LMSPageRequest()
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// LMSページの取得(後半)
@@ -368,12 +368,12 @@ public struct ScienceTokyoPortal {
     /// - Returns: LMSページのHTML
     private func fetchLMSRedirectPage(htmlInputs: [HTMLInput]) async throws -> String {
         let request = LMSRedirectPageRequest(htmlInputs: htmlInputs, htmlMetas: [])
-        return try await httpClient.send(request)
+        return try await httpClient.send(request).html
     }
     
     /// LMS wsTokenの取得
     /// - Returns: LMSTokenページのHTML
-    private func fetchLMSTokenPage() async throws -> String {
+    private func fetchLMSTokenPage() async throws -> (String, URL?) {
         let request = LMSTokenRequest()
         return try await httpClient.send(request)
     }
