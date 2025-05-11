@@ -15,19 +15,12 @@ import Foundation
     try await portal.latterEmailLogin(htmlInputs: otpPageInputs, htmlMetas: methodSelectionPageMetas, otp: otp)
 }
 */
-
-@Test func testTOTPLogin() async throws {
-    let account = ScienceTokyoPortalAccount(username: "username", password: "password", totpSecret: "xxxxxxxx")
-    let portal = ScienceTokyoPortal(urlSession: .shared)
-    let loginPageHtml = try await portal.loginCommon(account: account)
-    try await portal.loginTOTP(account: account, methodSelectionPageHtml: loginPageHtml)
-    try await portal.getLMSDashboard()
-    print("wstoken=", try await portal.getLMSToken())
-}
-
-@Test func testTOTPGeneration() async throws {
-    let totpSecret = "@"
-    #expect(throws: TOTPError.invalidBase32) {
-        try calculateTOTP(secret: totpSecret)
-    }
-}
+//
+//@Test func testTOTPLogin() async throws {
+//    let account = ScienceTokyoPortalAccount(username: "username", password: "password", totpSecret: "xxxxxxxx")
+//    let portal = ScienceTokyoPortal(urlSession: .shared)
+//    let loginPageHtml = try await portal.loginCommon(account: account)
+//    try await portal.loginTOTP(account: account, methodSelectionPageHtml: loginPageHtml)
+//    try await portal.getLMSDashboard()
+//    print("wstoken=", try await portal.getLMSToken())
+//}

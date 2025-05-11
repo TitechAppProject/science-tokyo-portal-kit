@@ -330,7 +330,7 @@ public struct ScienceTokyoPortal {
         guard let accountTotp = account.totpSecret else {
             throw ScienceTokyoPortalLoginError.invalidUserNamePage
         }
-        let otp = try calculateTOTP(secret: accountTotp)
+        let otp = try calculateTOTP(secret: accountTotp, current: Date())
         let injectedHtmlInputs = inject(htmlInputs, username: otp, password: "")
         let request = OTPSubmitRequest(htmlInputs: injectedHtmlInputs, htmlMetas: htmlMetas)
         return try await httpClient.send(request).html
