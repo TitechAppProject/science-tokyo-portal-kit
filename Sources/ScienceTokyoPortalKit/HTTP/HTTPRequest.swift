@@ -28,13 +28,13 @@ protocol HTTPRequest {
     var url: URL { get }
 
     var method: HTTPMethod { get }
-    
+
     var postContentType: PostContentType { get }
 
     var headerFields: [String: String]? { get }
 
     var body: [String: String]? { get }
-    
+
     var jsonBody: [String: Any]? { get }
 }
 
@@ -79,5 +79,5 @@ extension HTTPRequest {
             return request
         }
     }
-        
+
 }

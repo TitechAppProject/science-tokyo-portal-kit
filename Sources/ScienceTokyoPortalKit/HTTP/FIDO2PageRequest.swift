@@ -24,4 +24,3 @@ struct FIDO2PageRequest: HTTPRequest {
 
     var body: [String: String]? = nil
 }
-

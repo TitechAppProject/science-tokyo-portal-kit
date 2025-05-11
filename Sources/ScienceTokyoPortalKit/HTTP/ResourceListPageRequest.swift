@@ -8,9 +8,9 @@ struct ResourceListPageRequest: HTTPRequest {
     let url: URL = URL(string: BaseURL.origin + "/idm/user/login/saml2/sso/user-isct")!
 
     var method: HTTPMethod = .post
-    
+
     var postContentType: PostContentType = .form
-    
+
     var headerFields: [String: String]? = [
         "Host": BaseURL.host,
         "Origin": BaseURL.origin,
@@ -21,7 +21,7 @@ struct ResourceListPageRequest: HTTPRequest {
         "Sec-Fetch-Dest": "document",
         "Sec-Fetch-Mode": "navigate",
         "Sec-Fetch-Site": "same-origin",
-        "Priority": "u=3, i"
+        "Priority": "u=3, i",
     ]
 
     var body: [String: String]? = nil
@@ -33,4 +33,3 @@ struct ResourceListPageRequest: HTTPRequest {
         }
     }
 }
-

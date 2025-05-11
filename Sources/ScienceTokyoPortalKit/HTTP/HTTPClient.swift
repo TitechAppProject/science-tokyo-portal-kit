@@ -16,24 +16,24 @@ protocol HTTPClient {
 
 struct HTTPClientImpl: HTTPClient {
     private let urlSession: URLSession
-#if !canImport(FoundationNetworking)
+    #if !canImport(FoundationNetworking)
     private let urlSessionDelegate: URLSessionTaskDelegate
     private let urlSessionDelegateWithoutRedirect: URLSessionTaskDelegate
-#endif
+    #endif
     private let userAgent: String
-    
+
     init(urlSession: URLSession, userAgent: String) {
         self.urlSession = urlSession
-#if !canImport(FoundationNetworking)
+        #if !canImport(FoundationNetworking)
         self.urlSessionDelegate = HTTPClientDelegate()
         self.urlSessionDelegateWithoutRedirect = HTTPClientDelegateWithoutRedirect()
-#endif
+        #endif
         self.userAgent = userAgent
     }
-    
+
     func send(_ request: HTTPRequest) async throws -> (html: String, responseUrl: URL?) {
         #if canImport(FoundationNetworking)
-        let (data,response): (Data, URLResponse) = try await withCheckedThrowingContinuation { continuation in
+        let (data, response): (Data, URLResponse) = try await withCheckedThrowingContinuation { continuation in
             urlSession.dataTask(with: request.generate(userAgent: userAgent)) { data, response, error in
                 if let error = error {
                     continuation.resume(throwing: error)
@@ -50,12 +50,12 @@ struct HTTPClientImpl: HTTPClient {
         )
         let httpResponse = response as? HTTPURLResponse
         #endif
-        
+
         return (String(data: data, encoding: .utf8) ?? "", httpResponse?.url)
     }
-    
+
     func statusCode(_ request: HTTPRequest) async throws -> Int {
-#if canImport(FoundationNetworking)
+        #if canImport(FoundationNetworking)
         let response: URLResponse = try await withCheckedThrowingContinuation { continuation in
             urlSession.dataTask(with: request.generate(userAgent: userAgent)) { _, response, error in
                 if let error = error {
@@ -65,16 +65,16 @@ struct HTTPClientImpl: HTTPClient {
                 }
             }.resume()
         }
-#else
+        #else
         let (_, response) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
             delegate: urlSessionDelegateWithoutRedirect
         )
-#endif
-        
+        #endif
+
         return (response as? HTTPURLResponse)?.statusCode ?? 0
     }
-    
+
     func cookies() -> [HTTPCookie] {
         let cookies = urlSession.configuration.httpCookieStorage?.cookies ?? []
         return cookies
@@ -89,7 +89,7 @@ struct HTTPClientMock: HTTPClient {
     func statusCode(_ request: HTTPRequest) async throws -> Int {
         0
     }
-    
+
     func cookies() -> [HTTPCookie] {
         return []
     }

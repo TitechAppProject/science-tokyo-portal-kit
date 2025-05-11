@@ -8,7 +8,7 @@ struct FIDO2Relay2Request: HTTPRequest {
     let url: URL = URL(string: BaseURL.origin + "/idm/user/fido2_setting/add/relay2")!
 
     var method: HTTPMethod = .post
-    
+
     var postContentType: PostContentType = .json
 
     var headerFields: [String: String]? = [
@@ -23,11 +23,11 @@ struct FIDO2Relay2Request: HTTPRequest {
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
         "Priority": "u=3, i",
-        "Content-Type": "application/json;charset=UTF-8"
+        "Content-Type": "application/json;charset=UTF-8",
     ]
 
     var body: [String: String]? = nil
-    
+
     var jsonBody: [String: Any]?
 
     init(htmlMetas: [HTMLMeta], jsonBody: [String: Any]) {

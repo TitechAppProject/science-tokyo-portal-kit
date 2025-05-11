@@ -29,11 +29,11 @@ public enum LMSLoginError: Error, Equatable {
 public struct ScienceTokyoPortal {
     private let httpClient: HTTPClient
     public static let defaultUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
-    
+
     public init(urlSession: URLSession, userAgent: String = ScienceTokyoPortal.defaultUserAgent) {
         self.httpClient = HTTPClientImpl(urlSession: urlSession, userAgent: userAgent)
     }
-    
+
     /// TitechPortalにログイン
     /// - Parameter account: ログイン情報
     /// - Returns: リソース一覧ページのHTML
@@ -41,7 +41,7 @@ public struct ScienceTokyoPortal {
         /// ユーザー名ページの取得
         let userNamePageHtml = try await fetchUserNamePage()
         /// ユーザー名ページのバリデーション(既にログインしている場合)
-        if try validateResourceListPage(html: userNamePageHtml){
+        if try validateResourceListPage(html: userNamePageHtml) {
             throw ScienceTokyoPortalLoginError.alreadyLoggedin
         }
         /// ユーザー名ページのバリデーション
@@ -54,14 +54,14 @@ public struct ScienceTokyoPortal {
         let extractedUserNameHtml = try extractHTML(html: userNamePageHtml, cssSelector: "div#identifier-field-wrapper")
         /// Inputタグの取得
         let userNamePageInputs = try parseHTMLInput(html: extractedUserNameHtml)
-        
+
         /// ユーザー名Formの送信
         let userNamePageSubmitJson = try await submitUserName(htmlInputs: userNamePageInputs, htmlMetas: userNamePageMetas, username: account.username)
         /// ユーザー名submisionのバリデーション
         guard try validateUserNamePageSubmitJson(json: userNamePageSubmitJson, account: account) else {
             throw ScienceTokyoPortalLoginError.invalidUserNamePage
         }
-        
+
         /// 一部のHTMLを取り出す
         let extractedPasswordPageHtml = try extractHTML(html: userNamePageHtml, cssSelector: "form#login")
         /// Inputタグの取得
@@ -79,13 +79,13 @@ public struct ScienceTokyoPortal {
         }
         return methodSelectionPageHtml
     }
-    
+
     /// 認証方法選択ページでEmailを選択した場合(前半)
     /// - Parameters:
     ///   - account: ログイン情報
     ///   - methodSelectionPageHtml: 認証方法選択ページのHTML
     /// - Returns: OTPページのInputタグとMetaタグ
-    public func loginEmail(account: ScienceTokyoPortalAccount, methodSelectionPageHtml: String) async throws -> ([HTMLInput],[HTMLMeta]) {
+    public func loginEmail(account: ScienceTokyoPortalAccount, methodSelectionPageHtml: String) async throws -> ([HTMLInput], [HTMLMeta]) {
         /// Metaタグの取得
         let methodSelectionPageMetas = try parseHTMLMeta(html: methodSelectionPageHtml)
         /// EmailでOTP送信するリクエストの送信
@@ -99,7 +99,7 @@ public struct ScienceTokyoPortal {
         let otpPageInputs = try parseHTMLInput(html: extractedOTPPageHtml)
         return (otpPageInputs, methodSelectionPageMetas)
     }
-    
+
     /// 認証方法選択ページでTOTPを選択した場合
     /// - Parameters:
     ///   - account: ログイン情報
@@ -133,13 +133,13 @@ public struct ScienceTokyoPortal {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
     }
-    
+
     public func getLMSDashboard() async throws {
         let lmsPageHtml = try await fetchLMSPage()
         guard validateLMSPage() else {
             throw LMSLoginError.invalidDashboardPage
         }
-        
+
         let lmsPageHtmlInputs = try parseHTMLInput(html: lmsPageHtml)
         let lmsRedirectPageHtml = try await fetchLMSRedirectPage(htmlInputs: lmsPageHtmlInputs)
         guard try !detectPolicyError(html: lmsRedirectPageHtml) else {
@@ -149,7 +149,7 @@ public struct ScienceTokyoPortal {
             throw LMSLoginError.invalidDashboardPage
         }
     }
-    
+
     public func getLMSToken() async throws -> String {
         let (lmsTokenHtml, responseUrl) = try await fetchLMSTokenPage()
         guard
@@ -180,7 +180,7 @@ public struct ScienceTokyoPortal {
             throw LMSLoginError.parseToken(responseHTML: lmsTokenHtml, responseUrl: responseUrl)
         }
     }
-    
+
     /// EmailでOTPを送信した後の処理．OTPを入力してログインする
     /// - Parameters:
     ///   - htmlInputs: OTPページのInputタグ
@@ -210,7 +210,7 @@ public struct ScienceTokyoPortal {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
     }
-    
+
     /// UsernameとPasswordのみが正しいかチェック
     /// - Parameter username: ユーザー名
     /// - Parameter password: パスワード
@@ -220,7 +220,7 @@ public struct ScienceTokyoPortal {
         /// ユーザー名ページの取得
         let userNamePageHtml = try await fetchUserNamePage()
         /// ユーザー名ページのバリデーション
-        if try validateResourceListPage(html: userNamePageHtml){
+        if try validateResourceListPage(html: userNamePageHtml) {
             throw ScienceTokyoPortalLoginError.alreadyLoggedin
         }
         /// ユーザー名ページのバリデーション
@@ -233,14 +233,14 @@ public struct ScienceTokyoPortal {
         let extractedUserNameHtml = try extractHTML(html: userNamePageHtml, cssSelector: "div#identifier-field-wrapper")
         /// Inputタグの取得
         let userNamePageInputs = try parseHTMLInput(html: extractedUserNameHtml)
-        
+
         /// ユーザー名Formの送信
         let userNamePageSubmitJson = try await submitUserName(htmlInputs: userNamePageInputs, htmlMetas: userNamePageMetas, username: account.username)
         /// ユーザー名submisionのバリデーション
         guard try validateUserNamePageSubmitJson(json: userNamePageSubmitJson, account: account) else {
             throw ScienceTokyoPortalLoginError.invalidUserNamePage
         }
-        
+
         /// 一部のHTMLを取り出す
         let extractedPasswordPageHtml = try extractHTML(html: userNamePageHtml, cssSelector: "form#login")
         /// Inputタグの取得
@@ -250,29 +250,28 @@ public struct ScienceTokyoPortal {
         return validateSubmitScript(script: passwordPageSubmitScript)
     }
 
-
     /// ユーザー名ページを取得
     /// - Returns: ユーザー名ページのHTML
     private func fetchUserNamePage() async throws -> String {
         let request = UserNamePageRequest()
-        
+
         return try await httpClient.send(request).html
     }
-    
+
     /// ユーザー名formを送信
     /// - Parameters:
     ///   - htmlInputs: ユーザー名ページのInputタグ
     ///   - htmlMetas: ユーザー名ページのMetaタグ
     ///   - username: ユーザー名
-    /// - Returns: ユーザー名formの送信結果    
+    /// - Returns: ユーザー名formの送信結果
     private func submitUserName(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], username: String) async throws -> String {
-        let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
+        let htmlMetas = htmlMetas.filter { $0.name == "csrf-token" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.content) }  // csrf-tokenを取り出す
         let htmlInputs = inject(htmlInputs, username: username, password: "")
         let request = UserNameSubmitRequest(htmlInputs: htmlInputs, htmlMetas: htmlMetas)
-        
+
         return try await httpClient.send(request).html
     }
-    
+
     /// PasswordFormを送信
     /// - Parameters:
     ///   - htmlInputs: ユーザー名ページのInputタグ
@@ -281,31 +280,31 @@ public struct ScienceTokyoPortal {
     ///   - password: パスワード
     /// - Returns: PasswordFormの送信結果
     private func submitPassword(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], username: String, password: String) async throws -> String {
-        let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
+        let htmlMetas = htmlMetas.filter { $0.name == "csrf-token" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.content) }  // csrf-tokenを取り出す
         let injectedHtmlInputs = inject(htmlInputs, username: username, password: password)
-        
+
         let request = PasswordSubmitRequest(htmlInputs: injectedHtmlInputs, htmlMetas: htmlMetas)
-        
+
         return try await httpClient.send(request).html
     }
-    
+
     /// 認証方法選択ページを取得
     /// - Returns: 認証方法選択ページのHTML
     private func fetchAuthorizationMethodSelectionPage() async throws -> String {
         let request = AuthorizationMethodSelectionPageRequest()
-        
+
         return try await httpClient.send(request).html
     }
-    
+
     /// EmailでOTPを送信
     /// - Parameter htmlMetas: 認証方法選択ページのMetaタグ
     /// - Returns: JSON形式のOTP送信結果
     private func submitEmailSending(htmlMetas: [HTMLMeta]) async throws -> String {
-        let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
+        let htmlMetas = htmlMetas.filter { $0.name == "csrf-token" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.content) }  // csrf-tokenを取り出す
         let request = EmailSendingSubmitRequest(htmlMetas: htmlMetas)
         return try await httpClient.send(request).html
     }
-    
+
     /// OTPを送信
     /// - Parameters:
     ///   - htmlInputs: 認証方法選択ページのInputタグ
@@ -313,12 +312,12 @@ public struct ScienceTokyoPortal {
     ///   - otp: OTP
     /// - Returns: OTPFormの送信結果
     private func submitEmail(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], otp: String) async throws -> String {
-        let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
+        let htmlMetas = htmlMetas.filter { $0.name == "csrf-token" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.content) }  // csrf-tokenを取り出す
         let injectedHtmlInputs = inject(htmlInputs, username: otp, password: "")
         let request = OTPSubmitRequest(htmlInputs: injectedHtmlInputs, htmlMetas: htmlMetas)
         return try await httpClient.send(request).html
     }
-    
+
     /// TOTPを送信
     /// - Parameters:
     ///   - htmlInputs: 認証方法選択ページのInputタグ
@@ -326,7 +325,7 @@ public struct ScienceTokyoPortal {
     ///   - account: ログイン情報
     /// - Returns: OTPFormの送信結果
     private func submitTOTP(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], account: ScienceTokyoPortalAccount) async throws -> String {
-        let htmlMetas = htmlMetas.filter{ $0.name == "csrf-token" }.map{ HTMLMeta(name: "X-CSRF-Token", content: $0.content )} // csrf-tokenを取り出す
+        let htmlMetas = htmlMetas.filter { $0.name == "csrf-token" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.content) }  // csrf-tokenを取り出す
         guard let accountTotp = account.totpSecret else {
             throw ScienceTokyoPortalLoginError.invalidUserNamePage
         }
@@ -335,7 +334,7 @@ public struct ScienceTokyoPortal {
         let request = OTPSubmitRequest(htmlInputs: injectedHtmlInputs, htmlMetas: htmlMetas)
         return try await httpClient.send(request).html
     }
-    
+
     /// 待機ページを取得
     /// - Parameter url: 待機ページのURL
     /// - Returns: 待機ページのHTML
@@ -343,7 +342,7 @@ public struct ScienceTokyoPortal {
         let request = WaitingPageRequest(url: URL(string: url)!)
         return try await httpClient.send(request).html
     }
-    
+
     /// リソース一覧ページを取得
     /// - Parameters:
     ///   - htmlInputs: 待機ページのInputタグ
@@ -353,7 +352,7 @@ public struct ScienceTokyoPortal {
         let request = ResourceListPageRequest(htmlInputs: htmlInputs, referer: referer)
         return try await httpClient.send(request).html
     }
-    
+
     /// LMSページの取得(前半)
     /// ログイン後にLMSに初めてアクセスする際は、LMS→Extic→LMSの遷移を経てLMSへのアクセスが成功する。
     /// この関数はその前半部分を担う
@@ -361,7 +360,7 @@ public struct ScienceTokyoPortal {
         let request = LMSPageRequest()
         return try await httpClient.send(request).html
     }
-    
+
     /// LMSページの取得(後半)
     /// ログイン後にLMSに初めてアクセスする際は、LMS→Extic→LMSの遷移を経てLMSへのアクセスが成功する。
     /// この関数はその後半部分を担う
@@ -370,7 +369,7 @@ public struct ScienceTokyoPortal {
         let request = LMSRedirectPageRequest(htmlInputs: htmlInputs, htmlMetas: [])
         return try await httpClient.send(request).html
     }
-    
+
     /// LMS wsTokenの取得
     /// - Returns: LMSTokenページのHTML
     private func fetchLMSTokenPage() async throws -> (String, URL?) {
@@ -383,12 +382,13 @@ public struct ScienceTokyoPortal {
     /// - Returns: ユーザー名ページが正しい場合はtrue, エラーであればfalseを返す
     private func validateUserNamePage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
-        
+
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
-        
-        return bodyHtml.contains("Please set your e-mail address for password reissue to an e-mail other than m.isct.ac.jp.") || bodyHtml.contains("パスワード再発行用メールアドレスをm.isct.ac.jp以外のメールアドレスに忘れず必ず設定してください。")
+
+        return bodyHtml.contains("Please set your e-mail address for password reissue to an e-mail other than m.isct.ac.jp.")
+            || bodyHtml.contains("パスワード再発行用メールアドレスをm.isct.ac.jp以外のメールアドレスに忘れず必ず設定してください。")
     }
-    
+
     /// ユーザー名Formのsubmisionのバリデーション
     /// - Parameters:
     ///   - json: ユーザー名FormのsubmisionのJSON
@@ -407,23 +407,23 @@ public struct ScienceTokyoPortal {
         }
         return password && username == account.username
     }
-    
+
     /// PasswordFormのsubmisionのバリデーション
     /// - Parameter script: PasswordFormのsubmisionのscript
     /// - Returns: PasswordFormのsubmisionが正しい場合はtrue, エラーであればfalseを返す
     private func validateSubmitScript(script: String) -> Bool {
         return script.contains("window.location=")
     }
-    
+
     /// 認証方法選択ページのバリデーション
     /// - Parameter html: 認証方法選択ページのHTML
     /// - Returns: 認証方法選択ページが正しい場合はtrue, エラーであればfalseを返す
     /// - Note: 認証方法選択ページは、認証方法を選択するためのページであることを確認する
     private func validateMethodSelectionPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
-        
+
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
-        
+
         return bodyHtml.contains("Please select an authentication method.") || bodyHtml.contains("認証方法を選択してください。")
     }
 
@@ -432,60 +432,60 @@ public struct ScienceTokyoPortal {
     /// - Returns: 待機ページが正しい場合はtrue, エラーであればfalseを返す
     private func validateWaitingPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
-        
+
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
-        
+
         return bodyHtml.contains("Please wait for a moment") || bodyHtml.contains("しばらくお待ちください。")
     }
-    
+
     /// リソース一覧ページのバリデーション
     /// - Parameter html: リソース一覧ページのHTML
     /// - Returns: リソース一覧ページが正しい場合はtrue, エラーであればfalseを返す
     private func validateResourceListPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
-        
+
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
-        
+
         return bodyHtml.contains("Account") || bodyHtml.contains("アカウント")
     }
-    
+
     /// LMSページへのリクエストのバリデーション
     /// - Returns: Cookieの内容が正しい場合はtrue, エラーであればfalseを返す
     private func validateLMSPage() -> Bool {
         return httpClient.cookies().contains(where: { $0.name == "MoodleSession" })
     }
-    
+
     /// ポリシーエラーの検出
     /// - Parameter html: LMS一覧ページのHTML
     /// - Returns: ポリシーエラーであればtrue, そうでなければfalseを返す
     private func detectPolicyError(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
-        
+
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
         if let title = doc.title, title.contains("ポリシー") || title.contains("Policies") {
             return true
         }
         return false
     }
-    
+
     /// LMSページのバリデーション
     /// - Parameter html: LMS一覧ページのHTML
     /// - Returns: LMS一覧ページが正しい場合はtrue, エラーであればfalseを返す
     private func validateLMSRedirectPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
-        
+
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
-        
+
         return bodyHtml.contains("ダッシュボード") || bodyHtml.contains("Dashboard")
     }
-    
+
     /// Email送信のバリデーション
     /// - Parameter result: Email送信の結果
     /// - Returns: Email送信が正しい場合はtrue, エラーであればfalseを返す
     private func validateEmailSending(result: String) -> Bool {
         return result.contains("succeeded")
     }
-    
+
     /// HTMLから特定の部分を抽出する
     /// - Parameters:
     ///   - html: HTML
@@ -495,13 +495,13 @@ public struct ScienceTokyoPortal {
         let doc = try HTML(html: html, encoding: .utf8)
         return doc.body?.css(cssSelector).first?.innerHTML ?? ""
     }
-    
+
     /// HTMLからInputタグを取得する
     /// - Parameter html: HTML
     /// - Returns: Inputタグの配列
     func parseHTMLInput(html: String) throws -> [HTMLInput] {
         let doc = try HTML(html: html, encoding: .utf8)
-        
+
         return doc.css("input").map {
             HTMLInput(
                 name: $0["name"] ?? "",
@@ -510,13 +510,13 @@ public struct ScienceTokyoPortal {
             )
         }
     }
-    
+
     /// HTMLからSelectタグを取得する
     /// - Parameter html: HTML
     /// - Returns: Selectタグの配列
     func parseHTMLSelect(html: String) throws -> [HTMLSelect] {
         let doc = try HTML(html: html, encoding: .utf8)
-        
+
         return doc.css("select").map {
             HTMLSelect(
                 name: $0["name"] ?? "",
@@ -524,13 +524,13 @@ public struct ScienceTokyoPortal {
             )
         }
     }
-    
+
     /// HTMLからMetaタグを取得する
     /// - Parameter html: HTML
     /// - Returns: Metaタグの配列
     func parseHTMLMeta(html: String) throws -> [HTMLMeta] {
         let doc = try HTML(html: html, encoding: .utf8)
-        
+
         return doc.css("meta").map {
             HTMLMeta(
                 name: $0["name"] ?? "",
@@ -538,7 +538,7 @@ public struct ScienceTokyoPortal {
             )
         }
     }
-    
+
     /// HTMLからScriptタグを取得する
     /// - Parameter html: HTML
     /// - Returns: Scriptタグの配列
@@ -546,7 +546,7 @@ public struct ScienceTokyoPortal {
         let components = script.components(separatedBy: "\"")
         return components[1]
     }
-    
+
     /// HTMLInputの配列に値を注入する
     /// - Parameters:
     ///   - inputs: HTMLInputの配列
@@ -555,8 +555,7 @@ public struct ScienceTokyoPortal {
     /// - Returns: 値を注入したHTMLInputの配列
     func inject(_ inputs: [HTMLInput], username: String, password: String) -> [HTMLInput] {
         var inputs = inputs
-        if let firstTextInput = inputs.first(where: { $0.type == .text })
-        {
+        if let firstTextInput = inputs.first(where: { $0.type == .text }) {
             inputs = inputs.map {
                 if $0 == firstTextInput {
                     var newInput = $0
@@ -566,8 +565,7 @@ public struct ScienceTokyoPortal {
                 return $0
             }
         }
-        if let firstPasswordInput = inputs.first(where: { $0.type == .password })
-        {
+        if let firstPasswordInput = inputs.first(where: { $0.type == .password }) {
             inputs = inputs.map {
                 if $0 == firstPasswordInput {
                     var newInput = $0

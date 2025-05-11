@@ -20,7 +20,7 @@ struct WaitingPageRequest: HTTPRequest {
         "Sec-Fetch-Dest": "document",
         "Sec-Fetch-Mode": "navigate",
         "Sec-Fetch-Site": "same-origin",
-        "Priority": "u=3, i"
+        "Priority": "u=3, i",
     ]
 
     var body: [String: String]? = nil
@@ -29,4 +29,3 @@ struct WaitingPageRequest: HTTPRequest {
         self.url = url
     }
 }
-

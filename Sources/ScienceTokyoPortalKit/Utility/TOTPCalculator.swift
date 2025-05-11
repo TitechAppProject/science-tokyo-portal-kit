@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 #if canImport(CryptoKit)
 import CryptoKit
 #else
@@ -27,14 +28,14 @@ public func calculateTOTP(secret: String, current: Date) throws -> String {
         throw TOTPError.invalidBase32
     }
     let hash = HMAC<Insecure.SHA1>.authenticationCode(for: timeData, using: SymmetricKey(data: secretKey))
- 
+
     var truncatedHash = hash.withUnsafeBytes { ptr -> UInt32 in
         let offset = ptr[hash.byteCount - 1] & 0x0f
- 
+
         let truncatedHashPtr = ptr.baseAddress! + Int(offset)
         return truncatedHashPtr.bindMemory(to: UInt32.self, capacity: 1).pointee
     }
- 
+
     truncatedHash = UInt32(bigEndian: truncatedHash)
     truncatedHash = truncatedHash & 0x7FFF_FFFF
     truncatedHash = truncatedHash % UInt32(pow(10, Float(digits)))
