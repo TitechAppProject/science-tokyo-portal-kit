@@ -1,0 +1,1 @@
+window.location = "https://isct.ex-tic.com/auth/saml2/VLkcDmE8DFYk6yYY3GM-FIeGUzbWxwEVAek2DQ1Ot-k/assertions/ff133cd91036999362ac5395372537e7c4e745f1eb87e26b5918dfaa88aae0f7"

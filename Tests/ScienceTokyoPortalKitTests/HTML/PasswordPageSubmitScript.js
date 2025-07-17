@@ -1,0 +1,1 @@
+window.location="/auth/session/second_factor"
