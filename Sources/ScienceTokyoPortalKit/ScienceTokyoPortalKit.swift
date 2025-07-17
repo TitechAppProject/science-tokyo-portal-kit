@@ -9,11 +9,9 @@ public enum ScienceTokyoPortalLoginError: Error, Equatable {
     case invalidUserNamePage
     case invalidPasswordPage
     case invalidMethodSelectionPage
-    case invalidEmailPage
     case invalidTOTPPage
     case invalidWaitingPage
     case invalidResourceListPage
-    case invalidEmailSending
 
     case alreadyLoggedin
 }
@@ -78,26 +76,6 @@ public struct ScienceTokyoPortal {
             throw ScienceTokyoPortalLoginError.invalidMethodSelectionPage
         }
         return methodSelectionPageHtml
-    }
-
-    /// 認証方法選択ページでEmailを選択した場合(前半)
-    /// - Parameters:
-    ///   - account: ログイン情報
-    ///   - methodSelectionPageHtml: 認証方法選択ページのHTML
-    /// - Returns: OTPページのInputタグとMetaタグ
-    public func loginEmail(account: ScienceTokyoPortalAccount, methodSelectionPageHtml: String) async throws -> ([HTMLInput], [HTMLMeta]) {
-        /// Metaタグの取得
-        let methodSelectionPageMetas = try parseHTMLMeta(html: methodSelectionPageHtml)
-        /// EmailでOTP送信するリクエストの送信
-        let emailSendingResult = try await submitEmailSending(htmlMetas: methodSelectionPageMetas)
-        guard validateEmailSending(result: emailSendingResult) else {
-            throw ScienceTokyoPortalLoginError.invalidEmailSending
-        }
-        /// 一部のHTMLを取り出す
-        let extractedOTPPageHtml = try extractHTML(html: methodSelectionPageHtml, cssSelector: "form#emailotp-form")
-        /// Inputタグの取得
-        let otpPageInputs = try parseHTMLInput(html: extractedOTPPageHtml)
-        return (otpPageInputs, methodSelectionPageMetas)
     }
 
     /// 認証方法選択ページでTOTPを選択した場合
@@ -178,36 +156,6 @@ public struct ScienceTokyoPortal {
             return splitedToken[1]
         } else {
             throw LMSLoginError.parseToken(responseHTML: lmsTokenHtml, responseUrl: responseUrl)
-        }
-    }
-
-    /// EmailでOTPを送信した後の処理．OTPを入力してログインする
-    /// - Parameters:
-    ///   - htmlInputs: OTPページのInputタグ
-    ///   - htmlMetas: OTPページのMetaタグ
-    ///   - otp: OTP
-    public func latterEmailLogin(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], otp: String) async throws {
-        /// OTPを送信
-        let otpPageSubmitScript = try await submitEmail(htmlInputs: htmlInputs, htmlMetas: htmlMetas, otp: otp)
-        /// OTPページsubmisionのバリデーション
-        guard validateSubmitScript(script: otpPageSubmitScript) else {
-            throw ScienceTokyoPortalLoginError.invalidEmailPage
-        }
-        /// OTPページsubmisionのレスポンスからURLを取得
-        let otpPageSubmitURL = try parseScriptToURL(script: otpPageSubmitScript)
-        /// otpPageSubmitURLのURLを元に、待機ページを取得
-        let waitingPageHtml = try await fetchWaitingPage(url: otpPageSubmitURL)
-        /// 待機ページのバリデーション
-        guard try validateWaitingPage(html: waitingPageHtml) else {
-            throw ScienceTokyoPortalLoginError.invalidWaitingPage
-        }
-        /// Inputタグの取得
-        let waitingPageHtmlInputs = try parseHTMLInput(html: waitingPageHtml)
-        /// リソース一覧ページを取得
-        let resourceListPageHtml = try await fetchResourceListPage(htmlInputs: waitingPageHtmlInputs, referer: otpPageSubmitURL)
-        /// リソース一覧ページのバリデーション
-        guard try validateResourceListPage(html: resourceListPageHtml) else {
-            throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
     }
 
@@ -293,28 +241,6 @@ public struct ScienceTokyoPortal {
     private func fetchAuthorizationMethodSelectionPage() async throws -> String {
         let request = AuthorizationMethodSelectionPageRequest()
 
-        return try await httpClient.send(request).html
-    }
-
-    /// EmailでOTPを送信
-    /// - Parameter htmlMetas: 認証方法選択ページのMetaタグ
-    /// - Returns: JSON形式のOTP送信結果
-    private func submitEmailSending(htmlMetas: [HTMLMeta]) async throws -> String {
-        let htmlMetas = htmlMetas.filter { $0.name == "csrf-token" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.content) }  // csrf-tokenを取り出す
-        let request = EmailSendingSubmitRequest(htmlMetas: htmlMetas)
-        return try await httpClient.send(request).html
-    }
-
-    /// OTPを送信
-    /// - Parameters:
-    ///   - htmlInputs: 認証方法選択ページのInputタグ
-    ///   - htmlMetas: 認証方法選択ページのMetaタグ
-    ///   - otp: OTP
-    /// - Returns: OTPFormの送信結果
-    private func submitEmail(htmlInputs: [HTMLInput], htmlMetas: [HTMLMeta], otp: String) async throws -> String {
-        let htmlMetas = htmlMetas.filter { $0.name == "csrf-token" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.content) }  // csrf-tokenを取り出す
-        let injectedHtmlInputs = inject(htmlInputs, username: otp, password: "")
-        let request = OTPSubmitRequest(htmlInputs: injectedHtmlInputs, htmlMetas: htmlMetas)
         return try await httpClient.send(request).html
     }
 
@@ -477,13 +403,6 @@ public struct ScienceTokyoPortal {
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
 
         return bodyHtml.contains("ダッシュボード") || bodyHtml.contains("Dashboard")
-    }
-
-    /// Email送信のバリデーション
-    /// - Parameter result: Email送信の結果
-    /// - Returns: Email送信が正しい場合はtrue, エラーであればfalseを返す
-    private func validateEmailSending(result: String) -> Bool {
-        return result.contains("succeeded")
     }
 
     /// HTMLから特定の部分を抽出する
