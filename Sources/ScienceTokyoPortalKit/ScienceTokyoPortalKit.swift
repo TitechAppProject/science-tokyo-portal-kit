@@ -306,7 +306,7 @@ public struct ScienceTokyoPortal {
     /// ユーザー名ページのバリデーション
     /// - Parameter html: ユーザー名ページのHTML
     /// - Returns: ユーザー名ページが正しい場合はtrue, エラーであればfalseを返す
-    private func validateUserNamePage(html: String) throws -> Bool {
+    func validateUserNamePage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -345,7 +345,7 @@ public struct ScienceTokyoPortal {
     /// - Parameter html: 認証方法選択ページのHTML
     /// - Returns: 認証方法選択ページが正しい場合はtrue, エラーであればfalseを返す
     /// - Note: 認証方法選択ページは、認証方法を選択するためのページであることを確認する
-    private func validateMethodSelectionPage(html: String) throws -> Bool {
+    func validateMethodSelectionPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -356,7 +356,7 @@ public struct ScienceTokyoPortal {
     /// 待機ページのバリデーション
     /// - Parameter html: 待機ページのHTML
     /// - Returns: 待機ページが正しい場合はtrue, エラーであればfalseを返す
-    private func validateWaitingPage(html: String) throws -> Bool {
+    func validateWaitingPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -367,7 +367,7 @@ public struct ScienceTokyoPortal {
     /// リソース一覧ページのバリデーション
     /// - Parameter html: リソース一覧ページのHTML
     /// - Returns: リソース一覧ページが正しい場合はtrue, エラーであればfalseを返す
-    private func validateResourceListPage(html: String) throws -> Bool {
+    func validateResourceListPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""

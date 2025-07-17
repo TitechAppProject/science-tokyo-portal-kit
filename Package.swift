@@ -33,7 +33,8 @@ let package = Package(
         ),
         .testTarget(
             name: "ScienceTokyoPortalKitTests",
-            dependencies: ["ScienceTokyoPortalKit"]
+            dependencies: ["ScienceTokyoPortalKit"],
+            resources: [.process("HTML")]
         ),
     ]
 )
