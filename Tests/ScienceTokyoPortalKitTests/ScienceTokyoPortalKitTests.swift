@@ -27,12 +27,37 @@ final class ScienceTokyoPortalKitTests: XCTestCase {
         )
     }
 
+    func testUserNamePageSubmitJsonValidation() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+        let account = ScienceTokyoPortalAccount(username: "abcd1234", password: "password", totpSecret: nil)
+
+        let json = try! String(contentsOf: Bundle.module.url(forResource: "UserNamePageSubmit", withExtension: "json")!)
+
+        XCTAssertTrue(try! portal.validateUserNamePageSubmitJson(json: json, account: account))
+    }
+
+    func testPasswordPageSubmitScriptValidation() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        let script = try! String(contentsOf: Bundle.module.url(forResource: "PasswordPageSubmitScript", withExtension: "js")!)
+
+        XCTAssertTrue(portal.validateSubmitScript(script: script))
+    }
+
     func testMethodSelectionPageValidation() throws {
         let portal = ScienceTokyoPortal(urlSession: .shared)
 
         let html = try! String(contentsOf: Bundle.module.url(forResource: "MethodSelectionPage", withExtension: "html")!)
 
         XCTAssertTrue(try! portal.validateMethodSelectionPage(html: html))
+    }
+
+    func testOtpPageSubmitScriptValidation() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        let script = try! String(contentsOf: Bundle.module.url(forResource: "OtpPageSubmitScript", withExtension: "js")!)
+
+        XCTAssertTrue(portal.validateSubmitScript(script: script))
     }
 
     func testResourceListPageValidation() throws {

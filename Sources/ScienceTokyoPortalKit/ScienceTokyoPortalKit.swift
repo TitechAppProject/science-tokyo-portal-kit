@@ -320,7 +320,7 @@ public struct ScienceTokyoPortal {
     ///   - json: ユーザー名FormのsubmisionのJSON
     ///   - account: ログイン情報
     /// - Returns: ユーザー名Formのsubmisionが正しい場合はtrue, エラーであればfalseを返す
-    private func validateUserNamePageSubmitJson(json: String, account: ScienceTokyoPortalAccount) throws -> Bool {
+    func validateUserNamePageSubmitJson(json: String, account: ScienceTokyoPortalAccount) throws -> Bool {
         let jsonObject = try JSONSerialization.jsonObject(with: Data(json.utf8), options: [])
         guard let jsonDict = jsonObject as? [String: Any] else {
             return false
@@ -337,8 +337,9 @@ public struct ScienceTokyoPortal {
     /// PasswordFormのsubmisionのバリデーション
     /// - Parameter script: PasswordFormのsubmisionのscript
     /// - Returns: PasswordFormのsubmisionが正しい場合はtrue, エラーであればfalseを返す
-    private func validateSubmitScript(script: String) -> Bool {
-        return script.contains("window.location=")
+    func validateSubmitScript(script: String) -> Bool {
+        let regex = try! NSRegularExpression(pattern: "window\\.location\\s*=\\s*\"(.*)\"")
+        return regex.firstMatch(in: script, options: [], range: NSRange(location: 0, length: script.utf16.count)) != nil
     }
 
     /// 認証方法選択ページのバリデーション
