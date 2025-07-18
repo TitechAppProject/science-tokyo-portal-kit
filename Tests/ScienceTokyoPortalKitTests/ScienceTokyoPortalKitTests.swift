@@ -148,6 +148,18 @@ struct ScienceTokyoPortalKitTests {
     }
 
     @Test func testLMSPageValidation() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        let successCookies = [
+            HTTPCookie(properties: [.name: "MoodleSession", .value: "test", .path: "/", .domain: ".example.com"])!
+        ]
+
+        let failureCookies = [
+            HTTPCookie(properties: [.name: "OtherCookie", .value: "test", .path: "/", .domain: ".example.com"])!
+        ]
+
+        #expect(portal.validateLMSPage(cookies: successCookies))
+        #expect(!portal.validateLMSPage(cookies: failureCookies))
     }
 
     @Test func testLMSRedirectPageValidation() throws {

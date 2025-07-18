@@ -114,7 +114,7 @@ public struct ScienceTokyoPortal {
 
     public func getLMSDashboard() async throws {
         let lmsPageHtml = try await fetchLMSPage()
-        guard validateLMSPage() else {
+        guard validateLMSPage(cookies: httpClient.cookies()) else {
             throw LMSLoginError.invalidDashboardPage
         }
 
@@ -376,8 +376,8 @@ public struct ScienceTokyoPortal {
 
     /// LMSページへのリクエストのバリデーション
     /// - Returns: Cookieの内容が正しい場合はtrue, エラーであればfalseを返す
-    func validateLMSPage() -> Bool {
-        return httpClient.cookies().contains(where: { $0.name == "MoodleSession" })
+    func validateLMSPage(cookies: [HTTPCookie]) -> Bool {
+        return cookies.contains(where: { $0.name == "MoodleSession" })
     }
 
     /// ポリシーエラーの検出
