@@ -135,19 +135,19 @@ final class ScienceTokyoPortalKitTests: XCTestCase {
         XCTAssertTrue(portal.validateSubmitScript(script: script))
     }
 
-    func testResourceListPageValidation() throws {
-        let portal = ScienceTokyoPortal(urlSession: .shared)
-
-        let html = try! String(contentsOf: Bundle.module.url(forResource: "ResourceListPage", withExtension: "html")!)
-
-        XCTAssertTrue(try! portal.validateResourceListPage(html: html))
-    }
-
     func testWaitingPageValidation() throws {
         let portal = ScienceTokyoPortal(urlSession: .shared)
 
         let html = try! String(contentsOf: Bundle.module.url(forResource: "WaitingPage", withExtension: "html")!)
 
         XCTAssertTrue(try! portal.validateWaitingPage(html: html))
+    }
+
+    func testResourceListPageValidation() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "ResourceListPage", withExtension: "html")!)
+
+        XCTAssertTrue(try! portal.validateResourceListPage(html: html))
     }
 }
