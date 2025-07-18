@@ -452,9 +452,21 @@ public struct ScienceTokyoPortal {
         let doc = try HTML(html: html, encoding: .utf8)
 
         return doc.css("meta").map {
-            HTMLMeta(
-                name: $0["name"] ?? "",
-                content: $0["content"] ?? ""
+            let name: String
+            if let nameAttr = $0["name"] {
+                name = nameAttr
+            } else if let httpEquivAttr = $0["http-equiv"] {
+                name = httpEquivAttr
+            } else if $0["charset"] != nil {
+                name = "charset"
+            } else {
+                name = ""
+            }
+
+            let content = $0["content"] ?? ($0["charset"] ?? "")
+            return HTMLMeta(
+                name: name,
+                content: content
             )
         }
     }

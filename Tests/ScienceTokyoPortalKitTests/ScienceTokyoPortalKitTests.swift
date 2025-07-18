@@ -11,6 +11,25 @@ final class ScienceTokyoPortalKitTests: XCTestCase {
         XCTAssertTrue(try! portal.validateUserNamePage(html: html))
     }
 
+    func testUserNamePageMetas() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "UserNamePage", withExtension: "html")!)
+
+        let metas = try! portal.parseHTMLMeta(html: html)
+
+        XCTAssertEqual(
+            metas,
+            [
+                HTMLMeta(name: "charset", content: "utf-8"),
+                HTMLMeta(name: "X-UA-Compatible", content: "IE=edge"),
+                HTMLMeta(name: "viewport", content: "width=device-width, initial-scale=1"),
+                HTMLMeta(name: "csrf-param", content: "authenticity_token"),
+                HTMLMeta(name: "csrf-token", content: "MCBhQD3s41D_Sisw0w_tpE2sTYhULaKvmOW9LVohQSI8xXVGjvR2rc8z0rpRpG-mjFb1-YJ4v8i-T8DyHiPsLA")
+            ]
+        )
+    }
+
     func testUserNamePageParseHTMLInputs() throws {
         let portal = ScienceTokyoPortal(urlSession: .shared)
 
@@ -69,6 +88,25 @@ final class ScienceTokyoPortalKitTests: XCTestCase {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "MethodSelectionPage", withExtension: "html")!)
 
         XCTAssertTrue(try! portal.validateMethodSelectionPage(html: html))
+    }
+
+    func testMethodSelectionPageMetas() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "MethodSelectionPage", withExtension: "html")!)
+
+        let metas = try! portal.parseHTMLMeta(html: html)
+
+        XCTAssertEqual(
+            metas,
+            [
+                HTMLMeta(name: "charset", content: "utf-8"), // charset meta tag
+                HTMLMeta(name: "X-UA-Compatible", content: "IE=edge"),
+                HTMLMeta(name: "viewport", content: "width=device-width, initial-scale=1"),
+                HTMLMeta(name: "csrf-param", content: "authenticity_token"),
+                HTMLMeta(name: "csrf-token", content: "VeEeyMqDgJjFAnlsaqRJX4tWERGS89qRhHPU2jetjTwpCkr_l4u-5SQdxB1mvXaRm67tMDwLQFKA6QOjEPGD2Q")
+            ]
+        )
     }
 
     func testParseOTPPageInputs() throws {
