@@ -360,9 +360,7 @@ public struct ScienceTokyoPortal {
     func validateWaitingPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
-        let bodyHtml = doc.css("body").first?.innerHTML ?? ""
-
-        return bodyHtml.contains("Please wait for a moment") || bodyHtml.contains("しばらくお待ちください。")
+        return doc.css("body").first?.innerHTML?.contains("Please wait for a moment") ?? false || doc.css("body").first?.innerHTML?.contains("しばらくお待ちください。") ?? false
     }
 
     /// リソース一覧ページのバリデーション
@@ -378,17 +376,16 @@ public struct ScienceTokyoPortal {
 
     /// LMSページへのリクエストのバリデーション
     /// - Returns: Cookieの内容が正しい場合はtrue, エラーであればfalseを返す
-    private func validateLMSPage() -> Bool {
+    func validateLMSPage() -> Bool {
         return httpClient.cookies().contains(where: { $0.name == "MoodleSession" })
     }
 
     /// ポリシーエラーの検出
     /// - Parameter html: LMS一覧ページのHTML
     /// - Returns: ポリシーエラーであればtrue, そうでなければfalseを返す
-    private func detectPolicyError(html: String) throws -> Bool {
+    func detectPolicyError(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
-        let bodyHtml = doc.css("body").first?.innerHTML ?? ""
         if let title = doc.title, title.contains("ポリシー") || title.contains("Policies") {
             return true
         }
@@ -398,7 +395,7 @@ public struct ScienceTokyoPortal {
     /// LMSページのバリデーション
     /// - Parameter html: LMS一覧ページのHTML
     /// - Returns: LMS一覧ページが正しい場合はtrue, エラーであればfalseを返す
-    private func validateLMSRedirectPage(html: String) throws -> Bool {
+    func validateLMSRedirectPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""

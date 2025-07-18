@@ -146,4 +146,36 @@ struct ScienceTokyoPortalKitTests {
 
         #expect(try! portal.validateResourceListPage(html: html))
     }
+
+    @Test func testLMSPageValidation() throws {
+    }
+
+    @Test func testLMSRedirectPageValidation() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "LmsRedirectPage", withExtension: "html")!)
+
+        #expect(try! portal.validateLMSRedirectPage(html: html))
+    }
+
+    @Test func testDetectPolicyError() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        // Test case 1: HTML with a policy error
+        // 本当のポリシーエラーを取得できていないため仮置き
+        let errorHtml = """
+        <html>
+        <title>
+            Policies
+        </title>
+        <body>
+        </body>
+        </html>
+        """
+        #expect(try portal.detectPolicyError(html: errorHtml))
+
+        // Test case 2: HTML without a policy error (using LmsPage.html)
+        let noErrorHtml = try! String(contentsOf: Bundle.module.url(forResource: "LmsPage", withExtension: "html")!)
+        #expect(try !portal.detectPolicyError(html: noErrorHtml))
+    }
 }
