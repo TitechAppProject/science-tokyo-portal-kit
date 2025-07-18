@@ -151,11 +151,11 @@ struct ScienceTokyoPortalKitTests {
         let portal = ScienceTokyoPortal(urlSession: .shared)
 
         let successCookies = [
-            HTTPCookie(properties: [.name: "MoodleSession", .value: "test", .path: "/", .domain: ".example.com"])!
+            HTTPCookie(properties: [.name: "MoodleSession", .value: "test", .path: "/", .domain: "lms.s.isct.ac.jp"])!
         ]
 
         let failureCookies = [
-            HTTPCookie(properties: [.name: "OtherCookie", .value: "test", .path: "/", .domain: ".example.com"])!
+            HTTPCookie(properties: [.name: "OtherCookie", .value: "test", .path: "/", .domain: "lms.s.isct.ac.jp"])!
         ]
 
         #expect(portal.validateLMSPage(cookies: successCookies))
