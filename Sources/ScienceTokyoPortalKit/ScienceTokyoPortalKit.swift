@@ -32,7 +32,7 @@ public struct ScienceTokyoPortal {
         self.httpClient = HTTPClientImpl(urlSession: urlSession, userAgent: userAgent)
     }
 
-    /// TitechPortalにログイン
+    /// ScienceTokyoPortalにログイン
     /// - Parameter account: ログイン情報
     /// - Returns: リソース一覧ページのHTML
     public func loginCommon(account: ScienceTokyoPortalAccount) async throws -> String {
@@ -112,9 +112,10 @@ public struct ScienceTokyoPortal {
         }
     }
 
+    /// LMSDashboardにログイン
     public func getLMSDashboard() async throws {
         let lmsPageHtml = try await fetchLMSPage()
-        guard validateLMSPage() else {
+        guard validateLMSPage(cookies: httpClient.cookies()) else {
             throw LMSLoginError.invalidDashboardPage
         }
 
@@ -128,6 +129,8 @@ public struct ScienceTokyoPortal {
         }
     }
 
+    /// LMSのWSTokenを取得
+    /// - Returns: WSToken
     public func getLMSToken() async throws -> String {
         let (lmsTokenHtml, responseUrl) = try await fetchLMSTokenPage()
         guard
@@ -306,7 +309,7 @@ public struct ScienceTokyoPortal {
     /// ユーザー名ページのバリデーション
     /// - Parameter html: ユーザー名ページのHTML
     /// - Returns: ユーザー名ページが正しい場合はtrue, エラーであればfalseを返す
-    private func validateUserNamePage(html: String) throws -> Bool {
+    func validateUserNamePage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -320,7 +323,9 @@ public struct ScienceTokyoPortal {
     ///   - json: ユーザー名FormのsubmisionのJSON
     ///   - account: ログイン情報
     /// - Returns: ユーザー名Formのsubmisionが正しい場合はtrue, エラーであればfalseを返す
-    private func validateUserNamePageSubmitJson(json: String, account: ScienceTokyoPortalAccount) throws -> Bool {
+    /// Exticではこの段階では存在しないユーザー名を検知しないので、ユーザー名が間違っていても同じ応答を返す
+    /// そのため、このコードでユーザー名の間違いを検出できない
+    func validateUserNamePageSubmitJson(json: String, account: ScienceTokyoPortalAccount) throws -> Bool {
         let jsonObject = try JSONSerialization.jsonObject(with: Data(json.utf8), options: [])
         guard let jsonDict = jsonObject as? [String: Any] else {
             return false
@@ -337,15 +342,16 @@ public struct ScienceTokyoPortal {
     /// PasswordFormのsubmisionのバリデーション
     /// - Parameter script: PasswordFormのsubmisionのscript
     /// - Returns: PasswordFormのsubmisionが正しい場合はtrue, エラーであればfalseを返す
-    private func validateSubmitScript(script: String) -> Bool {
-        return script.contains("window.location=")
+    func validateSubmitScript(script: String) -> Bool {
+        let regex = try! NSRegularExpression(pattern: "window\\.location\\s*=\\s*\"(.*)\"")
+        return regex.firstMatch(in: script, options: [], range: NSRange(location: 0, length: script.utf16.count)) != nil
     }
 
     /// 認証方法選択ページのバリデーション
     /// - Parameter html: 認証方法選択ページのHTML
     /// - Returns: 認証方法選択ページが正しい場合はtrue, エラーであればfalseを返す
     /// - Note: 認証方法選択ページは、認証方法を選択するためのページであることを確認する
-    private func validateMethodSelectionPage(html: String) throws -> Bool {
+    func validateMethodSelectionPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -356,9 +362,8 @@ public struct ScienceTokyoPortal {
     /// 待機ページのバリデーション
     /// - Parameter html: 待機ページのHTML
     /// - Returns: 待機ページが正しい場合はtrue, エラーであればfalseを返す
-    private func validateWaitingPage(html: String) throws -> Bool {
+    func validateWaitingPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
-
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
 
         return bodyHtml.contains("Please wait for a moment") || bodyHtml.contains("しばらくお待ちください。")
@@ -367,7 +372,7 @@ public struct ScienceTokyoPortal {
     /// リソース一覧ページのバリデーション
     /// - Parameter html: リソース一覧ページのHTML
     /// - Returns: リソース一覧ページが正しい場合はtrue, エラーであればfalseを返す
-    private func validateResourceListPage(html: String) throws -> Bool {
+    func validateResourceListPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -376,18 +381,18 @@ public struct ScienceTokyoPortal {
     }
 
     /// LMSページへのリクエストのバリデーション
+    /// - Parameter cookies: httpclientのcookie全体
     /// - Returns: Cookieの内容が正しい場合はtrue, エラーであればfalseを返す
-    private func validateLMSPage() -> Bool {
-        return httpClient.cookies().contains(where: { $0.name == "MoodleSession" })
+    func validateLMSPage(cookies: [HTTPCookie]) -> Bool {
+        return cookies.contains(where: { $0.name == "MoodleSession" })
     }
 
     /// ポリシーエラーの検出
     /// - Parameter html: LMS一覧ページのHTML
     /// - Returns: ポリシーエラーであればtrue, そうでなければfalseを返す
-    private func detectPolicyError(html: String) throws -> Bool {
+    func detectPolicyError(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
-        let bodyHtml = doc.css("body").first?.innerHTML ?? ""
         if let title = doc.title, title.contains("ポリシー") || title.contains("Policies") {
             return true
         }
@@ -397,7 +402,7 @@ public struct ScienceTokyoPortal {
     /// LMSページのバリデーション
     /// - Parameter html: LMS一覧ページのHTML
     /// - Returns: LMS一覧ページが正しい場合はtrue, エラーであればfalseを返す
-    private func validateLMSRedirectPage(html: String) throws -> Bool {
+    func validateLMSRedirectPage(html: String) throws -> Bool {
         let doc = try HTML(html: html, encoding: .utf8)
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
@@ -451,9 +456,21 @@ public struct ScienceTokyoPortal {
         let doc = try HTML(html: html, encoding: .utf8)
 
         return doc.css("meta").map {
-            HTMLMeta(
-                name: $0["name"] ?? "",
-                content: $0["content"] ?? ""
+            let name: String
+            if let nameAttr = $0["name"] {
+                name = nameAttr
+            } else if let httpEquivAttr = $0["http-equiv"] {
+                name = httpEquivAttr
+            } else if $0["charset"] != nil {
+                name = "charset"
+            } else {
+                name = ""
+            }
+
+            let content = $0["content"] ?? ($0["charset"] ?? "")
+            return HTMLMeta(
+                name: name,
+                content: content
             )
         }
     }
