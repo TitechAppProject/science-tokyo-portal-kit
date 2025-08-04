@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+
+<html  dir="ltr" lang="ja" xml:lang="ja">
+<head>
+    <title>ダッシュボード | Science Tokyo LMS</title>
+    <link rel="shortcut icon" href="//lms.s.isct.ac.jp/2025/pluginfile.php/1/theme_remui/faviconurl/1751447137/favicon.svg" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="moodle, ダッシュボード | Science Tokyo LMS" />
+<link rel="stylesheet" type="text/css" href="https://lms.s.isct.ac.jp/2025/theme/yui_combo.php?rollup/3.18.1/yui-moodlesimple-min.css" /><script id="firstthemesheet" type="text/css">/** Required in order to fix style inclusion problems in IE with YUI **/</script><link rel="stylesheet" type="text/css" href="https://lms.s.isct.ac.jp/2025/theme/styles.php/remui/1751447137_1743397333/all" />
+<script>
+//<![CDATA[
+var M = {}; M.yui = {};
+M.pageloadstarttime = new Date();
+M.cfg = {"wwwroot":"https:\/\/lms.s.isct.ac.jp\/2025","apibase":"https:\/\/lms.s.isct.ac.jp\/2025\/r.php\/api","homeurl":{},"sesskey":"ge7nCWvckf","sessiontimeout":"28800","sessiontimeoutwarning":"120","themerev":"1751447137","slasharguments":1,"theme":"remui","iconsystemmodule":"core\/icon_system_fontawesome","jsrev":"1751447137","admin":"admin","svgicons":true,"usertimezone":"\u30a2\u30b8\u30a2\/\u6771\u4eac","language":"ja","courseId":1,"courseContextId":2,"contextid":37561,"contextInstanceId":12345,"langrev":1752779593,"templaterev":"1751447137","siteId":1,"userId":12345};var yui1ConfigFn = function(me) {if(/-skin|reset|fonts|grids|base/.test(me.name)){me.type='css';me.path=me.path.replace(/\.js/,'.css');me.path=me.path.replace(/\/yui2-skin/,'/assets/skins/sam/yui2-skin')}};
+var yui2ConfigFn = function(me) {var parts=me.name.replace(/^moodle-/,'').split('-'),component=parts.shift(),module=parts[0],min='-min';if(/-(skin|core)$/.test(me.name)){parts.pop();me.type='css';min=''}
+if(module){var filename=parts.join('-');me.path=component+'/'+module+'/'+filename+min+'.'+me.type}else{me.path=component+'/'+component+'.'+me.type}};
+YUI_config = {"debug":false,"base":"https:\/\/lms.s.isct.ac.jp\/2025\/lib\/yuilib\/3.18.1\/","comboBase":"https:\/\/lms.s.isct.ac.jp\/2025\/theme\/yui_combo.php?","combine":true,"filter":null,"insertBefore":"firstthemesheet","groups":{"yui2":{"base":"https:\/\/lms.s.isct.ac.jp\/2025\/lib\/yuilib\/2in3\/2.9.0\/build\/","comboBase":"https:\/\/lms.s.isct.ac.jp\/2025\/theme\/yui_combo.php?","combine":true,"ext":false,"root":"2in3\/2.9.0\/build\/","patterns":{"yui2-":{"group":"yui2","configFn":yui1ConfigFn}}},"moodle":{"name":"moodle","base":"https:\/\/lms.s.isct.ac.jp\/2025\/theme\/yui_combo.php?m\/1751447137\/","combine":true,"comboBase":"https:\/\/lms.s.isct.ac.jp\/2025\/theme\/yui_combo.php?","ext":false,"root":"m\/1751447137\/","patterns":{"moodle-":{"group":"moodle","configFn":yui2ConfigFn}},"filter":null,"modules":{"moodle-core-actionmenu":{"requires":["base","event","node-event-simulate"]},"moodle-core-chooserdialogue":{"requires":["base","panel","moodle-core-notification"]},"moodle-core-maintenancemodetimer":{"requires":["base","node"]},"moodle-core-lockscroll":{"requires":["plugin","base-build"]},"moodle-core-notification":{"requires":["moodle-core-notification-dialogue","moodle-core-notification-alert","moodle-core-notification-confirm","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-core-notification-dialogue":{"requires":["base","node","panel","escape","event-key","dd-plugin","moodle-core-widget-focusafterclose","moodle-core-lockscroll"]},"moodle-core-notification-alert":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-confirm":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-exception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-ajaxexception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-dragdrop":{"requires":["base","node","io","dom","dd","event-key","event-focus","moodle-core-notification"]},"moodle-core-event":{"requires":["event-custom"]},"moodle-core-blocks":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification"]},"moodle-core-handlebars":{"condition":{"trigger":"handlebars","when":"after"}},"moodle-core_availability-form":{"requires":["base","node","event","event-delegate","panel","moodle-core-notification-dialogue","json"]},"moodle-course-categoryexpander":{"requires":["node","event-key"]},"moodle-course-management":{"requires":["base","node","io-base","moodle-core-notification-exception","json-parse","dd-constrain","dd-proxy","dd-drop","dd-delegate","node-event-delegate"]},"moodle-course-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-course-coursebase","moodle-course-util"]},"moodle-course-util":{"requires":["node"],"use":["moodle-course-util-base"],"submodules":{"moodle-course-util-base":{},"moodle-course-util-section":{"requires":["node","moodle-course-util-base"]},"moodle-course-util-cm":{"requires":["node","moodle-course-util-base"]}}},"moodle-form-dateselector":{"requires":["base","node","overlay","calendar"]},"moodle-form-shortforms":{"requires":["node","base","selector-css3","moodle-core-event"]},"moodle-question-chooser":{"requires":["moodle-core-chooserdialogue"]},"moodle-question-searchform":{"requires":["base","node"]},"moodle-availability_completion-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_date-form":{"requires":["base","node","event","io","moodle-core_availability-form"]},"moodle-availability_grade-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_group-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_grouping-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_profile-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-mod_assign-history":{"requires":["node","transition"]},"moodle-mod_quiz-quizbase":{"requires":["base","node"]},"moodle-mod_quiz-toolboxes":{"requires":["base","node","event","event-key","io","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-slot","moodle-core-notification-ajaxexception"]},"moodle-mod_quiz-questionchooser":{"requires":["moodle-core-chooserdialogue","moodle-mod_quiz-util","querystring-parse"]},"moodle-mod_quiz-modform":{"requires":["base","node","event"]},"moodle-mod_quiz-autosave":{"requires":["base","node","event","event-valuechange","node-event-delegate","io-form","datatype-date-format"]},"moodle-mod_quiz-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-base","moodle-mod_quiz-util-page","moodle-mod_quiz-util-slot","moodle-course-util"]},"moodle-mod_quiz-util":{"requires":["node","moodle-core-actionmenu"],"use":["moodle-mod_quiz-util-base"],"submodules":{"moodle-mod_quiz-util-base":{},"moodle-mod_quiz-util-slot":{"requires":["node","moodle-mod_quiz-util-base"]},"moodle-mod_quiz-util-page":{"requires":["node","moodle-mod_quiz-util-base"]}}},"moodle-message_airnotifier-toolboxes":{"requires":["base","node","io"]},"moodle-editor_atto-editor":{"requires":["node","transition","io","overlay","escape","event","event-simulate","event-custom","node-event-html5","node-event-simulate","yui-throttle","moodle-core-notification-dialogue","moodle-editor_atto-rangy","handlebars","timers","querystring-stringify"]},"moodle-editor_atto-plugin":{"requires":["node","base","escape","event","event-outside","handlebars","event-custom","timers","moodle-editor_atto-menu"]},"moodle-editor_atto-menu":{"requires":["moodle-core-notification-dialogue","node","event","event-custom"]},"moodle-editor_atto-rangy":{"requires":[]},"moodle-report_eventlist-eventfilter":{"requires":["base","event","node","node-event-delegate","datatable","autocomplete","autocomplete-filters"]},"moodle-report_loglive-fetchlogs":{"requires":["base","event","node","io","node-event-delegate"]},"moodle-gradereport_history-userselector":{"requires":["escape","event-delegate","event-key","handlebars","io-base","json-parse","moodle-core-notification-dialogue"]},"moodle-qbank_editquestion-chooser":{"requires":["moodle-core-chooserdialogue"]},"moodle-tool_lp-dragdrop-reorder":{"requires":["moodle-core-dragdrop"]},"moodle-assignfeedback_editpdf-editor":{"requires":["base","event","node","io","graphics","json","event-move","event-resize","transition","querystring-stringify-simple","moodle-core-notification-dialog","moodle-core-notification-alert","moodle-core-notification-warning","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-atto_accessibilitychecker-button":{"requires":["color-base","moodle-editor_atto-plugin"]},"moodle-atto_accessibilityhelper-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_align-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_bold-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_charmap-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_clear-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_collapse-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_emojipicker-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_emoticon-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_equation-button":{"requires":["moodle-editor_atto-plugin","moodle-core-event","io","event-valuechange","tabview","array-extras"]},"moodle-atto_h5p-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_html-button":{"requires":["promise","moodle-editor_atto-plugin","moodle-atto_html-beautify","moodle-atto_html-codemirror","event-valuechange"]},"moodle-atto_html-codemirror":{"requires":["moodle-atto_html-codemirror-skin"]},"moodle-atto_html-beautify":{},"moodle-atto_image-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_indent-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_italic-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_link-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_managefiles-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_managefiles-usedfiles":{"requires":["node","escape"]},"moodle-atto_media-button":{"requires":["moodle-editor_atto-plugin","moodle-form-shortforms"]},"moodle-atto_noautolink-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_orderedlist-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_recordrtc-recording":{"requires":["moodle-atto_recordrtc-button"]},"moodle-atto_recordrtc-button":{"requires":["moodle-editor_atto-plugin","moodle-atto_recordrtc-recording"]},"moodle-atto_rtl-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_strike-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_subscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_superscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_table-button":{"requires":["moodle-editor_atto-plugin","moodle-editor_atto-menu","event","event-valuechange"]},"moodle-atto_title-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_underline-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_undo-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_unorderedlist-button":{"requires":["moodle-editor_atto-plugin"]}}},"gallery":{"name":"gallery","base":"https:\/\/lms.s.isct.ac.jp\/2025\/lib\/yuilib\/gallery\/","combine":true,"comboBase":"https:\/\/lms.s.isct.ac.jp\/2025\/theme\/yui_combo.php?","ext":false,"root":"gallery\/1751447137\/","patterns":{"gallery-":{"group":"gallery"}}}},"modules":{"core_filepicker":{"name":"core_filepicker","fullpath":"https:\/\/lms.s.isct.ac.jp\/2025\/lib\/javascript.php\/1751447137\/repository\/filepicker.js","requires":["base","node","node-event-simulate","json","async-queue","io-base","io-upload-iframe","io-form","yui2-treeview","panel","cookie","datatable","datatable-sort","resize-plugin","dd-plugin","escape","moodle-core_filepicker","moodle-core-notification-dialogue"]},"core_comment":{"name":"core_comment","fullpath":"https:\/\/lms.s.isct.ac.jp\/2025\/lib\/javascript.php\/1751447137\/comment\/comment.js","requires":["base","io-base","node","json","yui2-animation","overlay","escape"]}},"logInclude":[],"logExclude":[],"logLevel":null};
+M.yui.loader = {modules: {}};
+
+//]]>
+</script>
+
+<meta name="moodle-validation" content="7646ae844e81e82d67d830800e1f3d7b"><meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+            @import "https://fonts.googleapis.com/css?family=Noto Sans:100,200,300,400,500,600,700,800,900";
+    </style>
+</head>
+
+<body  id="page-my-index" class=" format-site  path-my safari dir-ltr lang-ja yui-skin-sam yui3-skin-sam lms-s-isct-ac-jp--2025 pagelayout-mydashboard course-1 context-37561 theme uses-drawers  edw-m405">
+
+<div id='page-loader-wrapper' style='background:#ffffff;position: fixed;top: 0;left: 0;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;z-index: 9999;overflow:hidden;'>
+    <img src='https://lms.s.isct.ac.jp/2025/theme/remui/pix/siteloader.svg' alt='loader image' style='width: 50px;height: 50px;'>
+</div>
+<script>
+    window.addEventListener('load', function (){document.querySelector('#page-loader-wrapper').style.display = 'none';}, false);
+    if (localStorage.getItem("nighteyewState") == "1") {
+        document.querySelector("#page-loader-wrapper").style.background = "#090909";
+    }
+</script>
+
+<div class="toast-wrapper mx-auto py-0 fixed-top" role="status" aria-live="polite"></div>
+<div id="page-wrapper" class="d-print-block">
+
+    <div>
+    <a class="sr-only sr-only-focusable" href="#maincontent">メインコンテンツへスキップする</a>
+</div><script src="https://lms.s.isct.ac.jp/2025/lib/javascript.php/1751447137/lib/polyfills/polyfill.js"></script>
+<script src="https://lms.s.isct.ac.jp/2025/theme/yui_combo.php?rollup/3.18.1/yui-moodlesimple-min.js"></script><script src="https://lms.s.isct.ac.jp/2025/lib/javascript.php/1751447137/lib/javascript-static.js"></script>
+<script>
+//<![CDATA[
+document.body.className += ' jsenabled';
+//]]>
+</script>
+
+
+
+    
+
+    <nav class="navbar fixed-top navbar-expand left  " aria-label="サイトナビゲーション">
+    
+        <a href="https://lms.s.isct.ac.jp/2025/my/" class="navbar-brand d-none d-md-flex align-items-center m-0 aabtn" aria-label="Science Tokyo LMS - Brand Name" title="Science Tokyo LMS">
+                    <img src="//lms.s.isct.ac.jp/2025/pluginfile.php/1/theme_remui/logo/1751447137/science_tokyo_logo.svg" class="navbar-brand-logo logo">
+    
+    
+    
+        </a>
+    
+        <div class="sub-nav">
+            <div class="navbar-toggler-wrapper">
+                <button class="navbar-toggler aabtn d-block d-lg-none border-0 h-100 p-0" data-toggler="drawers" data-action="toggle" data-target="theme_remui-drawers-primary">
+                    <span class="edw-icon edw-icon-Mobile-menu"></span>
+                    <span class="sr-only">サイドパネル</span>
+                </button>
+            </div>
+    
+                <div class="primary-navigation">
+                    <nav class="moremenu navigation">
+                        <ul id="moremenu-6879e56726e82-navbar-nav" role="menubar" class="nav more-nav navbar-nav">
+                                    <li  data-key="coursecat" class="dropdown nav-item" role="none" data-forceintomoremenu="false" >
+                                        <a class="dropdown-toggle nav-link  catselector-menu " id="drop-down-6879e56726e82" role="menuitem" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false" href="#" aria-controls="drop-down-menu-6879e56726e82"
+                                            
+                                            tabindex="-1"
+                                             title="Year / Q"
+                                        >
+                                            Year / Q
+                                        </a>
+                                        <div class="dropdown-menu" role="menu" id="drop-down-menu-6879e56726e82" aria-labelledby="drop-down-6879e56726e82">
+                                                <div class="category-wrapper container d-flex flex-column"><div class="menu-wrapper">
+                        <ul class="m-0 p-pl-5">
+                            <li><a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=all" data-cat-id="0" class="category-link ellipsis">All categories</a></li>
+                        </ul>
+                  </div><div class="menu-wrapper"><div class="menu-heading d-flex flex-gap-2 w-100">
+                            <div class="toggle-btn d-flex justify-content-center align-items-center collapsed" data-toggle="collapse" data-target="#collapse1837963985207389" aria-controls="collapseTwo">
+                                <span class="expande-icon edw-icon edw-icon-Down-Arrow" title=""></span>
+                                <span class="collaps-icon edw-icon edw-icon-UpArrow" title=""></span>
+                            </div>
+                            <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=1" data-cat-id="1" class="category-link ellipsis catvisibility-1 ">2025</a>
+                            <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                        </div><div id="collapse1837963985207389" class="collapse">
+                            <div class="menu-body"><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=2" data-cat-id="2" class="category-link ellipsis catvisibility-1 ">1</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=3" data-cat-id="3" class="category-link ellipsis catvisibility-1 ">2</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=4" data-cat-id="4" class="category-link ellipsis catvisibility-1 ">3</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=5" data-cat-id="5" class="category-link ellipsis catvisibility-1 ">4</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=6" data-cat-id="6" class="category-link ellipsis catvisibility-1 ">他</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div></div></div></div></div>
+                                        </div>
+                                    </li>
+                                    <li data-key="home" class="nav-item" role="none" data-forceintomoremenu="false" title="Home">
+                                                <a role="menuitem" class="nav-link  "
+                                                    href="https://lms.s.isct.ac.jp/2025/?redirect=0"
+                                                    
+                                                    tabindex="-1"
+                                                >
+                                                    Home
+                                                </a>
+                                    </li>
+                                    <li data-key="myhome" class="nav-item" role="none" data-forceintomoremenu="false" title="ダッシュボード">
+                                                <a role="menuitem" class="nav-link active "
+                                                    href="https://lms.s.isct.ac.jp/2025/my/"
+                                                    aria-current="true"
+                                                    
+                                                >
+                                                    ダッシュボード
+                                                </a>
+                                    </li>
+                                    <li data-key="mycourses" class="nav-item" role="none" data-forceintomoremenu="false" title="マイコース">
+                                                <a role="menuitem" class="nav-link  "
+                                                    href="https://lms.s.isct.ac.jp/2025/my/courses.php"
+                                                    
+                                                    tabindex="-1"
+                                                >
+                                                    マイコース
+                                                </a>
+                                    </li>
+                            <li role="none" class="nav-item dropdown dropdownmoremenu d-none" data-region="morebutton">
+                                <a class="dropdown-toggle nav-link " href="#" id="moremenu-dropdown-6879e56726e82" role="menuitem" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="-1">
+                                    <span class="edw edw-icon-more"></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-left" data-region="moredropdown" aria-labelledby="moremenu-dropdown-6879e56726e82" role="menu">
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+    
+            <!-- <ul class="navbar-nav d-none d-md-flex my-1 px-1">-->
+            <!-- page_heading_menu -->
+            <!-- -->
+            <!-- </ul> -->
+    
+            <div id="usernavigation" class="navbar-nav ml-auto">
+                    <div class="edwiser-navigation">
+                        <nav class="moremenu navigation">
+                            <ul id="moremenu--" role="menubar" class="nav more-nav ">
+                                        <li  data-key="recentcourses" class="dropdown nav-item" role="none" data-forceintomoremenu="false" >
+                                            <a class="dropdown-toggle nav-link  " id="drop-down-" role="menuitem" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false" href="#" aria-controls="drop-down-menu-"
+                                                
+                                                tabindex="-1"
+                                                aria-label="Recent Courses Menu" title="Recent"
+                                            >
+                                                Recent
+                                            </a>
+                                            <div class="dropdown-menu" role="menu" id="drop-down-menu-" aria-labelledby="drop-down-">
+                                                            <a class="dropdown-item" role="menuitem" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=3187"  tabindex="-1"><div class="text_to_html">文系エッセンス５７：ダイバーシティ・エクイティ・インクルージョン（ＤＥＩ）【2】 / Essence of Humanities and Social Sciences57:Diversity, Equity, and Inclusion (DEI)【2】</div></a>
+                                                            <a class="dropdown-item" role="menuitem" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=1251"  tabindex="-1"><div class="text_to_html">修士キャリア構築基礎【B】 / Master's Career Development Basics【B】</div></a>
+                                                            <a class="dropdown-item" role="menuitem" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2027"  tabindex="-1"><div class="text_to_html">人間情報システム概論I / Human-Centric Information Systems I</div></a>
+                                                            <a class="dropdown-item" role="menuitem" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2057"  tabindex="-1"><div class="text_to_html">感覚情報学基礎 / Basic Sensation Informatics</div></a>
+                                                            <a class="dropdown-item" role="menuitem" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2056"  tabindex="-1"><div class="text_to_html">光情報工学 / Optics in Information Processing</div></a>
+                                            </div>
+                                        </li>
+                                <li role="none" class="nav-item dropdown dropdownmoremenu d-none" data-region="morebutton">
+                                    <a class="dropdown-toggle nav-link " href="#" id="moremenu-dropdown-" role="menuitem" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="-1">
+                                        <span class="edw edw-icon-more"></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-left" data-region="moredropdown" aria-labelledby="moremenu-dropdown-" role="menu">
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="simplesearchform d-none d-sm-block">
+    <form autocomplete="off" action="https://lms.s.isct.ac.jp/2025/search/index.php" method="get" accept-charset="utf-8" class="mform m-0 form-inline searchform-navbar">
+            <input type="hidden" name="context" value="37561">
+
+        <div class="input-group">
+            <label for="searchinput-6879e567404b76879e5673bbf94">
+                <span class="sr-only">検索</span>
+            </label>
+            <div class="input-group-prepend">
+                <button type="submit" class="btn btn-submit" data-action="submit">
+                    <span class="edw-icon edw-icon-Search"></span>
+                    <span class="sr-only">検索</span>
+                </button>
+            </div>
+            <input type="text" id="searchinput-6879e567404b76879e5673bbf94" class="form-control withclear navigation-text" placeholder="検索" aria-label="検索" name="q" data-region="input" autocomplete="off"  title="検索"/>
+        </div>
+    </form>
+</div>
+
+<div id="searchinput-navbar-6879e567404b76879e5673bbf94" class="simplesearchform d-sm-none">
+    <div class="collapse" id="searchform-navbar">
+        <form autocomplete="off" action="https://lms.s.isct.ac.jp/2025/search/index.php" method="get" accept-charset="utf-8" class="mform m-0 form-inline searchform-navbar">
+                <input type="hidden" name="context" value="37561">
+            <div class="input-group">
+                <label for="searchinput-6879e567404b76879e5673bbf94">
+                    <span class="sr-only">検索</span>
+                </label>
+                <div class="input-group-prepend">
+                    <button type="submit" class="btn btn-submit" data-action="submit">
+                        <span class="edw-icon edw-icon-Search"></span>
+                        <span class="sr-only">検索</span>
+                    </button>
+                </div>
+                <input type="text" id="searchinput-6879e567404b76879e5673bbf94" class="form-control withclear navigation-text" placeholder="検索" aria-label="検索" name="q" data-region="input" autocomplete="off" >
+
+            </div>
+            <a class="btn btn-close" data-action="closesearch" data-toggle="collapse" href="#searchform-navbar" role="button" >
+                <span class="edw-icon edw-icon-Cancel"></span>
+                <span class="sr-only">閉じる</span>
+            </a>
+        </form>
+    </div>
+    <a
+        class="btn btn-open rounded-0 nav-link"
+        data-toggle="collapse"
+        data-action="opensearch"
+        href="#searchform-navbar"
+        role="button"
+        aria-expanded="false"
+        aria-controls="searchform-navbar"
+        title="検索入力に切り替える"
+    >
+        <span class="edw-icon edw-icon-Search"></span>
+        <span class="sr-only">検索入力に切り替える</span>
+    </a>
+</div>
+                <div class="popover-region collapsed popover-region-notifications"
+    id="nav-notification-popover-container" data-userid="12345"
+    data-region="popover-region">
+    <div class="popover-region-toggle nav-link icon-no-margin"
+        data-region="popover-region-toggle"
+        role="button"
+        aria-controls="popover-region-container-6879e567415c96879e5673bbf95"
+        aria-haspopup="true"
+        aria-label="  54 件の新しい通知のある通知ウィンドウを表示する  "
+        tabindex="0">
+                <i class="icon fa edw-icon edw-icon-Notification fa-fw "  title="通知メニューに切り替える" role="img" aria-label="通知メニューに切り替える"></i>
+        <div
+            class="count-container "
+            data-region="count-container"
+            aria-hidden=true
+        >
+            54
+        </div>
+
+    </div>
+    <div 
+        id="popover-region-container-6879e567415c96879e5673bbf95"
+        class="popover-region-container"
+        data-region="popover-region-container"
+        aria-expanded="false"
+        aria-hidden="true"
+        aria-label="通知ウィンドウ"
+        role="region">
+        <div class="popover-region-header-container">
+            <h3 class="popover-region-header-text h-semibold-4" data-region="popover-region-header-text">通知</h3>
+            <div class="popover-region-header-actions" data-region="popover-region-header-actions">        <a class="mark-all-read-button edw-paragraph-color  text-link-regular"
+           href="#"
+           title="すべてを既読にする"
+           data-action="mark-all-read"
+           role="button"
+           aria-label="すべてを既読にする">
+            <p class="m-0 text-link-regular">Mark all read</p>
+            <span class="loading-icon icon-no-margin"><img class="icon " alt="" aria-hidden="true" src="https://lms.s.isct.ac.jp/2025/theme/image.php/remui/theme_remui/1751447137/siteinnerloader" /></span>
+        </a>
+            <a href="https://lms.s.isct.ac.jp/2025/message/notificationpreferences.php"
+               title="通知プレファレンス"
+               aria-label="通知プレファレンス">
+                <i class="icon fa edw-icon edw-icon-Setting fa-fw " aria-hidden="true"  ></i></a>
+</div>
+        </div>
+        <div class="popover-region-content-container" data-region="popover-region-content-container">
+            <div class="popover-region-content" data-region="popover-region-content">
+                        <div class="all-notifications"
+            data-region="all-notifications"
+            role="log"
+            aria-busy="false"
+            aria-atomic="false"
+            aria-relevant="additions"></div>
+        <div class="empty-message" tabindex="0" data-region="empty-message">あなたに通知はありません。</div>
+
+            </div>
+            <span class="loading-icon icon-no-margin"><img class="icon " alt="" aria-hidden="true" src="https://lms.s.isct.ac.jp/2025/theme/image.php/remui/theme_remui/1751447137/siteinnerloader" /></span>
+        </div>
+                <a class="see-all-link"
+                    href="https://lms.s.isct.ac.jp/2025/message/output/popup/notifications.php">
+                    <div class="popover-region-footer-container">
+                        <div class="popover-region-seeall-text text-link-regular">View all notifications</div>
+                    </div>
+                </a>
+    </div>
+</div>
+    
+                <div class="d-flex usermenu-wrapper">
+                    <div class="divider  h-75 align-self-center"></div>
+                    <div class="d-flex align-items-stretch usermenu-container" data-region="usermenu">
+                        <div class="usermenu">
+                                <div class="dropdown show">
+                                    <a href="#" role="button" id="user-menu-toggle" data-toggle="dropdown" aria-label="ユーザメニュー"
+                                       aria-haspopup="true" aria-controls="user-action-menu" class="btn dropdown-toggle" title="ユーザメニュー">
+                                        <span class="userbutton">
+                                            <span class="avatars">
+                                                    <span class="avatar current">
+                                                        <span class="userinitials size-35" title="Test User" aria-label="Test User" role="img">TU</span>
+                                                    </span>
+                                            </span>
+                                        </span>
+                                    </a>
+                                    <div id="user-action-menu" class="dropdown-menu dropdown-menu-right">
+                                        <div id="usermenu-carousel" class="carousel slide" data-touch="false" data-interval="false" data-keyboard="false">
+                                            <div class="carousel-inner">
+                                                <div id="carousel-item-main" class="carousel-item active" role="menu" tabindex="-1" aria-label="ユーザ">
+                                                            <a href="https://lms.s.isct.ac.jp/2025/user/profile.php" class="dropdown-item" role="menuitem" tabindex="-1" title="プロファイル">
+                                                                <span class="edw-icon edw-icon-User"></span>
+                                                    
+                                                                プロファイル
+                                                            </a>
+                                                        
+                                                            <a href="https://lms.s.isct.ac.jp/2025/grade/report/overview/index.php" class="dropdown-item" role="menuitem" tabindex="-1" title="評定">
+                                                                <span class="edw-icon edw-icon-Grade"></span>
+                                                    
+                                                                評定
+                                                            </a>
+                                                        
+                                                            <a href="https://lms.s.isct.ac.jp/2025/calendar/view.php?view=month" class="dropdown-item" role="menuitem" tabindex="-1" title="カレンダー">
+                                                                <span class="edw-icon edw-icon-Calendar"></span>
+                                                    
+                                                                カレンダー
+                                                            </a>
+                                                        
+                                                            <a href="https://lms.s.isct.ac.jp/2025/user/files.php" class="dropdown-item" role="menuitem" tabindex="-1" title="プライベートファイル">
+                                                                <span class="edw-icon edw-icon-Private-Files"></span>
+                                                    
+                                                                プライベートファイル
+                                                            </a>
+                                                        
+                                                            <a href="https://lms.s.isct.ac.jp/2025/reportbuilder/index.php" class="dropdown-item" role="menuitem" tabindex="-1" title="レポート">
+                                                                <span class="edw-icon edw-icon-Report"></span>
+                                                    
+                                                                レポート
+                                                            </a>
+                                                        
+                                                        <div class="dropdown-divider"></div>
+                                                            <a href="https://lms.s.isct.ac.jp/2025/user/preferences.php" class="dropdown-item" role="menuitem" tabindex="-1" title="プレファレンス">
+                                                                <span class="edw-icon edw-icon-Preferences"></span>
+                                                    
+                                                                プレファレンス
+                                                            </a>
+                                                        
+                                                            <a href="#" class="carousel-navigation-link dropdown-item" role="menuitem" tabindex="-1" data-carousel-target-id="carousel-item-6879e56727b6e" title="言語設定">
+                                                                <span class="edw-icon edw-icon-Language"></span>
+                                                                言語設定
+                                                            </a>
+                                                        <div class="dropdown-divider"></div>
+                                                            <a href="https://lms.s.isct.ac.jp/2025/login/logout.php?sesskey=ge7nCWvckf" class="dropdown-item" role="menuitem" tabindex="-1" title="ログアウト">
+                                                                <span class="edw-icon edw-icon-Logout"></span>
+                                                    
+                                                                ログアウト
+                                                            </a>
+                                                        
+                                                </div>
+                                                    <div id="carousel-item-6879e56727b6e" class="carousel-item submenu" tabindex="-1" aria-label="言語セレクタ">
+                                                        <div class="d-flex flex-column h-100">
+                                                            <div class="header">
+                                                                <button type="button" class="btn btn-icon carousel-navigation-link text-decoration-none text-body" data-carousel-target-id="carousel-item-main" aria-label="ユーザメニューに戻る">
+                                                                    <span class="dir-rtl-hide"><img class="icon " alt="" aria-hidden="true" src="https://lms.s.isct.ac.jp/2025/theme/image.php/remui/core/1751447137/i/arrow-left" /></span>
+                                                                    <span class="dir-ltr-hide"><img class="icon " alt="" aria-hidden="true" src="https://lms.s.isct.ac.jp/2025/theme/image.php/remui/core/1751447137/i/arrow-right" /></span>
+                                                                </button>
+                                                                <span class="pl-2" id="carousel-item-title-6879e56727b6e">言語セレクタ</span>
+                                                            </div>
+                                                            <div class="dropdown-divider"></div>
+                                                            <div class="items h-100 overflow-auto" role="menu" aria-labelledby="carousel-item-title-6879e56727b6e">
+                                                                        <a href="https://lms.s.isct.ac.jp/2025/my/index.php?lang=en" class="dropdown-item" role="menuitem" tabindex="-1" 
+                                                                            lang="en"  title="English ‎(en)‎">
+                                                                            English ‎(en)‎
+                                                                        </a>
+                                                                        <a href="#" class="dropdown-item" role="menuitem" tabindex="-1" aria-current="true"
+                                                                             title="日本語 ‎(ja)‎">
+                                                                            日本語 ‎(ja)‎
+                                                                        </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="divider  h-75 align-self-center"></div>
+                </div>
+    
+                
+            </div>
+        </div>
+    
+    </nav>
+    
+
+<div  class="drawer drawer-left drawer-primary d-print-none not-initialized" data-region="fixed-drawer" id="theme_remui-drawers-primary" data-preference="" data-state="show-drawer-primary" data-forceopen="0" data-close-on-resize="1">
+    <div class="drawerheader">
+        <a href="https://lms.s.isct.ac.jp/2025/my/" class="navbar-brand align-items-center m-0 aabtn" aria-label="Science Tokyo LMS - Brand Name" title="Science Tokyo LMS">
+                    <img src="//lms.s.isct.ac.jp/2025/pluginfile.php/1/theme_remui/logo/1751447137/science_tokyo_logo.svg" class="navbar-brand-logo logo">
+
+
+
+        </a>
+        <button
+            class="btn drawertoggle icon-no-margin hidden d-flex"
+            data-toggler="drawers"
+            data-action="closedrawer"
+            data-target="theme_remui-drawers-primary"
+            data-toggle="tooltip"
+            data-placement="right"
+            title="ドロワを閉じる"
+        >
+            <span class="edw-icon edw-icon-Cancel"></span>
+        </button>
+        <div class="drawerheadercontent hidden ml-auto">
+            
+        </div>
+    </div>
+    <div class="drawercontent drag-container" data-usertour="scroller">
+                <div class="list-group">
+                <a id="drop-down-catselector-menu" href="#" class="list-group-item list-group-item-action icons-collapse-expand collapsed d-flex justify-content-between coursecat" data-toggle="collapse" data-target="#drop-down-menu-catselector-menu" aria-expanded="false" aria-controls="drop-down-menu-catselector-menu">
+                    Year / Q
+                    <span class=" expanded-icon icon-no-margin ">
+                       <span class="edw-icon edw-icon-UpArrow"></span>
+                        <span class="sr-only">
+                            折りたたむ
+                        </span>
+                    </span>
+                    <span class="collapsed-icon icon-no-margin ">
+                        <span class="edw-icon edw-icon-Down-Arrow"></span>
+                        <span class="sr-only">
+                            展開する
+                        </span>
+                    </span>
+                </a>
+                <div class="collapse list-group-item p-0 border-0" role="menu" id="drop-down-menu-catselector-menu" aria-labelledby="drop-down-catselector-menu">
+                        <div class="category-wrapper container d-flex flex-column"><div class="menu-wrapper">
+                        <ul class="m-0 p-pl-5">
+                            <li><a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=all" data-cat-id="0" class="category-link ellipsis">All categories</a></li>
+                        </ul>
+                  </div><div class="menu-wrapper"><div class="menu-heading d-flex flex-gap-2 w-100">
+                            <div class="toggle-btn d-flex justify-content-center align-items-center collapsed" data-toggle="collapse" data-target="#collapse1837963985207389" aria-controls="collapseTwo">
+                                <span class="expande-icon edw-icon edw-icon-Down-Arrow" title=""></span>
+                                <span class="collaps-icon edw-icon edw-icon-UpArrow" title=""></span>
+                            </div>
+                            <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=1" data-cat-id="1" class="category-link ellipsis catvisibility-1 ">2025</a>
+                            <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                        </div><div id="collapse1837963985207389" class="collapse">
+                            <div class="menu-body"><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=2" data-cat-id="2" class="category-link ellipsis catvisibility-1 ">1</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=3" data-cat-id="3" class="category-link ellipsis catvisibility-1 ">2</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=4" data-cat-id="4" class="category-link ellipsis catvisibility-1 ">3</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=5" data-cat-id="5" class="category-link ellipsis catvisibility-1 ">4</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div><div class="menu-wrapper"><ul class="m-0 p-pl-5">
+                                <li><div class="d-flex flex-gap-2 w-100">
+                                <a href="https://lms.s.isct.ac.jp/2025/course/index.php?categoryid=6" data-cat-id="6" class="category-link ellipsis catvisibility-1 ">他</a>
+                                <i class="hidden-label edw-icon edw-icon-Hide p-mt-0d5 catvisibility-1" aria-hidden="true"></i>
+                                </div></li>
+                            </ul></div></div></div></div></div>
+                </div>
+                <a href="https://lms.s.isct.ac.jp/2025/?redirect=0" class="list-group-item list-group-item-action   home" >
+                    Home
+                </a>
+                <a href="https://lms.s.isct.ac.jp/2025/my/" class="list-group-item list-group-item-action active  myhome" aria-current="true">
+                    ダッシュボード
+                </a>
+                <a href="https://lms.s.isct.ac.jp/2025/my/courses.php" class="list-group-item list-group-item-action   mycourses" >
+                    マイコース
+                </a>
+                <a id="drop-down-" href="#" class="list-group-item list-group-item-action icons-collapse-expand collapsed d-flex justify-content-between recentcourses" data-toggle="collapse" data-target="#drop-down-menu-" aria-expanded="false" aria-controls="drop-down-menu-">
+                    Recent
+                    <span class=" expanded-icon icon-no-margin ">
+                       <span class="edw-icon edw-icon-UpArrow"></span>
+                        <span class="sr-only">
+                            折りたたむ
+                        </span>
+                    </span>
+                    <span class="collapsed-icon icon-no-margin ">
+                        <span class="edw-icon edw-icon-Down-Arrow"></span>
+                        <span class="sr-only">
+                            展開する
+                        </span>
+                    </span>
+                </a>
+                <div class="collapse list-group-item p-0 border-0" role="menu" id="drop-down-menu-" aria-labelledby="drop-down-">
+                             <a href="https://lms.s.isct.ac.jp/2025/course/view.php?id=3187" class="list-group-item list-group-item-action"><div class="text_to_html">文系エッセンス５７：ダイバーシティ・エクイティ・インクルージョン（ＤＥＩ）【2】 / Essence of Humanities and Social Sciences57:Diversity, Equity, and Inclusion (DEI)【2】</div></a>
+                             <a href="https://lms.s.isct.ac.jp/2025/course/view.php?id=1251" class="list-group-item list-group-item-action"><div class="text_to_html">修士キャリア構築基礎【B】 / Master's Career Development Basics【B】</div></a>
+                             <a href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2027" class="list-group-item list-group-item-action"><div class="text_to_html">人間情報システム概論I / Human-Centric Information Systems I</div></a>
+                             <a href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2057" class="list-group-item list-group-item-action"><div class="text_to_html">感覚情報学基礎 / Basic Sensation Informatics</div></a>
+                             <a href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2056" class="list-group-item list-group-item-action"><div class="text_to_html">光情報工学 / Optics in Information Processing</div></a>
+                </div>
+        </div>
+
+    </div>
+</div>
+        <div  class="drawer drawer-right d-print-none not-initialized" data-region="fixed-drawer" id="theme_remui-drawers-blocks" data-preference="drawer-open-block" data-state="show-drawer-right" data-forceopen="" data-close-on-resize="1">
+    <div class="drawerheader">
+        <a href="https://lms.s.isct.ac.jp/2025/my/" class="navbar-brand align-items-center m-0 aabtn" aria-label="Science Tokyo LMS - Brand Name" title="Science Tokyo LMS">
+                    <img src="//lms.s.isct.ac.jp/2025/pluginfile.php/1/theme_remui/logo/1751447137/science_tokyo_logo.svg" class="navbar-brand-logo logo">
+
+
+
+        </a>
+        <button
+            class="btn drawertoggle icon-no-margin hidden d-flex"
+            data-toggler="drawers"
+            data-action="closedrawer"
+            data-target="theme_remui-drawers-blocks"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="ブロックドロワを閉じる"
+        >
+            <span class="edw-icon edw-icon-Cancel"></span>
+        </button>
+        <div class="drawerheadercontent hidden ml-auto">
+            
+        </div>
+    </div>
+    <div class="drawercontent drag-container" data-usertour="scroller">
+                        <section class="d-print-none" aria-label="ブロック">
+                    
+                    <aside id="block-region-side-pre" class="block-region" data-blockregion="side-pre" data-droptarget="1"><a href="#sb-1" class="sr-only sr-only-focusable">ユーザーガイド をスキップする</a>
+
+<section id="inst7243"
+    class=" block_html block  " role="region" data-block="html" data-instance-id="7243"   aria-labelledby="instance-7243-header" >
+
+    <div class="block-body-wrapper">
+        <div class="block-header-wrapper d-flex justify-content-between align-items-center">
+            <h4 id="instance-7243-header" class="block-header" title="ユーザーガイド block">ユーザーガイド</h4>
+            
+        </div>
+        <div class="card-text content block-content-area edw-block-body">
+            <div class="no-overflow"><p>随時更新をしています。T2SCHOLAと表記されている箇所はLMSと読み替えてください。</p>
+<p>学生向け</p>
+<ul>
+<li><a href="https://science-tokyo.box.com/s/wlrcu5mg7j5j2ww9u34aj578j6t8u4pw" target="_blank" rel="noopener">かんたんガイド</a></li>
+<li>[旧版] <a href="https://docs.google.com/document/d/1e8VxvPhrY9t6iIyCquz_F9qHIeq_ij0Qt4FNMXq64nY/view" target="_blank" rel="noopener">詳細版</a></li>
+<li>[旧版] <a href="https://docs.google.com/document/d/1N5N5RnTX3MNB3O2eEzahSbxyx083GAIyaLhQTW5sXaw/view" target="_blank" rel="noopener">FAQ</a></li>
+</ul>
+<p>教職員向け</p>
+<ul id="yui_3_17_2_1_1742531791847_657">
+<li id="yui_3_17_2_1_1742531791847_656"><a href="https://science-tokyo.box.com/s/bjy9xyq2sebng3x276ysdquhnpqas9pm" target="_blank" rel="noopener">かんたんガイド</a></li>
+<li>[旧版] <a href="https://docs.google.com/document/d/1D2rhg1DDEhQ5uotlNdJn8RU7raWBQvg6zQx6CsjF12Y/view" target="_blank" rel="noopener">初めてのT2SCHOLA</a></li>
+<li>[旧版] <a href="https://docs.google.com/document/d/1gql9yEStGs8vnYdmTgnHjFE8q1ZRp1x8QWRz510Z_go/view" target="_blank" rel="noopener">T2SCHOLA目的別ガイド</a></li>
+<li><a href="https://science-tokyo.box.com/s/xbniik56hq9tu1r4neoa6y9z12po13pw" target="_blank" rel="noopener">Mediasite利用ガイド</a></li>
+<li style="font-weight: bold;"><a href="https://science-tokyo.box.com/s/607l2c4s12bivybr0rqs9hx8rnxqx7tv" target="_blank" rel="noopener"><strong>コースデータ移行ガイド</strong></a></li>
+<li style="font-weight: bold;"><strong><a href="https://science-tokyo.box.com/s/ag1uv2vwh51nby7icpkis6e8f5rkknoi" target="_blank" rel="noopener">LMS説明会資料（2025.03.12開催）</a></strong></li>
+</ul></div>
+            <div class="footer"></div>
+            
+        </div>
+
+    </div>
+</section>
+
+<span id="sb-1"></span><a href="#sb-2" class="sr-only sr-only-focusable">User Guide をスキップする</a>
+
+<section id="inst7254"
+    class=" block_html block  " role="region" data-block="html" data-instance-id="7254"   aria-labelledby="instance-7254-header" >
+
+    <div class="block-body-wrapper">
+        <div class="block-header-wrapper d-flex justify-content-between align-items-center">
+            <h4 id="instance-7254-header" class="block-header" title="User Guide block">User Guide</h4>
+            
+        </div>
+        <div class="card-text content block-content-area edw-block-body">
+            <div class="no-overflow"><p>We are continuously updating. Please read "LMS" wherever "T2SCHOLA" is mentioned.</p>
+<p>For Students</p>
+<ul>
+<li><a href="https://science-tokyo.box.com/s/xbuygi6qlo04wtayxq3kchxltg6927vb" target="_blank" rel="noopener">Quick Guide</a></li>
+<li>[Old] <a href="https://docs.google.com/document/d/11tZpeuFUcE1n1qONsIaQydWS9TCNvRa8v3TmTRdMTVc/view" target="_blank" rel="noopener">Detailed Guide</a></li>
+<li>[Old] <a href="https://docs.google.com/document/d/146Dy3StTBZNlOKEVf5athcRjJb6mrWRkP0SCyQuRHx4/view" target="_blank" rel="noopener">FAQ(en)</a></li>
+</ul>
+<div id="yui_3_17_2_1_1742531791847_659">
+<div id="yui_3_17_2_1_1742531791847_658">For Faculty</div>
+</div>
+<div>
+<ul>
+<li><a href="https://science-tokyo.box.com/s/8t2ifz5k36c5nasbphgroi8sisji1rve" target="_blank" rel="noopener">QuickGuide</a></li>
+<li>[Old] <a href="https://docs.google.com/document/d/19L0UVY_fwUjsRgjCXekWbkDNK-EDLfh_tV4XduKpMxU/view" target="_blank" rel="noopener">T2SCHOLA Guide for Beginners</a></li>
+<li>[Old] <a href="https://docs.google.com/document/d/10EReBK0YZaqos5boqecS9lgTNSMe1xc5iX13DYBOp3I/view" target="_blank" rel="noopener">Detailed Guide</a></li>
+<li style="font-weight: bold;"><a href="https://science-tokyo.box.com/s/2m7o7nlr3j6axw5nucgi1u2rv32ddrnr" target="_blank" rel="noopener"><strong>LMS Information Session (2025.03.12)</strong></a></li>
+</ul>
+</div></div>
+            <div class="footer"></div>
+            
+        </div>
+
+    </div>
+</section>
+
+<span id="sb-2"></span></aside>
+                </section>
+
+    </div>
+</div>
+
+    <div id="page" data-region="mainpage" data-usertour="scroller" class="drawers   drag-container">
+        
+        <section id="region-fullwidthtop-blocks" class="has-blocks" aria-label="region top blocks">
+            <div role="region-main">
+                
+                <aside id="block-region-full-width-top" class="block-region" data-blockregion="full-width-top" data-droptarget="1"></aside>
+            </div>
+        </section>
+        <div id="topofscroll" class="main-inner">
+            
+
+                
+
+            <div class="container">
+            <div class="drawer-toggles d-flex">
+                    <div class="drawer-toggler drawer-right-toggle ml-auto d-print-none">
+                        <button
+                            class="btn btn-primary icon-no-margin p-0"
+                            data-toggler="drawers"
+                            data-action="toggle"
+                            data-target="theme_remui-drawers-blocks"
+                            data-toggle="tooltip"
+                            data-placement="right"
+                            title="ブロックドロワを開く"
+                        >
+                            <span class="sr-only">ブロックドロワを開く</span>
+                            <span class="dir-rtl-hide">
+                                <span class="edw-icon edw-icon-Long-Left_24"></span>
+                            </span>
+                            <span class="dir-ltr-hide">
+                                <span class="edw-icon edw-icon-Long-Right_24"></span>
+                            </span>
+                        </button>
+                    </div>
+            </div>
+            <header id="page-header" class="header-maxwidth d-print-none">
+    <div class="w-100 header-wrapper">
+        <div class="d-flex flex-wrap">
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="dashboard-bar-wrapper">
+                <h3 class="welcome-note">
+                    こんにちは Test User さん! 👋
+                </h3>
+            </div>
+            <div class="header-actions-container " data-region="header-actions-container">
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+<div id="page-content" class="pb-4 d-print-block">
+    <div id="region-main-box">
+        <section id="region-main" aria-label="コンテンツ">
+            <span class="notifications" id="user-notifications"></span>
+            <div role="main"><span id="maincontent"></span><aside id="block-region-content" class="block-region" data-blockregion="content" data-droptarget="1"><a href="#sb-3" class="sr-only sr-only-focusable">時間割 をスキップする</a>
+
+<section id="inst7231"
+    class=" block_tttimetable block  " role="region" data-block="tttimetable" data-instance-id="7231"   aria-labelledby="instance-7231-header" >
+
+    <div class="block-body-wrapper">
+        <div class="block-header-wrapper d-flex justify-content-between align-items-center">
+            <h4 id="instance-7231-header" class="block-header" title="時間割 block">時間割</h4>
+            
+        </div>
+        <div class="card-text content block-content-area edw-block-body">
+            <body>    <br>    <div class="header d-flex flex-wrap p-1">      <form autocomplete="off" action="https://lms.s.isct.ac.jp/2025/my/index.php" method="post" accept-charset="utf-8" class="mform form-inline simplesearchform">        <div data-region="view-selector">          年度：          <select class="select custom-select cal_term_flt ml-1 mr-3" id="id_term" name="year">            <option selected="selected" value="1">2025</option>          </select>        </div>&nbsp;&nbsp;        クォーター：&nbsp;        <select class="select custom-select cal_term_flt ml-1 mr-3" id="id_term" name="quota">            <option value="1">1</option>            <option selected="selected" value="2">2</option>            <option value="3">3</option>            <option value="4">4</option>            <option value="5">他</option>        </select>        <input type="hidden" name="search" value="1">        <button type="submit" class="btn btn-primary float-sm-left float-left" data-context-id="2" data-action="new-event-button">表示 </button>      </form>    </div>    <br>    <p id="validate_msg" style="color: red;"></p>    <div>      <table style="width:98%; margin:10px auto; table-layout: fixed; border-collapse: collapse" border="1">        <thead>          <tr>            <th bgcolor="#052753" style="text-align:center;max-width:80px; color:white;width:3em">              <span aria-hidden="true">時限</span>            </th>            <th bgcolor="#28456B" style="text-align:center; color:white;">              <span aria-hidden="true">月</span>            </th>            <th bgcolor="#28456B" style="text-align:center; color:white;">              <span aria-hidden="true">火</span>            </th>            <th bgcolor="#28456B" style="text-align:center; color:white;">              <span aria-hidden="true">水</span>            </th>            <th bgcolor="#28456B" style="text-align:center; color:white;">              <span aria-hidden="true">木</span>            </th>            <th bgcolor="#28456B" style="text-align:center; color:white;">              <span aria-hidden="true">金</span>            </th>            <th bgcolor="#28456B" style="text-align:center; color:white;">              <span aria-hidden="true">土</span>            </th>          </tr>        </thead>        <tbody>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">1</th>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2027" title="人間情報システム概論I">                                <span><font size="2px" color="#000000">人間情報システム概論I</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2027" title="人間情報システム概論I">                                <span><font size="2px" color="#000000">人間情報システム概論I</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>          </tr>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">2</th>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2027" title="人間情報システム概論I">                                <span><font size="2px" color="#000000">人間情報システム概論I</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2027" title="人間情報システム概論I">                                <span><font size="2px" color="#000000">人間情報システム概論I</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>          </tr>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">3</th>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=3187" title="文系エッセンス５７：ダイバーシティ・エクイティ・インクルージョン（ＤＥＩ）【2】">                                <span><font size="2px" color="#000000">文系エッセンス５７：ダイバーシティ・エクイティ・インクルージョン（ＤＥＩ）【2】</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>          </tr>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">4</th>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=3187" title="文系エッセンス５７：ダイバーシティ・エクイティ・インクルージョン（ＤＥＩ）【2】">                                <span><font size="2px" color="#000000">文系エッセンス５７：ダイバーシティ・エクイティ・インクルージョン（ＤＥＩ）【2】</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>          </tr>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">5</th>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2056" title="光情報工学">                                <span><font size="2px" color="#000000">光情報工学</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=1251" title="修士キャリア構築基礎【B】">                                <span><font size="2px" color="#000000">修士キャリア構築基礎【B】</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2057" title="感覚情報学基礎">                                <span><font size="2px" color="#000000">感覚情報学基礎</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>          </tr>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">6</th>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2056" title="光情報工学">                                <span><font size="2px" color="#000000">光情報工学</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=1251" title="修士キャリア構築基礎【B】">                                <span><font size="2px" color="#000000">修士キャリア構築基礎【B】</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2057" title="感覚情報学基礎">                                <span><font size="2px" color="#000000">感覚情報学基礎</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                </div>            </td>          </tr>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">7</th>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>          </tr>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">8</th>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>          </tr>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">9</th>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>          </tr>          <tr>            <th bgcolor="#052753" style="text-align:center; height:3.5em; color:white;">10</th>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>            <td><div style="width:100%; height:3.5em;">&nbsp;</div></td>          </tr>        </tbody>      </table>    </div>    <br><br>    <h5>集中講義など</h5>    <div>      <table style="width:98%; margin:10px auto; table-layout: fixed; border-collapse: collapse" border="0">        <tbody>          <tr>            <td style="vertical-align: top;">                <div style="width:100%; height:100%;">                    <div style="text-align:center; background-color:#EDF7FF; border:1px solid #000000;">                        <div>                            <a style="display: block; top: 0; left: 0; width: 100%; height: 90%; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 7; -webkit-box-orient: vertical;" href="https://lms.s.isct.ac.jp/2025/course/view.php?id=2176" title="情報通信工学講究S1">                                <span><font size="2px" color="#000000">情報通信工学講究S1</font></span>                            </a>                        </div>                    </div>                    <div style="height:0.2em;">&nbsp;</div>                </div>            </td>          </tr>        </tbody>      </table>    </div></body>
+            <div class="footer"></div>
+            
+        </div>
+
+    </div>
+</section>
+
+<span id="sb-3"></span><a href="#sb-4" class="sr-only sr-only-focusable">タイムライン をスキップする</a>
+
+<section id="inst3"
+    class=" block_timeline block  " role="region" data-block="timeline" data-instance-id="3"   aria-labelledby="instance-3-header" >
+
+    <div class="block-body-wrapper">
+        <div class="block-header-wrapper d-flex justify-content-between align-items-center">
+            <h4 id="instance-3-header" class="block-header" title="タイムライン block">タイムライン</h4>
+            
+        </div>
+        <div class="card-text content block-content-area edw-block-body">
+            <div id="block-timeline-6879e5673bbf86879e5673bbf91-1" class="block-timeline" data-region="timeline">
+    <div class="edw-timeline-filters d-flex flex-gap-4">
+        <div class="">
+            <div data-region="day-filter" class="dropdown">
+                <button type="button" class="btn  dropdown-toggle icon-no-margin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        aria-label="日付でタイムラインをフィルタする" aria-controls="menudayfilter"
+                        title="日付でタイムラインをフィルタする" aria-describedby="timeline-day-filter-current-selection">
+                    <span id="timeline-day-filter-current-selection" data-active-item-text>
+                        
+                        
+                        
+                         次の30日 
+                        
+                        
+                    </span>
+                </button>
+                <div id="menudayfilter" role="menu" class="dropdown-menu" data-show-active-item data-skip-active-class="true">
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        data-from="-14"
+                        data-filtername="all"
+                        
+                        aria-label="すべて フィルタオプション"
+                        role="menuitem"
+                    >
+                        すべて
+                    </a>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        data-from="-14"
+                        data-to="1"
+                        data-filtername="overdue"
+                        
+                        aria-label="期限切れ フィルタオプション"
+                        role="menuitem"
+                    >
+                        期限切れ
+                    </a>
+                    <div class="dropdown-divider" role="separator"></div>
+                    <h6 class="dropdown-header">期限</h6>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        data-from="0"
+                        data-to="7"
+                        data-filtername="next7days"
+                        
+                        aria-label="次の7日 フィルタオプション"
+                        role="menuitem"
+                    >
+                        次の7日
+                    </a>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        data-from="0"
+                        data-to="30"
+                        data-filtername="next30days"
+                        aria-current="true"
+                        aria-label="次の30日 フィルタオプション"
+                        role="menuitem"
+                    >
+                        次の30日
+                    </a>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        data-from="0"
+                        data-to="90"
+                        data-filtername="next3months"
+                        
+                        aria-label="次の3ヶ月 フィルタオプション"
+                        role="menuitem"
+                    >
+                        次の3ヶ月
+                    </a>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        data-from="0"
+                        data-to="180"
+                        data-filtername="next6months"
+                        
+                        aria-label="次の6ヶ月 フィルタオプション"
+                        role="menuitem"
+                    >
+                        次の6ヶ月
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="">
+            <div data-region="view-selector" class="btn-group">
+                <button type="button" class="btn  dropdown-toggle icon-no-margin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        aria-label="タイムラインアイテムを並べ替える" aria-controls="menusortby"
+                        title="タイムラインアイテムを並べ替える" aria-describedby="timeline-view-selector-current-selection">
+                    <span id="timeline-view-selector-current-selection" data-active-item-text>
+                        
+                        日付で並べ替える
+                    </span>
+                </button>
+                <div id="menusortby" role="menu" class="dropdown-menu dropdown-menu-right list-group hidden" data-show-active-item data-skip-active-class="true">
+                    <a
+                        class="dropdown-item"
+                        href="#view_dates_6879e5673bbf86879e5673bbf91-1"
+                        data-toggle="tab"
+                        data-filtername="sortbydates"
+                        aria-current="true"
+                        aria-label="日付で並べ替える 並べ替えオプション"
+                        role="menuitem"
+                    >
+                        日付で並べ替える
+                    </a>
+                    <a
+                        class="dropdown-item"
+                        href="#view_courses_6879e5673bbf86879e5673bbf91-1"
+                        data-toggle="tab"
+                        data-filtername="sortbycourses"
+                        
+                        aria-label="コースで並べ替える 並べ替えオプション"
+                        role="menuitem"
+                    >
+                        コースで並べ替える
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="">
+            <div class="w-100">
+                <div id="searchform-auto-6879e5673bbf86879e5673bbf91" class="form-inline simplesearchform edw-timeline-search-filter">
+                    <div class="align-items-center border border-1 d-flex justify-content-center rounded searchbar" role="search">
+                        <label for="searchinput">
+                            <span class="sr-only">活動タイプまたは活動名で検索する</span>
+                        </label>
+                        <label class="search-icon d-flex px-2 mb-0">
+                            <i class="edw-icon edw-icon-Search"></i>
+                        </label>
+                        <input
+                            type="text"
+                            data-region="input"
+                            data-action="search"
+                            id="searchinput"
+                            class="form-control withclear border-0 bg-transparent"
+                            placeholder="活動タイプまたは活動名で検索する"
+                            title="活動タイプまたは活動名で検索する"
+                            name="search"
+                            value=""
+                            autocomplete="off"
+                        >
+                        <button
+                            class="btn btn-clear d-none"
+                            data-action="clearsearch"
+                            type="button"
+                        >
+                        <i class="icon fa fa-xmark fa-fw " aria-hidden="true"  ></i>
+                            <span class="sr-only">検索入力をクリアする</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-0 main-content-wrapper">
+        <div data-region="timeline-view" class="bg-transparent">
+            <div class="tab-content">
+                <div class="tab-pane active show fade" data-limit="5" data-region="view-dates" id="view_dates_6879e5673bbf86879e5673bbf91-1">
+                    <div data-region="timeline-view-dates">
+                        <div data-region="event-list-container"
+                             data-days-offset="0"
+                             data-days-limit="30"
+                             data-course-id=""
+                             data-midnight="1752764400"
+                        >
+                                <div data-region="event-list-loading-placeholder">
+                                    <ul class="ps-0 list-group list-group-flush">
+                                        <li class="list-group-item bg-transparent px-2 py-5">
+                                            <div class="row">
+                                                <div class="col-8 pr-0">
+                                                    <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                        <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                        <div style="flex: 1" class="pl-2">
+                                                            <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                            <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                        <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 pr-3">
+                                                    <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                        <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item bg-transparent px-2 py-5">
+                                            <div class="row">
+                                                <div class="col-8 pr-0">
+                                                    <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                        <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                        <div style="flex: 1" class="pl-2">
+                                                            <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                            <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                        <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 pr-3">
+                                                    <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                        <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item bg-transparent px-2 py-5">
+                                            <div class="row">
+                                                <div class="col-8 pr-0">
+                                                    <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                        <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                        <div style="flex: 1" class="pl-2">
+                                                            <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                            <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                        <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 pr-3">
+                                                    <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                        <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item bg-transparent px-2 py-5">
+                                            <div class="row">
+                                                <div class="col-8 pr-0">
+                                                    <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                        <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                        <div style="flex: 1" class="pl-2">
+                                                            <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                            <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                        <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 pr-3">
+                                                    <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                        <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item bg-transparent px-2 py-5">
+                                            <div class="row">
+                                                <div class="col-8 pr-0">
+                                                    <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                        <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                        <div style="flex: 1" class="pl-2">
+                                                            <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                            <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                        <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 pr-3">
+                                                    <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                        <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <div class="pt-3 pb-2 d-flex justify-content-between">
+                                        <div class="w-25 bg-pulse-grey" style="height: 35px"></div>
+                                    </div>
+                                </div>
+                            <div data-region="event-list-content"></div>
+                            <div class="hidden text-xs-center text-center" data-region="no-events-empty-message">
+                                <div class="empty-content-wrapper d-flex flex-column justify-content-center align-items-center flex-gap-4">
+                                    <span class="edw-icon edw-icon-No-Activity1"></span>
+                                    <p class=" para-semibold-3 m-0">No upcoming activities due</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane  fade"
+                    data-region="view-courses"
+                    data-midnight="1752764400"
+                    data-limit="2"
+                    data-offset="0"
+                    data-days-limit="30"
+                    data-days-offset="0"
+                    data-no-events-url="https://lms.s.isct.ac.jp/2025/theme/image.php/remui/block_timeline/1751447137/activities"
+                    
+                    id="view_courses_6879e5673bbf86879e5673bbf91-1"
+                >
+                        <div data-region="course-items-loading-placeholder">
+                            <ul class="list-group unstyled">
+                                <li class="list-group-item mt-3 p-0 px-2 border-0">
+                                    <div class="w-50 bg-pulse-grey mt-1 mb-2" style="height: 20px"></div>
+                                    <div>
+                                        <ul class="ps-0 list-group list-group-flush">
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div class="pt-3 pb-2 d-flex justify-content-between">
+                                            <div class="w-25 bg-pulse-grey" style="height: 35px"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item mt-3 p-0 px-2 border-0">
+                                    <div class="w-50 bg-pulse-grey mt-1 mb-2" style="height: 20px"></div>
+                                    <div>
+                                        <ul class="ps-0 list-group list-group-flush">
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item bg-transparent px-2 py-5">
+                                                <div class="row">
+                                                    <div class="col-8 pr-0">
+                                                        <div class="d-flex flex-row align-items-center" style="height: 32px">
+                                                            <div class="bg-pulse-grey" style="height: 80px;width: 80px;"></div>
+                                                            <div style="flex: 1" class="pl-2">
+                                                                <div class="bg-pulse-grey w-25" style="height: 20px;"></div>
+                                                                <div class="bg-pulse-grey w-75 mt-1 mb-4" style="height: 15px;"></div>
+                                                            <div class="bg-pulse-grey" style="height: 15px;width: 65px;"></div></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 pr-3">
+                                                        <div class="d-flex flex-row justify-content-end" style="height: 32px; padding-top: 2px">
+                                                            <div class="bg-pulse-grey" style="height: 28px;width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div class="pt-3 pb-2 d-flex justify-content-between">
+                                            <div class="w-25 bg-pulse-grey" style="height: 35px"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="bg-pulse-grey mt-1" style="width: 100px; height: 30px; margin-left: auto; margin-right: auto"></div>
+                        </div>
+                    <ul class="list-group unstyled" data-region="courses-list"></ul>
+                    <div class="hidden text-xs-center text-center pt-3" data-region="more-courses-button-container">
+                        <button type="button" class="btn btn-primary" data-action="more-courses">
+                            さらにコースを表示する
+                            <span class="hidden" data-region="loading-icon-container">
+                                <span class="loading-icon icon-no-margin"><img class="icon " alt="" aria-hidden="true" src="https://lms.s.isct.ac.jp/2025/theme/image.php/remui/theme_remui/1751447137/siteinnerloader" /></span>
+                            </span>
+                        </button>
+                    </div>
+<div class="hidden text-xs-center text-center" data-region="no-events-empty-message">
+    <div class="empty-content-wrapper d-flex flex-column justify-content-center align-items-center flex-gap-4">
+        <span class="edw-icon edw-icon-No-Activity1"></span>
+        <p class=" para-semibold-3 m-0">No upcoming activities due</p>
+    </div>
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <div class="footer"></div>
+            
+        </div>
+
+    </div>
+</section>
+
+<span id="sb-4"></span></aside></div>
+            
+            
+
+        </section>
+    </div>
+</div>
+
+
+
+
+</div>
+    </div>
+    </div>
+    
+    <footer id="page-footer" class="footer-popover ">
+        <div class="footer-container container">
+            <div class="floating-buttons-wrapper">
+                <button id="gotop" class="btn btn-primary btn-floating d-none" aria-label="Go top" role="button" title="Go top">
+                    <span class="edw-icon edw-icon-UpArrow"></span>
+                    <span class="btn-floating-text">Go top</span>
+                </button>
+    
+    
+                <button class="btn btn-primary btn-floating d-none d-md-flex moodlehelpbtn" data-action="footer-popover" aria-label="Show footer" data-region="footer-container-popover" >
+                    <span class="edw-icon edw-icon-Cancel"></span>
+                    <span class="edw-icon edw-icon-Help"></span>
+                    <span class="btn-floating-text">Moodle Help</span>
+                </button>
+    
+            </div>
+            <div class="footer-content-popover container" data-region="footer-content-popover">
+                <div class="footer-section ">
+                    <!--
+                    -->
+    
+    
+                        <div class="footer-popover-section-links"><div class="popover-icon-wrapper"><span><i class="icon fa edw-icon edw-icon-Email fa-fw " aria-hidden="true"  ></i></span></div><a href="https://lms.s.isct.ac.jp/2025/user/contactsitesupport.php">サイトサポートに連絡する</a></div>
+                </div>
+                <div class="footer-section">
+                    <div class="logininfo">
+                        <div class="logininfo">あなたは <a href="https://lms.s.isct.ac.jp/2025/user/profile.php?id=12345" title="プロファイルを表示する">Test User</a> としてログインしています (<a href="https://lms.s.isct.ac.jp/2025/login/logout.php?sesskey=ge7nCWvckf">ログアウト</a>)</div>
+                    </div>
+                    <div class="tool_usertours-resettourcontainer">
+                    </div>
+    
+                    <div class="tool_dataprivacy"><a href="https://lms.s.isct.ac.jp/2025/admin/tool/dataprivacy/summary.php">データ保持概要</a></div><div class="policiesfooter"><a href="https://lms.s.isct.ac.jp/2025/admin/tool/policy/viewall.php?returnurl=https%3A%2F%2Flms.s.isct.ac.jp%2F2025%2Fmy%2Findex.php">ポリシー</a></div><div><a class="mobilelink" href="https://download.moodle.org/mobile?version=2024100703.02&amp;lang=ja&amp;iosappid=633359593&amp;androidappid=com.moodle.moodlemobile">モバイルアプリを取得する</a></div>
+                    <script>
+//<![CDATA[
+var require = {
+    baseUrl : 'https://lms.s.isct.ac.jp/2025/lib/requirejs.php/1751447137/',
+    // We only support AMD modules with an explicit define() statement.
+    enforceDefine: true,
+    skipDataMain: true,
+    waitSeconds : 0,
+
+    paths: {
+        jquery: 'https://lms.s.isct.ac.jp/2025/lib/javascript.php/1751447137/lib/jquery/jquery-3.7.1.min',
+        jqueryui: 'https://lms.s.isct.ac.jp/2025/lib/javascript.php/1751447137/lib/jquery/ui-1.13.2/jquery-ui.min',
+        jqueryprivate: 'https://lms.s.isct.ac.jp/2025/lib/javascript.php/1751447137/lib/requirejs/jquery-private'
+    },
+
+    // Custom jquery config map.
+    map: {
+      // '*' means all modules will get 'jqueryprivate'
+      // for their 'jquery' dependency.
+      '*': { jquery: 'jqueryprivate' },
+
+      // 'jquery-private' wants the real jQuery module
+      // though. If this line was not here, there would
+      // be an unresolvable cyclic dependency.
+      jqueryprivate: { jquery: 'jquery' }
+    }
+};
+
+//]]>
+</script>
+<script src="https://lms.s.isct.ac.jp/2025/lib/javascript.php/1751447137/lib/requirejs/require.min.js"></script>
+<script>
+//<![CDATA[
+M.util.js_pending("core/first");
+require(['core/first'], function() {
+require(['core/prefetch'])
+;
+M.util.js_pending('filter_mathjaxloader/loader'); require(['filter_mathjaxloader/loader'], function(amd) {amd.configure({"mathjaxconfig":"MathJax.Hub.Config({\r\n    config: [\"Accessible.js\", \"Safe.js\"],\r\n    errorSettings: { message: [\"!\"] },\r\n    skipStartupTypeset: true,\r\n    messageStyle: \"none\"\r\n});\r\n","lang":"ja"}); M.util.js_complete('filter_mathjaxloader/loader');});;
+require(["media_videojs/loader"], function(loader) {
+    loader.setUp('ja');
+});;
+M.util.js_pending('theme_remui/feedbackcollection'); require(['theme_remui/feedbackcollection'], function(amd) {amd.init(false); M.util.js_complete('theme_remui/feedbackcollection');});;
+
+require(
+[
+    'jquery',
+    'block_timeline/main',
+],
+function(
+    $,
+    Main
+) {
+    var root = $('#block-timeline-6879e5673bbf86879e5673bbf91-1');
+    Main.init(root);
+});
+;
+
+    require(['core/moremenu'], function(moremenu) {
+        moremenu(document.querySelector('#moremenu-6879e56726e82-navbar-nav'));
+    });
+;
+
+    require(['core/moremenu'], function(moremenu) {
+        moremenu(document.querySelector('#moremenu--'));
+    });
+;
+
+require(
+[
+    'jquery',
+],
+function(
+    $
+) {
+    var uniqid = "6879e567402c76879e5673bbf93";
+    var container = $('#searchinput-navbar-' + uniqid);
+    var opensearch = container.find('[data-action="opensearch"]');
+    var input = container.find('[data-region="input"]');
+    var submit = container.find('[data-action="submit"]');
+
+    submit.on('click', function(e) {
+        if (input.val() === '') {
+            e.preventDefault();
+        }
+    });
+    container.on('hidden.bs.collapse', function() {
+        opensearch.removeClass('d-none');
+        input.val('');
+    });
+    container.on('show.bs.collapse', function() {
+        opensearch.addClass('d-none');
+    });
+    container.on('shown.bs.collapse', function() {
+        input.focus();
+    });
+});
+;
+
+require(
+[
+    'jquery',
+],
+function(
+    $
+) {
+    var uniqid = "6879e567404b76879e5673bbf94";
+    var container = $('#searchinput-navbar-' + uniqid);
+    var opensearch = container.find('[data-action="opensearch"]');
+    var input = container.find('[data-region="input"]');
+    var submit = container.find('[data-action="submit"]');
+
+    submit.on('click', function(e) {
+        if (input.val() === '') {
+            e.preventDefault();
+        }
+    });
+    container.on('hidden.bs.collapse', function() {
+        opensearch.removeClass('d-none');
+        input.val('');
+    });
+    container.on('show.bs.collapse', function() {
+        opensearch.addClass('d-none');
+    });
+    container.on('shown.bs.collapse', function() {
+        input.focus();
+    });
+});
+;
+
+require(['jquery', 'message_popup/notification_popover_controller'], function($, Controller) {
+    var container = $('#nav-notification-popover-container');
+    var controller = new Controller(container);
+    controller.registerEventListeners();
+    controller.registerListNavigationEventListeners();
+});
+;
+
+    require(['core/usermenu'], function(UserMenu) {
+        UserMenu.init();
+    });
+;
+
+        require(['theme_remui/drawers']);
+;
+
+        require(['theme_remui/drawers']);
+;
+
+require(['theme_remui/footer-popover'], function(FooterPopover) {
+    FooterPopover.init();
+});
+
+
+
+;
+
+M.util.js_pending('theme_remui/loader');
+require(['theme_remui/loader', 'theme_remui/drawer'], function(Loader, Drawer) {
+    Drawer.init();
+    M.util.js_complete('theme_remui/loader');
+});
+;
+M.util.js_pending('core/notification'); require(['core/notification'], function(amd) {amd.init(37561, []); M.util.js_complete('core/notification');});;
+M.util.js_pending('core/log'); require(['core/log'], function(amd) {amd.setConfig({"level":"warn"}); M.util.js_complete('core/log');});;
+M.util.js_pending('core/page_global'); require(['core/page_global'], function(amd) {amd.init(); M.util.js_complete('core/page_global');});;
+M.util.js_pending('core/utility'); require(['core/utility'], function(amd) {M.util.js_complete('core/utility');});;
+M.util.js_pending('core/storage_validation'); require(['core/storage_validation'], function(amd) {amd.init(1752819046); M.util.js_complete('core/storage_validation');});
+    M.util.js_complete("core/first");
+});
+//]]>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?delayStartupUntil=configured"></script>
+<script>
+//<![CDATA[
+M.str = {"moodle":{"lastmodified":"\u6700\u7d42\u66f4\u65b0\u65e5\u6642","name":"\u540d\u79f0","error":"\u30a8\u30e9\u30fc","info":"\u60c5\u5831","yes":"Yes","no":"No","cancel":"\u30ad\u30e3\u30f3\u30bb\u30eb","confirm":"\u78ba\u8a8d","areyousure":"\u672c\u5f53\u306b\u3088\u308d\u3057\u3044\u3067\u3059\u304b?","closebuttontitle":"\u9589\u3058\u308b","unknownerror":"\u4e0d\u660e\u306a\u30a8\u30e9\u30fc","file":"\u30d5\u30a1\u30a4\u30eb","url":"URL","collapseall":"\u3059\u3079\u3066\u3092\u6298\u308a\u305f\u305f\u3080","expandall":"\u3059\u3079\u3066\u3092\u5c55\u958b\u3059\u308b"},"repository":{"type":"\u30bf\u30a4\u30d7","size":"\u30b5\u30a4\u30ba","invalidjson":"\u7121\u52b9\u306aJSON\u30b9\u30c8\u30ea\u30f3\u30b0\u3067\u3059\u3002","nofilesattached":"\u6dfb\u4ed8\u3055\u308c\u3066\u3044\u308b\u30d5\u30a1\u30a4\u30eb\u306f\u3042\u308a\u307e\u305b\u3093\u3002","filepicker":"\u30d5\u30a1\u30a4\u30eb\u30d4\u30c3\u30ab","logout":"\u30ed\u30b0\u30a2\u30a6\u30c8","nofilesavailable":"\u5229\u7528\u3067\u304d\u308b\u30d5\u30a1\u30a4\u30eb\u306f\u3042\u308a\u307e\u305b\u3093\u3002","norepositoriesavailable":"\u7533\u3057\u8a33\u3054\u3056\u3044\u307e\u305b\u3093\u3001\u73fe\u5728\u306e\u3042\u306a\u305f\u306e\u30ea\u30dd\u30b8\u30c8\u30ea\u3067\u306f\u6240\u8981\u306e\u30d5\u30a9\u30fc\u30de\u30c3\u30c8\u306e\u30d5\u30a1\u30a4\u30eb\u3092\u8fd4\u3059\u3053\u3068\u304c\u3067\u304d\u307e\u305b\u3093\u3002","fileexistsdialogheader":"\u30d5\u30a1\u30a4\u30eb\u767b\u9332\u6e08\u307f","fileexistsdialog_editor":"\u305d\u306e\u30d5\u30a1\u30a4\u30eb\u540d\u306e\u30d5\u30a1\u30a4\u30eb\u306f\u3042\u306a\u305f\u304c\u7de8\u96c6\u3057\u3066\u3044\u308b\u30c6\u30ad\u30b9\u30c8\u306b\u3059\u3067\u306b\u6dfb\u4ed8\u3055\u308c\u3066\u3044\u307e\u3059\u3002","fileexistsdialog_filemanager":"\u540c\u4e00\u30d5\u30a1\u30a4\u30eb\u540d\u306e\u30d5\u30a1\u30a4\u30eb\u304c\u3059\u3067\u306b\u6dfb\u4ed8\u3055\u308c\u3066\u3044\u307e\u3059\u3002","renameto":"\u30ea\u30cd\u30fc\u30e0 -> {$a}","referencesexist":"\u3053\u306e\u30d5\u30a1\u30a4\u30eb\u306b\u306f {$a} \u4ef6\u306e\u30ea\u30f3\u30af\u304c\u3042\u308a\u307e\u3059\u3002","select":"\u9078\u629e"},"admin":{"confirmdeletecomments":"\u672c\u5f53\u306b\u9078\u629e\u3057\u305f\u30b3\u30e1\u30f3\u30c8\u3092\u524a\u9664\u3057\u3066\u3082\u3088\u308d\u3057\u3044\u3067\u3059\u304b?","confirmation":"\u78ba\u8a8d"},"theme_remui":{"searchcatplaceholdertext":"Search categories","footersettings":"Footer","coursesettings":"Course Page","noresutssearchmsg":"<h4 class ='p-p-6 text-center m-0 '>Nothing to Display<\/h4>","searchtotalcount":"Showing {$a} results","searchresultdesctext":"Showing result for","floataddblockbtnregionselectionmsg":"New blocks will be added currently visible \"{$a}\" region"},"debug":{"debuginfo":"\u30c7\u30d0\u30c3\u30b0\u60c5\u5831","line":"\u884c","stacktrace":"\u30b9\u30bf\u30c3\u30af\u30c8\u30ec\u30fc\u30b9"},"langconfig":{"labelsep":":"}};
+//]]>
+</script>
+<script>
+//<![CDATA[
+var remuiFontSelect = "2";var remuiFontName = "Noto Sans";var blocksectiondata = [];var edwremuithemeinfo = "available";var currentpagesubtype = "2";var applylatestuserpref = true;
+//]]>
+</script>
+<script>
+//<![CDATA[
+(function() {M.util.help_popups.setup(Y);
+ M.util.js_pending('random6879e5673bbf96'); Y.on('domready', function() { M.util.js_complete("init");  M.util.js_complete('random6879e5673bbf96'); });
+})();
+//]]>
+</script>
+
+    
+                </div>
+                <div class="footer-section ">
+                    <div class="footer-poweredby">Powered by <a href="https://moodle.com">Moodle</a></div>
+    
+                </div>
+            </div>
+            <div class="footer-mainsection-wrapper">
+                
+                <div class="footerdata">
+                    <div id="footer-column-1" class="footer-section-wrapper " style="">
+                        <div class="footer-menu menu- d-none">
+                            <h6 class="h-semibold-6 mb-0 ftr-column-title" ></h6>
+                            <hr class="d-sm-block d-md-none my-0 ">
+                            <div class="footer-menu-list">
+                            </div>
+                        </div>
+                
+                        <div class="custom-html ">
+                            <div class="contenthtml">
+                                <h6 class="h-semibold-6 mb-0 ftr-column-title" ></h6>
+                                <hr class="d-sm-block d-md-none my-0">
+                                <div class="section-html-content">
+                                   <p class="p-0 m-0">
+                                    
+                                   </p>
+                                </div>
+                            </div>
+                            <div class="contentsocial social-links d-none">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="footer-column-2" class="footer-section-wrapper " style="">
+                        <div class="footer-menu menu- d-none">
+                            <h6 class="h-semibold-6 mb-0 ftr-column-title" ></h6>
+                            <hr class="d-sm-block d-md-none my-0 ">
+                            <div class="footer-menu-list">
+                            </div>
+                        </div>
+                
+                        <div class="custom-html ">
+                            <div class="contenthtml">
+                                <h6 class="h-semibold-6 mb-0 ftr-column-title" ></h6>
+                                <hr class="d-sm-block d-md-none my-0">
+                                <div class="section-html-content">
+                                   <p class="p-0 m-0">
+                                    
+                                   </p>
+                                </div>
+                            </div>
+                            <div class="contentsocial social-links d-none">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="footer-column-3" class="footer-section-wrapper " style="">
+                        <div class="footer-menu menu- d-none">
+                            <h6 class="h-semibold-6 mb-0 ftr-column-title" ></h6>
+                            <hr class="d-sm-block d-md-none my-0 ">
+                            <div class="footer-menu-list">
+                            </div>
+                        </div>
+                
+                        <div class="custom-html ">
+                            <div class="contenthtml">
+                                <h6 class="h-semibold-6 mb-0 ftr-column-title" ></h6>
+                                <hr class="d-sm-block d-md-none my-0">
+                                <div class="section-html-content">
+                                   <p class="p-0 m-0">
+                                    
+                                   </p>
+                                </div>
+                            </div>
+                            <div class="contentsocial social-links d-none">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="footer-column-4" class="footer-section-wrapper " style="">
+                        <div class="footer-menu menu- d-none">
+                            <h6 class="h-semibold-6 mb-0 ftr-column-title" ></h6>
+                            <hr class="d-sm-block d-md-none my-0 ">
+                            <div class="footer-menu-list">
+                            </div>
+                        </div>
+                
+                        <div class="custom-html ">
+                            <div class="contenthtml">
+                                <h6 class="h-semibold-6 mb-0 ftr-column-title" ></h6>
+                                <hr class="d-sm-block d-md-none my-0">
+                                <div class="section-html-content">
+                                   <p class="p-0 m-0">
+                                    
+                                   </p>
+                                </div>
+                            </div>
+                            <div class="contentsocial social-links d-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="d-block mb-0">
+            </div>
+            <div class="footer-secondarysection-wrapper">
+                <div class="footer-copyright-wrapper "  data-site="Science Tokyo LMS" >
+                    <div class="d-none secondary-footer-logo">
+                        <div class="navbar-logo-footer-wrapper d-none">
+                            <a href="https://lms.s.isct.ac.jp/2025/my/"
+                            class="navbar-brand d-flex  m-0 p-0 aabtn footer-logo"
+                            aria-label="Science Tokyo LMS - Brand Name">
+                            <img src="//lms.s.isct.ac.jp/2025/pluginfile.php/1/theme_remui/logo/1751447137/science_tokyo_logo.svg" class="navbar-brand-logo logo">
+    
+    
+    
+                        </a>
+                        </div>
+    
+                        <div class="footer-diff-logo ">
+                            <a href="https://lms.s.isct.ac.jp/2025/my/"
+                            class="navbar-brand d-flex m-0 p-0 aabtn footer-logo"
+                            aria-label="Science Tokyo LMS - Brand Name">
+                            <img src="https://lms.s.isct.ac.jp/2025/theme/image.php/remui/theme_remui/1751447137/logo" class="navbar-brand-logo logomini">
+                        </a>
+                        </div>
+                    </div>
+                    <div class="footer-content-debugging footer-dark">
+                        <div class="footer-content-debugging-wrapper footer-dark-inner ">
+                            
+                            <div class="site-footer-legal ">
+                                <a class="footer-privacy-policy
+                                    d-none
+                                    "
+                                    href="
+                                    #
+                                    "
+                                   >Privacy Policy
+                                </a>
+                            
+                                <a class="footer-terms-and-conditions
+                                    d-none
+                                    "
+                                    href="
+                                    #
+                                    "
+                                   >Terms & Conditions
+                                </a>
+                                <a class="footer-bottomtext" href="" target="_blank"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="copyright-content secondary-footer-copyright d-none"  data-site="Science Tokyo LMS" >
+                        <p class=" mb-0">Copyrights Content</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </footer>
+    
+    
+</div>
+
+
+
+
+
+
+
+
+<div id="feedbackcollection"></div>
+
+<!--
+--></body></html>

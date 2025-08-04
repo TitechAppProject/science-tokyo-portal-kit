@@ -1,0 +1,155 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<title>エラー</title>
+<link rel="apple-touch-icon" sizes="57x57" href="../rs/favicon/apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon" sizes="60x60" href="../rs/favicon/apple-touch-icon-60x60.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="../rs/favicon/apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon" sizes="76x76" href="../rs/favicon/apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="../rs/favicon/apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon" sizes="120x120" href="../rs/favicon/apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="../rs/favicon/apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon" sizes="152x152" href="../rs/favicon/apple-touch-icon-152x152.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../rs/favicon/apple-touch-icon-180x180.png" />
+<link rel="icon" type="image/png" href="../rs/favicon/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="../rs/favicon/favicon-194x194.png" sizes="194x194" />
+<link rel="icon" type="image/png" href="../rs/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/png" href="../rs/favicon/android-chrome-192x192.png" sizes="192x192" />
+<link rel="icon" type="image/png" href="../rs/favicon/favicon-16x16.png" sizes="16x16" />
+<link rel="manifest" href="../rs/favicon/manifest.json" />
+<meta name="msapplication-TileColor" content="#2d89ef" />
+<meta name="msapplication-TileImage" content="../rs/favicon/mstile-144x144.png" />
+<meta name="theme-color" content="#ffffff" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+<link href="../rs/css/bootstrap-select.min.css?var=20250722002308" type="text/css" rel="stylesheet" />
+<link href="../rs/css/bootstrap-switch.min.css?var=20250722002308" rel="stylesheet" type="text/css" />
+<link href="../rs/css/bootstrap-slider.css?var=20250722002308" type="text/css" rel="stylesheet" />
+<link href="../rs/css/bootstrap-multiselect.css?var=20250722002308" type="text/css" rel="stylesheet" />
+<link href="../rs/css/style.css?var=20250722002308" rel="stylesheet" />
+<link href="../rs/css/jquery.datetimepicker.css?var=20250722002308" rel="stylesheet" />
+<link href="../rs/fontawesome/css/fontawesome.min.css?var=20250722002308" type="text/css" rel="stylesheet" />
+<link href="../rs/fontawesome/css/brands.min.css?var=20250722002308" type="text/css" rel="stylesheet" />
+<link href="../rs/fontawesome/css/regular.min.css?var=20250722002308" type="text/css" rel="stylesheet" />
+<link href="../rs/fontawesome/css/solid.min.css?var=20250722002308" type="text/css" rel="stylesheet" />
+<link href="../rs/fontawesome/css/v4-font-face.css?var=20250722002308" type="text/css" rel="stylesheet" />
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    if(!window.jQuery) {
+        var jqueryScriptFileUrl = "..\/rs\/js\/jquery.min.js";
+        document.write('<script type="text/javascript" src="' + jqueryScriptFileUrl + '"><\/script>');
+    }
+
+    if ( typeof( $.fn.toggle ) === 'undefined' ) {
+    	var jqueryMigrateScriptFileUrl = "..\/rs\/js\/jquery-migrate.min.js";
+        document.write('<script type="text/javascript" src="' + jqueryMigrateScriptFileUrl + '"><\/script>');
+    }
+
+    if(typeof($.fn.modal) === 'undefined') {
+        var bootstrapScriptFileUrl = "..\/rs\/js\/bootstrap.min.js";
+        document.write('<script type="text/javascript" src="' + bootstrapScriptFileUrl + '"><\/script>');
+    }
+    (function($) {
+        $(function() {
+        	function existCss( css ) {
+                var ret = false;
+                if ( typeof document.styleSheets != "undefined" ) {
+                    var cssSheets = document.styleSheets;
+                    for ( var i = 0; i < cssSheets.length; i++ ) {
+                    	try{
+                    		if ( cssSheets[ i ].rules.length == 0 ) {
+                    			return false;
+                    		}
+                    	}
+                    	catch( e ) {
+                    		return false;
+                    	}
+                    	if ( cssSheets[ i ].href && cssSheets[ i ].href.match("(" + css + ")")) {
+                    		ret = true;
+                    		break;
+                    	}
+                    }
+                }
+                return ret;
+            }
+
+            if ( !existCss( 'bootstrap.min.css' ) ) {
+            	var link = document.createElement( "link" );
+        		var bootstrapFiletUrl = "..\/rs\/css\/bootstrap.min.css?var=20250722002308";
+                link.setAttribute( "rel", "stylesheet" );
+                link.setAttribute( "href", bootstrapFiletUrl );
+                document.getElementsByTagName( "head" )[ 0 ].insertBefore( link, document.getElementsByTagName( "head" )[ 0 ].firstChild );
+            }
+
+
+        });
+    })(window.jQuery);
+    /*]]>*/
+</script>
+</head><head>
+    <script type="text/javascript">
+        /*<![CDATA[*/
+        if(window.PublicKeyCredential) {
+            var onepassFido2ConstFileUrl = "..\/rs\/js\/fido2\/OnepassFido2Const.js?var=20250722002308";
+            document.write('<script src="' + onepassFido2ConstFileUrl + '"><\/script>');
+
+            var onepassFido2ErrorCodeFileUrl = "..\/rs\/js\/fido2\/OnepassFido2ErrorCode.js?var=20250722002308";
+            document.write('<script src="' + onepassFido2ErrorCodeFileUrl + '"><\/script>');
+
+            var onepassFido2LoggerFileUrl = "..\/rs\/js\/fido2\/OnepassFido2Logger.js?var=20250722002308";
+            document.write('<script src="' + onepassFido2LoggerFileUrl + '"><\/script>');
+
+            var onepassFido2UtilFileUrl = "..\/rs\/js\/fido2\/OnepassFido2Util.js?var=20250722002308";
+            document.write('<script src="' + onepassFido2UtilFileUrl + '"><\/script>');
+
+            var onepassFido2ExgenFileUrl = "..\/rs\/js\/fido2\/OnepassFido2.exgen.js?var=20250722002308";
+            document.write('<script src="' + onepassFido2ExgenFileUrl + '"><\/script>');
+        }
+        /*]]>*/
+    </script>
+</head>
+<body>
+<div id="wrapper" class="user-wrap">
+<nav class="navbar">
+<div class="container">
+<!-- Brand and toggle get grouped for better mobile display -->
+<div class="navbar-header">
+<a class="navbar-brand"><img src="data:image/png;base64,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" width="150" height="41" onerror="this.src=&#39;../rs/images/logoS.png&#39;;" border="0" /></a> </div>
+<!-- Collect the nav links, forms, and other content for toggling -->
+<div>
+</div>
+<!-- /.navbar-collapse -->
+</div>
+<!-- /.container -->
+</nav>
+<div class="page-title" style="margin-bottom:20px;">
+</div>
+<!-- /.page-title -->
+<!-- /.page-title -->
+<div id="users">
+<div class="container">
+<div class="row">
+<div class="col-md-12 text-center">
+<div class="card border-danger error-content">
+<div class="card-body">
+<span>
+<p>不正なリクエストが送信されました。トップページへ戻ってください。</p>
+</span>
+</div>
+</div>
+<a href="javascript:void(0);" onclick="toTop();" class="btn btn-info"><i class="fa fa-arrow-left"></i><span>トップページに戻る</span></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer>
+<p>&copy; 2016 EXGEN NETWORKS Co.,Ltd.</p>
+</footer>
+<script src="../rs/js/extic.js?var=20250722002308"></script>
+</body>
+</html>

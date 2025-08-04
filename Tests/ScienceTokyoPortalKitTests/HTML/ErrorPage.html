@@ -1,0 +1,98 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extic</title>
+<!-- Apple -->
+<link rel="apple-touch-icon" sizes="57x57" href="/auth/rs/favicon/apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon" sizes="60x60" href="/auth/rs/favicon/apple-touch-icon-60x60.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="/auth/rs/favicon/apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon" sizes="76x76" href="/auth/rs/favicon/apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="/auth/rs/favicon/apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon" sizes="120x120" href="/auth/rs/favicon/apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="/auth/rs/favicon/apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon" sizes="152x152" href="/auth/rs/favicon/apple-touch-icon-152x152.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/auth/rs/favicon/apple-touch-icon-180x180.png" />
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="/auth/rs/favicon/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="/auth/rs/favicon/favicon-194x194.png" sizes="194x194" />
+<link rel="icon" type="image/png" href="/auth/rs/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/png" href="/auth/rs/favicon/android-chrome-192x192.png" sizes="192x192" />
+<link rel="icon" type="image/png" href="/auth/rs/favicon/favicon-16x16.png" sizes="16x16" />
+<!-- Windows -->
+<meta name="msapplication-TileColor" content="#2d89ef" />
+<meta name="msapplication-TileImage" content="/auth/rs/favicon/mstile-144x144.png" />
+<!-- Chrome -->
+<link rel="manifest" href="/auth/rs/favicon/manifest.json" />
+<meta name="theme-color" content="#ffffff" />
+
+<!-- CSS CDN参照-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
+<!-- CSS ローカル参照-->
+<link href="/auth/rs/css/bootstrap-select.min.css?var=20170703165622" type="text/css" rel="stylesheet" />
+<link href="/auth/rs/css/bootstrap-switch.min.css?var=20170703165622" type="text/css" rel="stylesheet" />
+<link href="/auth/rs/css/bootstrap-slider.css?var=20170703165622" type="text/css" rel="stylesheet" />
+<link href="/auth/rs/css/bootstrap-multiselect.css?var=20170703165622" type="text/css" rel="stylesheet" />
+<link href="/auth/rs/css/style.css?var=20170703165622" type="text/css" rel="stylesheet" />
+<link href="/auth/rs/css/jquery.datetimepicker.css?var=20170703165622" type="text/css" rel="stylesheet" />
+<!-- JS CDN参照-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<!-- CDNフォールバック -->
+<script type="text/javascript">
+    /*<![CDATA[*/
+    if(!window.jQuery) {
+        var jqueryScriptFileUrl = '/auth/rs/js/jquery.min.js';
+        document.write('<script type="text/javascript" src="' + jqueryScriptFileUrl + '"><\/script>');
+    }
+    if(typeof($.fn.modal) === 'undefined') {
+        var bootstrapScriptFileUrl = 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js';
+        document.write('<script type="text/javascript" src="' + bootstrapScriptFileUrl + '"><\/script>');
+    }
+    (function($) {
+        $(function() {
+            var $span = $('<span class="fa" style="display:none"></span>').appendTo('body');
+            if ($span.css('fontFamily') !== 'FontAwesome' ) {
+                var fontAwesomeCssFiletUrl = '/auth/rs/css/font-awesome.min.css?var=20160227190510';
+                $( '<link rel="stylesheet" type="text/css" href="' + fontAwesomeCssFiletUrl + '" />' ).appendTo( 'head' );
+            }
+            $span.remove();
+        });
+    })(window.jQuery);
+    /*]]>*/
+</script>
+</head>
+<body>
+<div id="wrapper" class="user-wrap">
+<nav class="navbar">
+<div class="container">
+<div class="navbar-header"> <a class="navbar-brand" href="/idm/user"><img src="/auth/rs/images/logo.svg" width="150" height="41" onerror="this.src='/auth/rs/images/logoS.png';" border="0" /></a> </div>
+</div>
+</nav>
+<div id="admins">
+<div class="container">
+<div class="row">
+<div class="col-md-12 text-center">
+<div class="card border-danger error-content">
+<div class="card-body"> 
+<span>エラーが発生しました。<br>An error has occurred.</span> 
+</div>
+</div>
+<input type="hidden" name="errorType" value="SystemError"/>
+<a href="/idm/user" class="btn btn-info"><i class="fa fa-arrow-left"></i> トップページに戻る<br> Return to Top Page </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer>
+<div class="col-md-12">
+<p><a href="http://www.exgen.co.jp">&copy; 2016 EXGEN NETWORKS Co.,Ltd.</a></p>
+</div>
+</footer>
+</body>
+</html>
