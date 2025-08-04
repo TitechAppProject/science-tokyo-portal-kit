@@ -34,8 +34,7 @@ public struct ScienceTokyoPortal {
 
     /// ScienceTokyoPortalにログイン
     /// - Parameter account: ログイン情報
-    /// - Returns: リソース一覧ページのHTML
-    public func loginCommon(account: ScienceTokyoPortalAccount) async throws -> String {
+    public func login(account: ScienceTokyoPortalAccount) async throws {
         /// ユーザー名ページの取得
         let userNamePageHtml = try await fetchUserNamePage()
         /// ユーザー名ページのバリデーション(既にログインしている場合)
@@ -75,14 +74,6 @@ public struct ScienceTokyoPortal {
         guard try validateMethodSelectionPage(html: methodSelectionPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidMethodSelectionPage
         }
-        return methodSelectionPageHtml
-    }
-
-    /// 認証方法選択ページでTOTPを選択した場合
-    /// - Parameters:
-    ///   - account: ログイン情報
-    ///   - methodSelectionPageHtml: 認証方法選択ページのHTML
-    public func loginTOTP(account: ScienceTokyoPortalAccount, methodSelectionPageHtml: String) async throws {
         /// Metaタグの取得
         let methodSelectionPageMetas = try parseHTMLMeta(html: methodSelectionPageHtml)
         /// 一部のHTMLを取り出す
