@@ -9,8 +9,6 @@ struct ResourceListPageRequest: HTTPRequest {
 
     var method: HTTPMethod = .post
 
-    var postContentType: PostContentType = .form
-
     var headerFields: [String: String]? = [
         "Host": BaseURL.host,
         "Origin": BaseURL.origin,

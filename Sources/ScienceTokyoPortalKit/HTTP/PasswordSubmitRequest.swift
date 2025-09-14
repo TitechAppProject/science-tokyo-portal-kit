@@ -9,8 +9,6 @@ struct PasswordSubmitRequest: HTTPRequest {
 
     var method: HTTPMethod = .post
 
-    var postContentType: PostContentType = .form
-
     var headerFields: [String: String]? = [
         "Referer": BaseURL.origin + "/auth/session",
         "Host": BaseURL.host,
