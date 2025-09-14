@@ -126,7 +126,7 @@ class HTTPClientDelegate: URLProtocol, URLSessionTaskDelegate {
         #if DEBUG && canImport(os)
         logger.debug(
             """
-            200 \(task.currentRequest!.httpMethod!) \(task.currentRequest!.url!.absoluteString)
+            \(task.currentRequest!.httpMethod!) \(task.currentRequest!.url!.absoluteString)
               requestHeader: \(task.currentRequest!.allHTTPHeaderFields ?? [:])
               requestBody: \(String(data: task.originalRequest!.httpBody ?? Data(), encoding: .utf8) ?? "")
             """

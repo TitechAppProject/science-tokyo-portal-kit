@@ -5,13 +5,6 @@ import Kanna
 import FoundationNetworking
 #endif
 
-public enum T2ScholaLoginError: Error, Equatable {
-    case parseHtml
-    case policy
-    case parseUrlScheme(responseHTML: String, responseUrl: URL?)
-    case parseToken(responseHTML: String, responseUrl: URL?)
-}
-
 struct LMSTokenRequest: HTTPRequest {
     let url: URL
 
