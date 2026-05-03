@@ -6,8 +6,8 @@ import FoundationNetworking
 
 enum BaseURL {
     #if TEST
-    nonisolated(unsafe) static var origin = "https://extic-mock.titech.app"
-    nonisolated(unsafe) static var host = "extic-mock.titech.app"
+    nonisolated(unsafe) static var origin = "https://extic-mock.isct.app"
+    nonisolated(unsafe) static var host = "extic-mock.isct.app"
 
     static func changeToMockServer() {}
     #else
@@ -15,8 +15,8 @@ enum BaseURL {
     nonisolated(unsafe) static var host = "isct.ex-tic.com"
 
     static func changeToMockServer() {
-        origin = "https://extic-mock.titech.app"
-        host = "extic-mock.titech.app"
+        origin = "https://extic-mock.isct.app"
+        host = "extic-mock.isct.app"
     }
     #endif
 }
