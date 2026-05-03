@@ -5,8 +5,20 @@ import FoundationNetworking
 #endif
 
 enum BaseURL {
-    static let origin = "https://isct.ex-tic.com"
-    static let host = "isct.ex-tic.com"
+    #if TEST
+    nonisolated(unsafe) static var origin = "https://extic-mock.isct.app"
+    nonisolated(unsafe) static var host = "extic-mock.isct.app"
+
+    static func changeToMockServer() {}
+    #else
+    nonisolated(unsafe) static var origin = "https://isct.ex-tic.com"
+    nonisolated(unsafe) static var host = "isct.ex-tic.com"
+
+    static func changeToMockServer() {
+        origin = "https://extic-mock.isct.app"
+        host = "extic-mock.isct.app"
+    }
+    #endif
 }
 
 enum LMSBaseURL {

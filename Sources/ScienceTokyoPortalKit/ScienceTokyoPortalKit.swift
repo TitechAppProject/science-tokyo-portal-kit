@@ -32,6 +32,13 @@ public struct ScienceTokyoPortal {
         self.httpClient = HTTPClientImpl(urlSession: urlSession, userAgent: userAgent)
     }
 
+    /// 接続先をモックサーバ (https://extic-mock.isct.app) に切り替える
+    /// 開発時のテストアカウントによるログイン経路用。
+    /// 一度呼ぶとプロセス終了まで mock URL に向き続ける。
+    public static func changeToMockServer() {
+        BaseURL.changeToMockServer()
+    }
+
     /// ScienceTokyoPortalにログイン
     /// - Parameter account: ログイン情報
     public func login(account: ScienceTokyoPortalAccount) async throws {
