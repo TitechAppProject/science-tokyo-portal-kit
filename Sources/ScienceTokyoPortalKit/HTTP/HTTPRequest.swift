@@ -22,8 +22,20 @@ enum BaseURL {
 }
 
 enum LMSBaseURL {
-    static let origin = "https://lms.s.isct.ac.jp/2025/"
-    static let host = "lms.s.isct.ac.jp"
+    #if TEST
+    nonisolated(unsafe) static var origin = "https://extic-mock.isct.app/2025/"
+    nonisolated(unsafe) static var host = "extic-mock.isct.app"
+
+    static func changeToMockServer() {}
+    #else
+    nonisolated(unsafe) static var origin = "https://lms.s.isct.ac.jp/2025/"
+    nonisolated(unsafe) static var host = "lms.s.isct.ac.jp"
+
+    static func changeToMockServer() {
+        origin = "https://extic-mock.isct.app/2025/"
+        host = "extic-mock.isct.app"
+    }
+    #endif
 }
 
 enum HTTPMethod: String {
