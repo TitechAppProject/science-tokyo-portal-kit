@@ -37,7 +37,7 @@ struct ScienceTokyoPortalKitTests {
                 HTMLMeta(name: "X-UA-Compatible", content: "IE=edge"),
                 HTMLMeta(name: "viewport", content: "width=device-width, initial-scale=1"),
                 HTMLMeta(name: "csrf-param", content: "authenticity_token"),
-                HTMLMeta(name: "csrf-token", content: "MCBhQD3s41D_Sisw0w_tpE2sTYhULaKvmOW9LVohQSI8xXVGjvR2rc8z0rpRpG-mjFb1-YJ4v8i-T8DyHiPsLA")
+                HTMLMeta(name: "csrf-token", content: "pyZr_b_Fp9BLeYqBkp7QoeaAt_VZsF0fSz1JmQxW433FS4h8e8gC0ve0P8pDrKy_yTZpYH3dA0wzzLONVLvIGQ")
             ]
         )
     }
@@ -86,7 +86,7 @@ struct ScienceTokyoPortalKitTests {
         #expect(
             inputs == [
                 HTMLInput(name: "utf8", type: .hidden, value: "✓"),
-                HTMLInput(name: "authenticity_token", type: .hidden, value: "-ZZOqjVkdg1heh6dmdxsoUfrx6PIB04RslZIjk3EW79lq11bk7lhErp4seE34Bzy23959IC2DUVeUUA2FSMWhA"),
+                HTMLInput(name: "authenticity_token", type: .hidden, value: "yYAaIZ55k-d7MWeXfMDKmDI5PAXQ6IKra7TtjWV7jYoVDbMpOkEgaOH9WNxZwg94BxJ1BxHALQVCr_e33zlq2g"),
                 HTMLInput(name: "identifier", type: .text, value: ""),
                 HTMLInput(name: "password", type: .password, value: ""),
             ]
