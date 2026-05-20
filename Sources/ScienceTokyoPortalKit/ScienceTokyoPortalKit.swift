@@ -314,8 +314,8 @@ public struct ScienceTokyoPortal {
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
 
-        return bodyHtml.contains("Please set your e-mail address for password reissue to an e-mail other than m.isct.ac.jp.")
-            || bodyHtml.contains("パスワード再発行用メールアドレスをm.isct.ac.jp以外のメールアドレスに忘れず必ず設定してください。")
+        return bodyHtml.contains("Enter Science Tokyo ID (8 alphanumerics).")
+            || bodyHtml.contains("Science Tokyo ID(英数字８文字)を入力してください。")
     }
 
     /// ユーザー名Formのsubmisionのバリデーション
