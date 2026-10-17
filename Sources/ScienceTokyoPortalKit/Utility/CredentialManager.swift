@@ -38,13 +38,16 @@ func createCredential(from input: String, username: String, privateKey: Data, or
         let resultJSON = try? JSONSerialization.jsonObject(with: resultData, options: []) as? [String: Any],
         let publicKeyDict = resultJSON["publicKey"] as? [String: Any],
         let rpDict = publicKeyDict["rp"] as? [String: Any],
-        let rpId = rpDict["id"] as? String,
-        let challengeStr = publicKeyDict["challenge"] as? String,
-        let originURL = URL(string: origin), let relyingOrigin = FIDO2Origin(url: originURL), relyingOrigin.allows(rpId: rpId)
+        rpDict["id"] == nil || rpDict["id"] is String,
+        let challengeStr = publicKeyDict["challenge"] as? String, !challengeStr.isEmpty,
+        let originURL = URL(string: origin), let relyingOrigin = FIDO2Origin(url: originURL)
     else {
         // 入力JSONのパースに失敗
         return nil
     }
+
+    let rpId = rpDict["id"] as? String ?? relyingOrigin.host
+    guard relyingOrigin.allows(rpId: rpId) else { return nil }
 
     // 2. clientDataJSONの作成
     let clientData: [String: Any] = [
@@ -100,24 +103,23 @@ func createCredential(from input: String, username: String, privateKey: Data, or
 ///   - input: /auth/session/fido2/new のレスポンスJSON文字列
 ///   - credential: ログインに使う FIDO2 資格情報 (登録時に返されたもの)
 /// - Returns: /auth/session/fido2 に送るフォーム値。パースに失敗した場合はnil
-func createAssertion(from input: String, credential: FIDO2Credential, origin: String = BaseURL.origin) throws -> [String: String]? {
-    guard
-        let data = input.data(using: .utf8),
-        let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-        let challenge = json["challenge"] as? String,
-        !challenge.isEmpty,
-        let rpId = json["rpId"] as? String,
-        !rpId.isEmpty,
-        let allowCredentials = json["allowCredentials"] as? [[String: Any]],
-        let originURL = URL(string: origin), let relyingOrigin = FIDO2Origin(url: originURL),
-        relyingOrigin.allows(rpId: rpId), credential.rpId == rpId
+func createAssertion(from input: String, credential: FIDO2Credential, origin: String = BaseURL.origin, username: String? = nil) throws -> [String: String]? {
+    guard let originURL = URL(string: origin), let relyingOrigin = FIDO2Origin(url: originURL),
+        let options = FIDO2LoginOptions(json: input, origin: relyingOrigin), credential.rpId == options.rpId
     else {
         return nil
     }
-    // 登録した資格情報がサーバー側の許可リストに含まれていることを確認する
-    guard allowCredentials.contains(where: { ($0["id"] as? String) == credential.credentialId }) else {
+    if let registeredUsername = credential.username, let username, registeredUsername != username {
         return nil
     }
+    if options.allowCredentials.isEmpty {
+        // 無制限のリストでも、別アカウントの鍵を選ばないよう登録時の対応関係を確認する。
+        guard let username, credential.username == username else { return nil }
+    } else {
+        guard options.allowCredentials.contains(where: { $0.type == "public-key" && $0.id == credential.credentialId }) else { return nil }
+    }
+    let challenge = options.challenge
+    let rpId = options.rpId
 
     // clientDataJSONの作成 (WebAuthn spec の webauthn.get)
     let clientData: [String: Any] = [

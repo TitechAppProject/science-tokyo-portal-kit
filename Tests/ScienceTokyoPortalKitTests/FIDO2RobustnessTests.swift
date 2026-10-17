@@ -10,6 +10,45 @@ import Crypto
 #endif
 
 struct FIDO2RobustnessTests {
+    @Test(arguments: ["missing", "empty"])
+    func optionalLoginOptionsUseWebAuthnDefaults(mode: String) throws {
+        var options = try fixtureJSON("FIDO2LoginOptions")
+        options.removeValue(forKey: "rpId")
+        if mode == "missing" {
+            options.removeValue(forKey: "allowCredentials")
+        } else {
+            options["allowCredentials"] = []
+        }
+        let json = try jsonString(options)
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+        #expect(try portal.validateFIDO2LoginOptions(json: json))
+        let privateKey = try Ecc.generatePrivateKey()
+        let credential = FIDO2Credential(credentialId: "registered-id", privateKey: privateKey, username: "abcd1234")
+        #expect(try createAssertion(from: json, credential: credential, username: "abcd1234") != nil)
+        #expect(try createAssertion(from: json, credential: credential, username: "another-user") == nil)
+        let unboundCredential = FIDO2Credential(credentialId: "registered-id", privateKey: privateKey)
+        #expect(try createAssertion(from: json, credential: unboundCredential, username: "abcd1234") == nil)
+    }
+
+    @Test func optionalFieldsStillRejectMalformedValues() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+        for json in [
+            #"{"challenge":"test","rpId":""}"#,
+            #"{"challenge":"test","rpId":12}"#,
+            #"{"challenge":"test","allowCredentials":{}}"#,
+            #"{"challenge":"test","allowCredentials":[{"type":"public-key"}]}"#,
+        ] {
+            #expect(try !portal.validateFIDO2LoginOptions(json: json))
+        }
+    }
+
+    @Test func registrationDefaultsMissingRPIDToTheOriginHost() throws {
+        let json = try registrationJSON { $0["rp"] = ["name": "Example"] }
+        let privateKey = try Ecc.generatePrivateKey()
+        let registration = try #require(try createCredential(from: json, username: "user", privateKey: privateKey, origin: "https://login.example.com:8443"))
+        #expect(registration.rpId == "login.example.com")
+    }
+
     @Test func originAndRPIDAreIndependent() throws {
         let origin = "https://login.example.com:8443"
         let rpId = "example.com"

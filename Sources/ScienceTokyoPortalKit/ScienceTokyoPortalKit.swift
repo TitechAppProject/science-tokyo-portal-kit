@@ -34,14 +34,17 @@ public struct FIDO2Credential {
     public let privateKey: Data
     /// 登録時のRP ID。秘密鍵を使用できるドメインの範囲を固定する。
     public let rpId: String
+    /// 登録したアカウント。allowCredentialsが省略された認証でも対応関係を検証するために使う。
+    public let username: String?
     /// 登録時のBackup Eligibility。資格情報の保存・復元時にも維持する。
     public let isBackupEligible: Bool
 
-    public init(credentialId: String, privateKey: Data, isBackupEligible: Bool = true, rpId: String? = nil) {
+    public init(credentialId: String, privateKey: Data, isBackupEligible: Bool = true, rpId: String? = nil, username: String? = nil) {
         self.credentialId = credentialId
         self.privateKey = privateKey
         self.isBackupEligible = isBackupEligible
         self.rpId = rpId ?? BaseURL.host
+        self.username = username
     }
 }
 
@@ -177,7 +180,7 @@ public struct ScienceTokyoPortal {
         guard try validateFIDO2Relay2(json: fido2Relay2Json) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Relay2
         }
-        return FIDO2Credential(credentialId: registration.credentialId, privateKey: privateKey, rpId: registration.rpId)
+        return FIDO2Credential(credentialId: registration.credentialId, privateKey: privateKey, rpId: registration.rpId, username: account.username)
     }
 
     /// FIDO2 (パスワードレス認証) でScienceTokyoPortalにログインする
@@ -204,11 +207,11 @@ public struct ScienceTokyoPortal {
         }
         /// チャレンジを取得
         let fido2OptionsJson = try await fetchFIDO2LoginOptions(form: fido2Form, identifier: account.username)
-        guard try validateFIDO2LoginOptions(json: fido2OptionsJson) else {
+        guard try validateFIDO2LoginOptions(json: fido2OptionsJson, origin: fido2Form.origin.value) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2LoginOptions
         }
         /// WebAuthn認証のシミュレーション
-        guard let assertion = try createAssertion(from: fido2OptionsJson, credential: credential, origin: fido2Form.origin.value) else {
+        guard let assertion = try createAssertion(from: fido2OptionsJson, credential: credential, origin: fido2Form.origin.value, username: account.username) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Credential
         }
         /// 認証結果を送信 (待機ページが返る)
@@ -606,24 +609,10 @@ public struct ScienceTokyoPortal {
 
     /// FIDO2ログイン用のチャレンジJSONのバリデーション
     /// - Parameter json: /auth/session/fido2/new のレスポンスJSON
-    /// - Returns: challenge, rpId, allowCredentialsが揃っていればtrue
-    func validateFIDO2LoginOptions(json: String) throws -> Bool {
-        guard
-            let data = json.data(using: .utf8),
-            let object = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-        else {
-            return false
-        }
-        guard let challenge = object["challenge"] as? String, !challenge.isEmpty else {
-            return false
-        }
-        guard let rpId = object["rpId"] as? String, !rpId.isEmpty else {
-            return false
-        }
-        guard let allowCredentials = object["allowCredentials"] as? [[String: Any]], !allowCredentials.isEmpty else {
-            return false
-        }
-        return true
+    /// - Returns: 必須のchallengeと、省略可能なフィールドの型・RPスコープが正しければtrue
+    func validateFIDO2LoginOptions(json: String, origin: String = BaseURL.origin) throws -> Bool {
+        guard let url = URL(string: origin), let relyingOrigin = FIDO2Origin(url: url) else { return false }
+        return FIDO2LoginOptions(json: json, origin: relyingOrigin) != nil
     }
 
     /// ユーザー名ページからFIDO2フォームのauthenticity_tokenを抽出する
