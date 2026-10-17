@@ -13,9 +13,11 @@ struct Attestation {
     var aaguid: Data = Data(repeating: 0, count: 16)
     var credentialId: Data
     var credentialPublicKey: Data?
+    let isBackupEligible: Bool
 
-    init(credentialId: Data) {
+    init(credentialId: Data, isBackupEligible: Bool = true) {
         self.credentialId = credentialId
+        self.isBackupEligible = isBackupEligible
     }
 
     /// SEC1形式 (0x04 || x || y) の公開鍵から COSE key を組み立てる
@@ -43,8 +45,8 @@ struct Attestation {
 
         // rpIdHash (SHA-256 of rpId)
         authData.append(Data(SHA256.hash(data: rpId.data(using: .utf8)!)))
-        // flags (UP | UV | BE | BS | AT)
-        authData.append(UInt8(UP | UV | BE | BS | AT))
+        // 秘密鍵はエクスポート可能だが、バックアップの実施状況は管理しないためBSは設定しない。
+        authData.append(UInt8(UP | UV | AT | (isBackupEligible ? BE : 0)))
         // signCount
         withUnsafeBytes(of: UInt32(0).bigEndian) { authData.append(contentsOf: $0) }
         // aaguid

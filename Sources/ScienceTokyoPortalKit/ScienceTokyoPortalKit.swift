@@ -32,10 +32,13 @@ public struct FIDO2Credential {
     public let credentialId: String
     /// P-256秘密鍵 (生32バイト)
     public let privateKey: Data
+    /// 登録時のBackup Eligibility。資格情報の保存・復元時にも維持する。
+    public let isBackupEligible: Bool
 
-    public init(credentialId: String, privateKey: Data) {
+    public init(credentialId: String, privateKey: Data, isBackupEligible: Bool = true) {
         self.credentialId = credentialId
         self.privateKey = privateKey
+        self.isBackupEligible = isBackupEligible
     }
 }
 

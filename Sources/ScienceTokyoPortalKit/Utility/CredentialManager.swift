@@ -128,7 +128,8 @@ func createAssertion(from input: String, credential: FIDO2Credential) throws -> 
     // authenticatorData (37バイト): rpIdHash || flags || signCount
     let rpIdHash = Data(SHA256.hash(data: rpId.data(using: .utf8)!))
     var authData = rpIdHash
-    authData.append(UInt8(UP | UV))  // UP | UV
+    // BEは同じ資格情報の登録時から変えてはいけない。BSはバックアップ未管理のため0。
+    authData.append(UInt8(UP | UV | (credential.isBackupEligible ? BE : 0)))
     withUnsafeBytes(of: UInt32(0).bigEndian) { authData.append(contentsOf: $0) }
 
     // 署名対象: authenticatorData || SHA256(clientDataJSON)

@@ -4,6 +4,22 @@ import Testing
 @testable import ScienceTokyoPortalKit
 
 struct FIDO2RobustnessTests {
+    @Test(arguments: [false, true])
+    func backupEligibilityIsPreservedDuringAuthentication(isBackupEligible: Bool) throws {
+        let privateKey = try Ecc.generatePrivateKey()
+        let credential = FIDO2Credential(
+            credentialId: "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", privateKey: privateKey, isBackupEligible: isBackupEligible)
+        var attestation = Attestation(credentialId: Data(repeating: 0, count: 32), isBackupEligible: isBackupEligible)
+        try attestation.setECPublicKey(publicKey: Ecc.publicKey(from: privateKey))
+        let registrationData = try attestation.generateAuthData(rpId: "isct.ex-tic.com")
+        let assertion = try #require(try createAssertion(from: jsonString(fixtureJSON("FIDO2LoginOptions")), credential: credential))
+        let assertionData = try #require(Data(base64urlDecodedData: assertion["authenticator_data"] ?? ""))
+        #expect(registrationData[32] & UInt8(BE) == assertionData[32] & UInt8(BE))
+        #expect((assertionData[32] & UInt8(BE) != 0) == isBackupEligible)
+        #expect(registrationData[32] & UInt8(BS) == 0)
+        #expect(assertionData[32] & UInt8(BS) == 0)
+    }
+
     @Test(arguments: ["Alice Example", "Alice (Research)", "", "abcd1234（isct）"])
     func registrationPreservesRequestedUsername(displayName: String) throws {
         let json = try registrationJSON {

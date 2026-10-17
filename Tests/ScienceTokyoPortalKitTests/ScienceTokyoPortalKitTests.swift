@@ -404,8 +404,8 @@ struct ScienceTokyoPortalKitTests {
         let rpIdHash = Data(authData[0..<32])
         #expect(SHA256.hash(data: Data("isct.ex-tic.com".utf8)) == rpIdHash)
 
-        // flags (UP|UV|BE|BS|AT = 0x5d)
-        #expect(authData[32] == 0x5d)
+        // flags (UP|UV|BE|AT = 0x4d)。バックアップの実施状況は管理しない。
+        #expect(authData[32] == 0x4d)
 
         // AAGUID (37..<53) は "none" attestationのため全て0
         #expect(authData[37..<53].allSatisfy { $0 == 0 })
@@ -464,11 +464,11 @@ struct ScienceTokyoPortalKitTests {
         #expect(cdj.contains("\"challenge\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\""))
         #expect(cdj.contains("isct.ex-tic.com"))
 
-        // authenticator_data (37バイト) = rpIdHash || flags(UP|UV) || signCount
+        // authenticator_data (37バイト) = rpIdHash || flags(UP|UV|BE) || signCount
         let authData = Data(base64urlDecodedData: assertion["authenticator_data"] ?? "")!
         #expect(authData.count == 37)
         #expect(SHA256.hash(data: Data("isct.ex-tic.com".utf8)) == Data(authData[0..<32]))
-        #expect(authData[32] == 0x05)
+        #expect(authData[32] == 0x0d)
 
         // 署名が公開鍵で検証できること
         let signatureData = Data(base64urlDecodedData: assertion["signature"] ?? "")!
