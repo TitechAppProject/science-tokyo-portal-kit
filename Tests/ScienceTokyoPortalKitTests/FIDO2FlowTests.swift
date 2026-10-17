@@ -8,10 +8,47 @@ import FoundationNetworking
 #endif
 
 struct FIDO2FlowTests {
+    @Test func setupUsesTheSettingsFormTokenAndChosenName() async throws {
+        let settingsURL = try #require(Bundle.module.url(forResource: "FIDO2Page", withExtension: "html"))
+        let settings = try String(contentsOf: settingsURL, encoding: .utf8).replacingOccurrences(of: "FIDO2", with: "Passkey")
+        let otherForm = "<form><input name='_csrf' value='unrelated-token'></form>"
+        let relayURL = try #require(Bundle.module.url(forResource: "FIDO2Relay1Response", withExtension: "json"))
+        let relay = try String(contentsOf: relayURL, encoding: .utf8)
+        let client = FIDO2ScriptedClient(responses: [
+            (otherForm + settings + otherForm, nil), (#"{"status":true}"#, nil), (relay, nil), (#"{"statusCode":1200}"#, nil),
+        ])
+        let portal = ScienceTokyoPortal(httpClient: client)
+        let account = ScienceTokyoPortalAccount(username: "abcd1234", password: "", totpSecret: nil)
+        let credential = try await portal.setFIDO2(account: account, displayName: "Second device")
+        #expect(credential.username == "abcd1234")
+        #expect(credential.rpId == BaseURL.host)
+        #expect(client.requests.count == 4)
+        for request in client.requests.dropFirst() {
+            #expect(request.value(forHTTPHeaderField: "X-CSRF-Token") == "test-csrf-token")
+        }
+        let preData = try #require(client.requests[1].httpBody)
+        let relayData = try #require(client.requests[2].httpBody)
+        let preBody = try #require(JSONSerialization.jsonObject(with: preData) as? [String: Any])
+        let relayBody = try #require(JSONSerialization.jsonObject(with: relayData) as? [String: Any])
+        #expect(preBody["displayName"] as? String == "Second device")
+        #expect(relayBody["credentialAlias"] as? String == "Second device")
+    }
+
+    @Test func settingsValidationUsesTheFormStructure() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+        let form = "<form><input name='editDisplayName'><input name='editRemarks'><input name='_csrf' value='token'></form>"
+        #expect(try portal.validateFIDO2Page(html: "<body>任意の表示文言\(form)</body>"))
+        #expect(try !portal.validateFIDO2Page(html: "<body>FIDO2 service unavailable</body>"))
+        #expect(try !portal.validateFIDO2Page(html: form.replacingOccurrences(of: "value='token'", with: "value=''")))
+        #expect(try !portal.validateFIDO2Page(html: form + form))
+    }
+
     @Test func loginUsesAdvertisedEndpoints() async throws {
         let pageURL = try #require(URL(string: BaseURL.origin + "/auth/custom/session"))
         let htmlURL = try #require(Bundle.module.url(forResource: "UserNamePage", withExtension: "html"))
         let html = try String(contentsOf: htmlURL, encoding: .utf8)
+            .replacingOccurrences(of: "Science Tokyo ID(英数字８文字)を入力してください。", with: "新しい案内文")
+            .replacingOccurrences(of: "Enter Science Tokyo ID (8 alphanumerics).", with: "New instructions")
             .replacingOccurrences(of: "id=\"fido2-form\"", with: "id=\"passkey-login\"")
             .replacingOccurrences(of: "data-options-path=\"/auth/session/fido2/new\"", with: "data-options-path=\"../passkeys/options?version=2\"")
             .replacingOccurrences(of: "action=\"/auth/session/fido2\"", with: "action=\"../passkeys/finish\"")

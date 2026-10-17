@@ -30,11 +30,8 @@ struct FIDO2Relay1Request: HTTPRequest {
 
     var jsonBody: [String: Any]?
 
-    init(htmlMetas: [HTMLMeta], username: String, displayName: String) {
-        // headerFieldsにhtmlMetasを追加
-        htmlMetas.forEach {
-            headerFields?[$0.name] = $0.content
-        }
+    init(csrfToken: String, username: String, displayName: String) {
+        headerFields?["X-CSRF-Token"] = csrfToken
         jsonBody = [
             "siteId": "EXTIC",
             "svcId": "ISCT",

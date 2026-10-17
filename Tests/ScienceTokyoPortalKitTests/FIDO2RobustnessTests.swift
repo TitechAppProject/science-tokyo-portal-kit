@@ -118,8 +118,8 @@ struct FIDO2RobustnessTests {
 
     @Test(arguments: ["MacBook", "iPhone", "研究用の端末"])
     func registrationRequestsUseTheChosenDisplayName(displayName: String) throws {
-        let settings = FIDO2SettingsRequest(htmlMetas: [], displayName: displayName).generate(userAgent: "test")
-        let relay1 = FIDO2Relay1Request(htmlMetas: [], username: "abcd1234", displayName: displayName).generate(userAgent: "test")
+        let settings = FIDO2SettingsRequest(csrfToken: "token", displayName: displayName).generate(userAgent: "test")
+        let relay1 = FIDO2Relay1Request(csrfToken: "token", username: "abcd1234", displayName: displayName).generate(userAgent: "test")
         let settingsData = try #require(settings.httpBody)
         let relayData = try #require(relay1.httpBody)
         let settingsBody = try #require(JSONSerialization.jsonObject(with: settingsData) as? [String: Any])

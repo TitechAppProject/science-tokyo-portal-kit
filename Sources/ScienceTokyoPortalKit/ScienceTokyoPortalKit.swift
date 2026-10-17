@@ -156,17 +156,16 @@ public struct ScienceTokyoPortal {
         /// FIDO2設定ページの取得
         let fido2PageHtml = try await fetchFIDO2Page()
         /// FIDO2設定ページのバリデーション
-        guard try validateFIDO2Page(html: fido2PageHtml) else {
+        guard let csrfToken = try extractFIDO2SettingsCSRFToken(html: fido2PageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Page
         }
-        let fido2HtmlInput = try parseHTMLInput(html: fido2PageHtml)
         /// 設定用のリクエスト(relay前の準備)
-        let fido2SettingsJson = try await submitFIDO2Settings(htmlInput: fido2HtmlInput, displayName: displayName)
+        let fido2SettingsJson = try await submitFIDO2Settings(csrfToken: csrfToken, displayName: displayName)
         guard try validateFIDO2Settings(json: fido2SettingsJson) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Settings
         }
         /// チャレンジを取得するrelay1
-        let fido2Relay1Json = try await submitFIDO2Relay1(htmlInput: fido2HtmlInput, username: account.username, displayName: displayName)
+        let fido2Relay1Json = try await submitFIDO2Relay1(csrfToken: csrfToken, username: account.username, displayName: displayName)
         guard try validateFIDO2Relay1(json: fido2Relay1Json) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Relay1
         }
@@ -176,7 +175,7 @@ public struct ScienceTokyoPortal {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Credential
         }
         /// 登録結果を送るrelay2
-        let fido2Relay2Json = try await submitFIDO2Relay2(htmlInput: fido2HtmlInput, jsonBody: registration.json)
+        let fido2Relay2Json = try await submitFIDO2Relay2(csrfToken: csrfToken, jsonBody: registration.json)
         guard try validateFIDO2Relay2(json: fido2Relay2Json) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Relay2
         }
@@ -196,10 +195,6 @@ public struct ScienceTokyoPortal {
         /// 既にログインしている場合
         if try validateResourceListPage(html: userNamePageHtml) {
             throw ScienceTokyoPortalLoginError.alreadyLoggedin
-        }
-        /// ユーザー名ページのバリデーション
-        guard try validateUserNamePage(html: userNamePageHtml) else {
-            throw ScienceTokyoPortalLoginError.invalidUserNamePage
         }
         /// FIDO2フォームからCSRFトークンと送信先を取得
         guard let fido2Form = try parseFIDO2LoginForm(html: userNamePageHtml, pageURL: pageURL) else {
@@ -407,33 +402,30 @@ public struct ScienceTokyoPortal {
     }
 
     /// FIDO2設定を送信
-    /// - Parameter htmlInput: FIDO2設定ページのInputタグ
+    /// - Parameter csrfToken: 設定フォーム内のCSRFトークン
     /// - Returns: FIDO2設定の送信結果
-    private func submitFIDO2Settings(htmlInput: [HTMLInput], displayName: String) async throws -> String {
-        let htmlMetas = htmlInput.filter { $0.name == "_csrf" }.map { HTMLMeta(name: "x-csrf-token", content: $0.value) }  // csrf-tokenを取り出す
-        let request = FIDO2SettingsRequest(htmlMetas: htmlMetas, displayName: displayName)
+    private func submitFIDO2Settings(csrfToken: String, displayName: String) async throws -> String {
+        let request = FIDO2SettingsRequest(csrfToken: csrfToken, displayName: displayName)
         return try await httpClient.send(request).html
     }
 
     /// FIDO2 Relay(1回目)を送信
     /// - Parameters:
-    ///   - htmlInput: FIDO2設定ページのInputタグ
+    ///   - csrfToken: 設定フォーム内のCSRFトークン
     ///   - username: ユーザー名
     /// - Returns: FIDO2 Relay1の送信結果
-    private func submitFIDO2Relay1(htmlInput: [HTMLInput], username: String, displayName: String) async throws -> String {
-        let htmlMetas = htmlInput.filter { $0.name == "_csrf" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.value) }  // csrf-tokenを取り出す
-        let request = FIDO2Relay1Request(htmlMetas: htmlMetas, username: username, displayName: displayName)
+    private func submitFIDO2Relay1(csrfToken: String, username: String, displayName: String) async throws -> String {
+        let request = FIDO2Relay1Request(csrfToken: csrfToken, username: username, displayName: displayName)
         return try await httpClient.send(request).html
     }
 
     /// FIDO2 Relay(2回目)を送信
     /// - Parameters:
-    ///   - htmlInput: FIDO2設定ページのInputタグ
+    ///   - csrfToken: 設定フォーム内のCSRFトークン
     ///   - jsonBody: FIDO2 Relay1のレスポンスから計算したJSON
     /// - Returns: FIDO2 Relay2の送信結果
-    private func submitFIDO2Relay2(htmlInput: [HTMLInput], jsonBody: [String: Any]) async throws -> String {
-        let htmlMetas = htmlInput.filter { $0.name == "_csrf" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.value) }  // csrf-tokenを取り出す
-        let request = FIDO2Relay2Request(htmlMetas: htmlMetas, jsonBody: jsonBody)
+    private func submitFIDO2Relay2(csrfToken: String, jsonBody: [String: Any]) async throws -> String {
+        let request = FIDO2Relay2Request(csrfToken: csrfToken, jsonBody: jsonBody)
         return try await httpClient.send(request).html
     }
 
@@ -559,11 +551,21 @@ public struct ScienceTokyoPortal {
     /// - Parameter html: FIDO2設定ページのHTML
     /// - Returns: FIDO2設定ページが正しい場合はtrue, エラーであればfalseを返す
     func validateFIDO2Page(html: String) throws -> Bool {
+        try extractFIDO2SettingsCSRFToken(html: html) != nil
+    }
+
+    /// 認証器設定用のフィールドを持つフォーム内からトークンを取り出す。
+    func extractFIDO2SettingsCSRFToken(html: String) throws -> String? {
         let doc = try HTML(html: html, encoding: .utf8)
-
-        let bodyHtml = doc.css("body").first?.innerHTML ?? ""
-
-        return bodyHtml.contains("FIDO2") || bodyHtml.contains("fido2")
+        let forms = doc.css("form").filter {
+            $0.css("input[name='editDisplayName']").first != nil && $0.css("input[name='editRemarks']").first != nil
+        }
+        guard forms.count == 1,
+            let token = forms.first?.css("input[name='_csrf']").first?["value"], !token.isEmpty
+        else {
+            return nil
+        }
+        return token
     }
 
     /// FIDO2設定のバリデーション
