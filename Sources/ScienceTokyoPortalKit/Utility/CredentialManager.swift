@@ -39,21 +39,11 @@ func createCredential(from input: String, username: String, privateKey: Data) th
         let publicKeyDict = resultJSON["publicKey"] as? [String: Any],
         let rpDict = publicKeyDict["rp"] as? [String: Any],
         let rpId = rpDict["id"] as? String,
-        let userDict = publicKeyDict["user"] as? [String: Any],
         let challengeStr = publicKeyDict["challenge"] as? String
     else {
         // 入力JSONのパースに失敗
         return nil
     }
-
-    // ユーザー名は"displayName"から括弧より前を抽出
-    let displayName = userDict["displayName"] as? String ?? username
-    let userName: String = {
-        if let idx = displayName.firstIndex(of: "(") {
-            return String(displayName[..<idx])
-        }
-        return displayName
-    }()
 
     // 2. clientDataJSONの作成
     let clientData: [String: Any] = [
@@ -83,7 +73,8 @@ func createCredential(from input: String, username: String, privateKey: Data) th
     let output: [String: Any] = [
         "origin": "https://\(rpId)",
         "user": [
-            "name": userName
+            // OnepassFido2.exgen.js は relay1 と relay2 に同じ reqUserInfo を渡す。
+            "name": username
         ],
         "rp": [
             "id": rpId
