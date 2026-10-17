@@ -620,7 +620,22 @@ public struct ScienceTokyoPortal {
     /// - Returns: authenticity_token (見つからない場合はnil)
     func extractFIDO2AuthenticityToken(html: String) throws -> String? {
         let doc = try HTML(html: html, encoding: .utf8)
-        return doc.css("form#fido2-form input[name='authenticity_token']").first?["value"]
+        guard let form = fido2LoginForm(in: doc),
+            let token = form.css("input[name='authenticity_token']").first?["value"], !token.isEmpty
+        else {
+            return nil
+        }
+        return token
+    }
+
+    /// 表示用のIDではなく、FIDO2用の設定属性または送信フィールドでフォームを識別する。
+    func fido2LoginForm(in doc: HTMLDocument) -> Kanna.XMLElement? {
+        let fields = ["identifier", "credential_id", "client_data_json", "authenticator_data", "signature"]
+        let forms = doc.css("form").filter { form in
+            form["data-options-path"] != nil || fields.allSatisfy { form.css("input[name='\($0)']").first != nil }
+        }
+        // 複数候補がある場合は別のフォームのCSRFトークンを使わない。
+        return forms.count == 1 ? forms.first : nil
     }
 
     /// LMSページへのリクエストのバリデーション

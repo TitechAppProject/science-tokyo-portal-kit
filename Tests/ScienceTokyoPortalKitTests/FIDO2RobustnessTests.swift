@@ -4,6 +4,28 @@ import Testing
 @testable import ScienceTokyoPortalKit
 
 struct FIDO2RobustnessTests {
+    @Test(arguments: [false, true])
+    func loginTokenDoesNotDependOnFormID(removeOptionsAttribute: Bool) throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+        let url = try #require(Bundle.module.url(forResource: "UserNamePage", withExtension: "html"))
+        let original = try String(contentsOf: url, encoding: .utf8)
+        let expected = try #require(try portal.extractFIDO2AuthenticityToken(html: original))
+        var modified = original.replacingOccurrences(of: "id=\"fido2-form\"", with: "id=\"renamed-passkey-form\"")
+        if removeOptionsAttribute {
+            modified = modified.replacingOccurrences(of: "data-options-path=\"/auth/session/fido2/new\"", with: "")
+        }
+        #expect(try portal.extractFIDO2AuthenticityToken(html: modified) == expected)
+    }
+
+    @Test func loginTokenRejectsEmptyOrAmbiguousForms() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+        let form = "<form data-options-path='/options'><input name='authenticity_token' value='passkey-token'></form>"
+        let passwordForm = "<form><input name='authenticity_token' value='password-token'></form>"
+        #expect(try portal.extractFIDO2AuthenticityToken(html: passwordForm + form) == "passkey-token")
+        #expect(try portal.extractFIDO2AuthenticityToken(html: form + form) == nil)
+        #expect(try portal.extractFIDO2AuthenticityToken(html: form.replacingOccurrences(of: "passkey-token", with: "")) == nil)
+    }
+
     @Test(arguments: ["MacBook", "iPhone", "研究用の端末"])
     func registrationRequestsUseTheChosenDisplayName(displayName: String) throws {
         let settings = FIDO2SettingsRequest(htmlMetas: [], displayName: displayName).generate(userAgent: "test")
