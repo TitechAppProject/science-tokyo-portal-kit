@@ -140,8 +140,9 @@ public struct ScienceTokyoPortal {
 
     /// ログイン済みのセッションを使ってFIDO2のセットアップを行う
     /// - Parameter account: ログイン情報
+    /// - Parameter displayName: 認証器の表示名。同じアカウントで追加登録する場合は別の名前を指定する。
     /// - Returns: FIDO2ログインに必要な資格情報 (呼び出し側で保存する)
-    public func setFIDO2(account: ScienceTokyoPortalAccount) async throws -> FIDO2Credential {
+    public func setFIDO2(account: ScienceTokyoPortalAccount, displayName: String = "TitechApp") async throws -> FIDO2Credential {
         /// FIDO2設定ページの取得
         let fido2PageHtml = try await fetchFIDO2Page()
         /// FIDO2設定ページのバリデーション
@@ -150,12 +151,12 @@ public struct ScienceTokyoPortal {
         }
         let fido2HtmlInput = try parseHTMLInput(html: fido2PageHtml)
         /// 設定用のリクエスト(relay前の準備)
-        let fido2SettingsJson = try await submitFIDO2Settings(htmlInput: fido2HtmlInput)
+        let fido2SettingsJson = try await submitFIDO2Settings(htmlInput: fido2HtmlInput, displayName: displayName)
         guard try validateFIDO2Settings(json: fido2SettingsJson) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Settings
         }
         /// チャレンジを取得するrelay1
-        let fido2Relay1Json = try await submitFIDO2Relay1(htmlInput: fido2HtmlInput, username: account.username)
+        let fido2Relay1Json = try await submitFIDO2Relay1(htmlInput: fido2HtmlInput, username: account.username, displayName: displayName)
         guard try validateFIDO2Relay1(json: fido2Relay1Json) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Relay1
         }
@@ -395,9 +396,9 @@ public struct ScienceTokyoPortal {
     /// FIDO2設定を送信
     /// - Parameter htmlInput: FIDO2設定ページのInputタグ
     /// - Returns: FIDO2設定の送信結果
-    private func submitFIDO2Settings(htmlInput: [HTMLInput]) async throws -> String {
+    private func submitFIDO2Settings(htmlInput: [HTMLInput], displayName: String) async throws -> String {
         let htmlMetas = htmlInput.filter { $0.name == "_csrf" }.map { HTMLMeta(name: "x-csrf-token", content: $0.value) }  // csrf-tokenを取り出す
-        let request = FIDO2SettingsRequest(htmlMetas: htmlMetas)
+        let request = FIDO2SettingsRequest(htmlMetas: htmlMetas, displayName: displayName)
         return try await httpClient.send(request).html
     }
 
@@ -406,9 +407,9 @@ public struct ScienceTokyoPortal {
     ///   - htmlInput: FIDO2設定ページのInputタグ
     ///   - username: ユーザー名
     /// - Returns: FIDO2 Relay1の送信結果
-    private func submitFIDO2Relay1(htmlInput: [HTMLInput], username: String) async throws -> String {
+    private func submitFIDO2Relay1(htmlInput: [HTMLInput], username: String, displayName: String) async throws -> String {
         let htmlMetas = htmlInput.filter { $0.name == "_csrf" }.map { HTMLMeta(name: "X-CSRF-Token", content: $0.value) }  // csrf-tokenを取り出す
-        let request = FIDO2Relay1Request(htmlMetas: htmlMetas, username: username)
+        let request = FIDO2Relay1Request(htmlMetas: htmlMetas, username: username, displayName: displayName)
         return try await httpClient.send(request).html
     }
 

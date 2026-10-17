@@ -30,7 +30,7 @@ struct FIDO2Relay1Request: HTTPRequest {
 
     var jsonBody: [String: Any]?
 
-    init(htmlMetas: [HTMLMeta], username: String) {
+    init(htmlMetas: [HTMLMeta], username: String, displayName: String) {
         // headerFieldsにhtmlMetasを追加
         htmlMetas.forEach {
             headerFields?[$0.name] = $0.content
@@ -46,7 +46,7 @@ struct FIDO2Relay1Request: HTTPRequest {
                 "id": BaseURL.host
             ],
             "authnrAttachment": "",
-            "credentialAlias": "TitechApp",
+            "credentialAlias": displayName,
             "reqProtocolType": "1",
         ]
     }

@@ -30,11 +30,11 @@ struct FIDO2SettingsRequest: HTTPRequest {
 
     var body: [String: String]?
 
-    init(htmlMetas: [HTMLMeta]) {
+    init(htmlMetas: [HTMLMeta], displayName: String) {
         // headerFieldsにhtmlMetasを追加
         htmlMetas.forEach {
             headerFields?[$0.name] = $0.content
         }
-        jsonBody = ["displayName": "TitechApp", "remarks": ""]  // JSON文字列に変換
+        jsonBody = ["displayName": displayName, "remarks": ""]
     }
 }
