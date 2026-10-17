@@ -33,8 +33,8 @@ struct FIDO2Relay1Request: HTTPRequest {
     init(csrfToken: String, username: String, displayName: String) {
         headerFields?["X-CSRF-Token"] = csrfToken
         jsonBody = [
-            "siteId": "EXTIC",
-            "svcId": "ISCT",
+            "siteId": ExticFIDO2Protocol.siteId,
+            "svcId": ExticFIDO2Protocol.serviceId,
             "origin": BaseURL.origin,
             "user": [
                 "name": username
@@ -44,7 +44,7 @@ struct FIDO2Relay1Request: HTTPRequest {
             ],
             "authnrAttachment": "",
             "credentialAlias": displayName,
-            "reqProtocolType": "1",
+            "reqProtocolType": ExticFIDO2Protocol.registrationProtocolType,
         ]
     }
 }

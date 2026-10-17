@@ -592,7 +592,7 @@ public struct ScienceTokyoPortal {
         else {
             return false
         }
-        return (object["statusCode"] as? Int) == 1200 && object["result"] is String
+        return (object["statusCode"] as? Int) == ExticFIDO2Protocol.successCode && object["result"] is String
     }
 
     /// FIDO2 Relay2のバリデーション
@@ -606,7 +606,7 @@ public struct ScienceTokyoPortal {
         else {
             return false
         }
-        return (object["statusCode"] as? Int) == 1200
+        return (object["statusCode"] as? Int) == ExticFIDO2Protocol.successCode
     }
 
     /// FIDO2ログイン用のチャレンジJSONのバリデーション
