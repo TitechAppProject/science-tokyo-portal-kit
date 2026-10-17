@@ -34,7 +34,10 @@ let package = Package(
         .testTarget(
             name: "ScienceTokyoPortalKitTests",
             dependencies: ["ScienceTokyoPortalKit"],
-            resources: [.process("HTML")]
+            resources: [
+                .process("HTML"),
+                .process("JSON"),
+            ]
         ),
     ]
 )

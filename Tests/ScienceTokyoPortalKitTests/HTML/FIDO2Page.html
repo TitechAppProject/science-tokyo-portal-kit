@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Multi-Factor Authentication (FIDO2)</title>
+</head>
+<body>
+<h1>Multi-Factor Authentication (FIDO2)</h1>
+<p>Add new authenticator</p>
+<form name="authenticatorForm" method="post" class="form-horizontal" action="./save">
+<input type="hidden" name="locale" value="en" />
+<input type="hidden" name="_csrf" value="test-csrf-token" />
+<input type="hidden" name="delAuthenticatorUuid" value="" />
+<input type="hidden" name="editAuthenticatorUuid" value="" />
+<input type="hidden" name="editAuthenticatorDisplayName" value="" />
+<input type="hidden" name="showEditModalFlag" value="false" />
+<input type="text" name="editDisplayName" value="" />
+<input type="text" name="editRemarks" value="" />
+<button id="addButton" type="button" onclick="fncRegPre();">Add</button>
+</form>
+</body>
+</html>

@@ -16,4 +16,5 @@ let ED = 0x80
 
 let EC2 = 2
 let ES256 = -7
-let P256 = 1
+/// COSE の curve 識別子 (P-256)。CryptoKit/Crypto の P256 型と衝突しないよう命名している
+let COSE_P256 = 1

@@ -1,0 +1,4 @@
+{
+  "statusCode": 1200,
+  "result": "{\"trId\":\"12345678901234567890\",\"publicKey\":{\"rp\":{\"id\":\"isct.ex-tic.com\",\"name\":\"isct.ex-tic.com\"},\"user\":{\"displayName\":\"abcd1234(isct)\",\"id\":\"MTIzNDU2Nzg5MDEyMzQ1Njc4OTA\",\"name\":\"abcd1234(isct)\",\"icon\":\"\"},\"challenge\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"pubKeyCredParams\":[{\"type\":\"public-key\",\"alg\":-7},{\"type\":\"public-key\",\"alg\":-257}],\"timeout\":30000,\"authenticatorSelection\":{\"requireResidentKey\":true,\"userVerification\":\"required\"},\"attestation\":\"direct\"},\"challengeToken\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"}"
+}
