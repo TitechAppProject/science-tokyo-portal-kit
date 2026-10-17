@@ -32,13 +32,16 @@ public struct FIDO2Credential {
     public let credentialId: String
     /// P-256秘密鍵 (生32バイト)
     public let privateKey: Data
+    /// 登録時のRP ID。秘密鍵を使用できるドメインの範囲を固定する。
+    public let rpId: String
     /// 登録時のBackup Eligibility。資格情報の保存・復元時にも維持する。
     public let isBackupEligible: Bool
 
-    public init(credentialId: String, privateKey: Data, isBackupEligible: Bool = true) {
+    public init(credentialId: String, privateKey: Data, isBackupEligible: Bool = true, rpId: String? = nil) {
         self.credentialId = credentialId
         self.privateKey = privateKey
         self.isBackupEligible = isBackupEligible
+        self.rpId = rpId ?? BaseURL.host
     }
 }
 
@@ -174,7 +177,7 @@ public struct ScienceTokyoPortal {
         guard try validateFIDO2Relay2(json: fido2Relay2Json) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Relay2
         }
-        return FIDO2Credential(credentialId: registration.credentialId, privateKey: privateKey)
+        return FIDO2Credential(credentialId: registration.credentialId, privateKey: privateKey, rpId: registration.rpId)
     }
 
     /// FIDO2 (パスワードレス認証) でScienceTokyoPortalにログインする
@@ -205,7 +208,7 @@ public struct ScienceTokyoPortal {
             throw ScienceTokyoPortalLoginError.invalidFIDO2LoginOptions
         }
         /// WebAuthn認証のシミュレーション
-        guard let assertion = try createAssertion(from: fido2OptionsJson, credential: credential) else {
+        guard let assertion = try createAssertion(from: fido2OptionsJson, credential: credential, origin: fido2Form.origin.value) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Credential
         }
         /// 認証結果を送信 (待機ページが返る)

@@ -28,7 +28,7 @@ func randomBytes(_ count: Int) -> Data {
 ///   - username: ユーザー名
 ///   - privateKey: P-256 秘密鍵 (生32バイト)
 /// - Returns: 登録結果 (relay2 に送るJSON辞書と資格情報ID)。パースに失敗した場合はnil
-func createCredential(from input: String, username: String, privateKey: Data) throws -> RegistrationOutput? {
+func createCredential(from input: String, username: String, privateKey: Data, origin: String = BaseURL.origin) throws -> RegistrationOutput? {
     // 1. 外側のJSONをパース
     guard
         let outerData = input.data(using: .utf8),
@@ -39,7 +39,8 @@ func createCredential(from input: String, username: String, privateKey: Data) th
         let publicKeyDict = resultJSON["publicKey"] as? [String: Any],
         let rpDict = publicKeyDict["rp"] as? [String: Any],
         let rpId = rpDict["id"] as? String,
-        let challengeStr = publicKeyDict["challenge"] as? String
+        let challengeStr = publicKeyDict["challenge"] as? String,
+        let originURL = URL(string: origin), let relyingOrigin = FIDO2Origin(url: originURL), relyingOrigin.allows(rpId: rpId)
     else {
         // 入力JSONのパースに失敗
         return nil
@@ -49,7 +50,7 @@ func createCredential(from input: String, username: String, privateKey: Data) th
     let clientData: [String: Any] = [
         "type": "webauthn.create",
         "challenge": challengeStr,
-        "origin": "https://\(rpId)",
+        "origin": relyingOrigin.value,
     ]
     let clientDataJSONData = try JSONSerialization.data(withJSONObject: clientData, options: [])
     let clientDataBase64 = base64url(clientDataJSONData)
@@ -71,7 +72,7 @@ func createCredential(from input: String, username: String, privateKey: Data) th
     //   - rawId: standard base64 (btoa形式, パディング付き)
     //   - response.clientDataJSON / attestationObject: base64url
     let output: [String: Any] = [
-        "origin": "https://\(rpId)",
+        "origin": relyingOrigin.value,
         "user": [
             // OnepassFido2.exgen.js は relay1 と relay2 に同じ reqUserInfo を渡す。
             "name": username
@@ -89,7 +90,7 @@ func createCredential(from input: String, username: String, privateKey: Data) th
             ],
         ],
     ]
-    return RegistrationOutput(json: output, credentialId: credentialIdBase64)
+    return RegistrationOutput(json: output, credentialId: credentialIdBase64, rpId: rpId)
 }
 
 /// 入力JSON文字列を元に、WebAuthn認証処理（navigator.credentials.get()相当）を
@@ -99,7 +100,7 @@ func createCredential(from input: String, username: String, privateKey: Data) th
 ///   - input: /auth/session/fido2/new のレスポンスJSON文字列
 ///   - credential: ログインに使う FIDO2 資格情報 (登録時に返されたもの)
 /// - Returns: /auth/session/fido2 に送るフォーム値。パースに失敗した場合はnil
-func createAssertion(from input: String, credential: FIDO2Credential) throws -> [String: String]? {
+func createAssertion(from input: String, credential: FIDO2Credential, origin: String = BaseURL.origin) throws -> [String: String]? {
     guard
         let data = input.data(using: .utf8),
         let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
@@ -107,7 +108,9 @@ func createAssertion(from input: String, credential: FIDO2Credential) throws -> 
         !challenge.isEmpty,
         let rpId = json["rpId"] as? String,
         !rpId.isEmpty,
-        let allowCredentials = json["allowCredentials"] as? [[String: Any]]
+        let allowCredentials = json["allowCredentials"] as? [[String: Any]],
+        let originURL = URL(string: origin), let relyingOrigin = FIDO2Origin(url: originURL),
+        relyingOrigin.allows(rpId: rpId), credential.rpId == rpId
     else {
         return nil
     }
@@ -120,7 +123,7 @@ func createAssertion(from input: String, credential: FIDO2Credential) throws -> 
     let clientData: [String: Any] = [
         "type": "webauthn.get",
         "challenge": challenge,
-        "origin": "https://\(rpId)",
+        "origin": relyingOrigin.value,
     ]
     let clientDataJSONData = try JSONSerialization.data(withJSONObject: clientData, options: [])
     let clientDataBase64 = base64url(clientDataJSONData)
@@ -150,4 +153,6 @@ struct RegistrationOutput {
     let json: [String: Any]
     /// 資格情報ID (base64url)。ログイン時に必要
     let credentialId: String
+    /// 登録した資格情報のスコープ。
+    let rpId: String
 }

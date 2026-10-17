@@ -3,7 +3,40 @@ import Testing
 
 @testable import ScienceTokyoPortalKit
 
+#if canImport(CryptoKit)
+import CryptoKit
+#else
+import Crypto
+#endif
+
 struct FIDO2RobustnessTests {
+    @Test func originAndRPIDAreIndependent() throws {
+        let origin = "https://login.example.com:8443"
+        let rpId = "example.com"
+        let json = try registrationJSON { $0["rp"] = ["id": rpId, "name": "Example"] }
+        let privateKey = try Ecc.generatePrivateKey()
+        let registration = try #require(try createCredential(from: json, username: "user", privateKey: privateKey, origin: origin))
+        #expect(registration.json["origin"] as? String == origin)
+        let publicCredential = try #require(registration.json["credential"] as? [String: Any])
+        let response = try #require(publicCredential["response"] as? [String: Any])
+        let clientData = try #require(Data(base64urlDecodedData: response["clientDataJSON"] as? String ?? ""))
+        let registrationClient = try #require(JSONSerialization.jsonObject(with: clientData) as? [String: Any])
+        #expect(registrationClient["origin"] as? String == origin)
+
+        var options = try fixtureJSON("FIDO2LoginOptions")
+        options["rpId"] = rpId
+        let credential = FIDO2Credential(credentialId: "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", privateKey: privateKey, rpId: registration.rpId)
+        let assertion = try #require(try createAssertion(from: jsonString(options), credential: credential, origin: origin))
+        let assertionClientData = try #require(Data(base64urlDecodedData: assertion["client_data_json"] ?? ""))
+        let assertionClient = try #require(JSONSerialization.jsonObject(with: assertionClientData) as? [String: Any])
+        #expect(assertionClient["origin"] as? String == origin)
+        let authData = try #require(Data(base64urlDecodedData: assertion["authenticator_data"] ?? ""))
+        #expect(Data(authData.prefix(32)) == Data(SHA256.hash(data: Data(rpId.utf8))))
+        #expect(try createAssertion(from: jsonString(options), credential: credential, origin: "https://unrelated.example") == nil)
+        let wrongCredential = FIDO2Credential(credentialId: credential.credentialId, privateKey: privateKey, rpId: "login.example.com")
+        #expect(try createAssertion(from: jsonString(options), credential: wrongCredential, origin: origin) == nil)
+    }
+
     @Test(arguments: [false, true])
     func loginTokenDoesNotDependOnFormID(removeOptionsAttribute: Bool) throws {
         let portal = ScienceTokyoPortal(urlSession: .shared)

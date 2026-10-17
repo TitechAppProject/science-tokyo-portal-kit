@@ -25,4 +25,17 @@ struct FIDO2Origin: Equatable {
         self.value = value
         self.host = host
     }
+
+    /// RP IDはoriginのホスト自身、またはドット境界で一致する親ドメイン。
+    func allows(rpId: String) -> Bool {
+        if host == rpId { return true }
+        let labels = rpId.split(separator: ".", omittingEmptySubsequences: false)
+        guard labels.count >= 2, labels.allSatisfy({ !$0.isEmpty && !$0.hasPrefix("-") && !$0.hasSuffix("-") }),
+            rpId.utf8.allSatisfy({ (97...122).contains($0) || (48...57).contains($0) || $0 == 45 || $0 == 46 }),
+            !host.utf8.allSatisfy({ (48...57).contains($0) || $0 == 46 })
+        else {
+            return false
+        }
+        return host.hasSuffix("." + rpId)
+    }
 }
