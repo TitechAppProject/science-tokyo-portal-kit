@@ -39,6 +39,8 @@ func createCredential(from input: String, username: String, privateKey: Data, or
         let publicKeyDict = resultJSON["publicKey"] as? [String: Any],
         let rpDict = publicKeyDict["rp"] as? [String: Any],
         rpDict["id"] == nil || rpDict["id"] is String,
+        let algorithms = publicKeyDict["pubKeyCredParams"] as? [[String: Any]],
+        algorithms.contains(where: { ($0["type"] as? String) == "public-key" && ($0["alg"] as? Int) == ES256 }),
         let challengeStr = publicKeyDict["challenge"] as? String, !challengeStr.isEmpty,
         let originURL = URL(string: origin), let relyingOrigin = FIDO2Origin(url: originURL)
     else {

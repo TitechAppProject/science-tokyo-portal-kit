@@ -10,6 +10,24 @@ import Crypto
 #endif
 
 struct FIDO2RobustnessTests {
+    @Test(arguments: ["rsa-only", "empty", "missing", "wrong-type"])
+    func registrationRequiresAnOfferedES256Algorithm(mode: String) throws {
+        let json = try registrationJSON {
+            switch mode {
+            case "rsa-only": $0["pubKeyCredParams"] = [["type": "public-key", "alg": -257]]
+            case "empty": $0["pubKeyCredParams"] = []
+            case "wrong-type": $0["pubKeyCredParams"] = [["type": "unsupported", "alg": -7]]
+            default: $0.removeValue(forKey: "pubKeyCredParams")
+            }
+        }
+        let privateKey = try Ecc.generatePrivateKey()
+        #expect(try createCredential(from: json, username: "user", privateKey: privateKey) == nil)
+        let supported = try registrationJSON {
+            $0["pubKeyCredParams"] = [["type": "public-key", "alg": -257], ["type": "public-key", "alg": -7]]
+        }
+        #expect(try createCredential(from: supported, username: "user", privateKey: privateKey) != nil)
+    }
+
     @Test(arguments: ["missing", "empty"])
     func optionalLoginOptionsUseWebAuthnDefaults(mode: String) throws {
         var options = try fixtureJSON("FIDO2LoginOptions")
