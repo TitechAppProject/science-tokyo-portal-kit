@@ -18,6 +18,8 @@ public enum ScienceTokyoPortalLoginError: Error, Equatable {
     case invalidFIDO2Relay1
     case invalidFIDO2Relay2
     case invalidFIDO2Credential
+    case invalidFIDO2LoginOptions
+    case invalidFIDO2Login
 
     case alreadyLoggedin
 }
@@ -165,6 +167,49 @@ public struct ScienceTokyoPortal {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Relay2
         }
         return FIDO2Credential(credentialId: registration.credentialId, privateKey: privateKey)
+    }
+
+    /// FIDO2 (パスワードレス認証) でScienceTokyoPortalにログインする
+    /// - Parameters:
+    ///   - account: ログイン情報 (パスワードやTOTPは不要)
+    ///   - credential: setFIDO2で登録した資格情報
+    public func loginWithFIDO2(account: ScienceTokyoPortalAccount, credential: FIDO2Credential) async throws {
+        /// ユーザー名ページの取得
+        let userNamePageHtml = try await fetchUserNamePage()
+        /// 既にログインしている場合
+        if try validateResourceListPage(html: userNamePageHtml) {
+            throw ScienceTokyoPortalLoginError.alreadyLoggedin
+        }
+        /// ユーザー名ページのバリデーション
+        guard try validateUserNamePage(html: userNamePageHtml) else {
+            throw ScienceTokyoPortalLoginError.invalidUserNamePage
+        }
+        /// FIDO2フォームのauthenticity_tokenを取得
+        guard let fido2AuthenticityToken = try extractFIDO2AuthenticityToken(html: userNamePageHtml) else {
+            throw ScienceTokyoPortalLoginError.invalidFIDO2Page
+        }
+        /// チャレンジを取得
+        let fido2OptionsJson = try await fetchFIDO2LoginOptions(identifier: account.username)
+        guard try validateFIDO2LoginOptions(json: fido2OptionsJson) else {
+            throw ScienceTokyoPortalLoginError.invalidFIDO2LoginOptions
+        }
+        /// WebAuthn認証のシミュレーション
+        guard let assertion = try createAssertion(from: fido2OptionsJson, credential: credential) else {
+            throw ScienceTokyoPortalLoginError.invalidFIDO2Credential
+        }
+        /// 認証結果を送信 (待機ページが返る)
+        let waitingPageHtml = try await submitFIDO2Login(authenticityToken: fido2AuthenticityToken, identifier: account.username, assertion: assertion)
+        /// 待機ページのバリデーション
+        guard try validateWaitingPage(html: waitingPageHtml) else {
+            throw ScienceTokyoPortalLoginError.invalidFIDO2Login
+        }
+        /// Inputタグの取得
+        let waitingPageHtmlInputs = try parseHTMLInput(html: waitingPageHtml)
+        /// リソース一覧ページを取得
+        let resourceListPageHtml = try await fetchResourceListPage(htmlInputs: waitingPageHtmlInputs, referer: BaseURL.origin + "/auth/session/fido2")
+        guard try validateResourceListPage(html: resourceListPageHtml) else {
+            throw ScienceTokyoPortalLoginError.invalidResourceListPage
+        }
     }
 
     /// LMSDashboardにログイン
@@ -375,6 +420,25 @@ public struct ScienceTokyoPortal {
         return try await httpClient.send(request).html
     }
 
+    /// FIDO2ログイン用のチャレンジを取得
+    /// - Parameter identifier: ユーザー名
+    /// - Returns: PublicKeyCredentialRequestOptionsのJSON
+    private func fetchFIDO2LoginOptions(identifier: String) async throws -> String {
+        let request = FIDO2LoginOptionsRequest(identifier: identifier)
+        return try await httpClient.send(request).html
+    }
+
+    /// FIDO2ログインの認証結果を送信
+    /// - Parameters:
+    ///   - authenticityToken: FIDO2フォームのauthenticity_token
+    ///   - identifier: ユーザー名
+    ///   - assertion: アサーションのフォーム値
+    /// - Returns: 待機ページのHTML
+    private func submitFIDO2Login(authenticityToken: String, identifier: String, assertion: [String: String]) async throws -> String {
+        let request = FIDO2LoginSubmitRequest(authenticityToken: authenticityToken, identifier: identifier, assertion: assertion)
+        return try await httpClient.send(request).html
+    }
+
     /// LMSページの取得(前半)
     /// ログイン後にLMSに初めてアクセスする際は、LMS→Extic→LMSの遷移を経てLMSへのアクセスが成功する。
     /// この関数はその前半部分を担う
@@ -523,6 +587,36 @@ public struct ScienceTokyoPortal {
             return false
         }
         return (object["statusCode"] as? Int) == 1200
+    }
+
+    /// FIDO2ログイン用のチャレンジJSONのバリデーション
+    /// - Parameter json: /auth/session/fido2/new のレスポンスJSON
+    /// - Returns: challenge, rpId, allowCredentialsが揃っていればtrue
+    func validateFIDO2LoginOptions(json: String) throws -> Bool {
+        guard
+            let data = json.data(using: .utf8),
+            let object = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+        else {
+            return false
+        }
+        guard let challenge = object["challenge"] as? String, !challenge.isEmpty else {
+            return false
+        }
+        guard let rpId = object["rpId"] as? String, !rpId.isEmpty else {
+            return false
+        }
+        guard let allowCredentials = object["allowCredentials"] as? [[String: Any]], !allowCredentials.isEmpty else {
+            return false
+        }
+        return true
+    }
+
+    /// ユーザー名ページからFIDO2フォームのauthenticity_tokenを抽出する
+    /// - Parameter html: ユーザー名ページのHTML
+    /// - Returns: authenticity_token (見つからない場合はnil)
+    func extractFIDO2AuthenticityToken(html: String) throws -> String? {
+        let doc = try HTML(html: html, encoding: .utf8)
+        return doc.css("form#fido2-form input[name='authenticity_token']").first?["value"]
     }
 
     /// LMSページへのリクエストのバリデーション

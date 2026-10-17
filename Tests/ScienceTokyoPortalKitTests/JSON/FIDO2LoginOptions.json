@@ -1,0 +1,17 @@
+{
+  "challenge": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "timeout": 30000,
+  "rpId": "isct.ex-tic.com",
+  "allowCredentials": [
+    {
+      "type": "public-key",
+      "id": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+    },
+    {
+      "type": "public-key",
+      "id": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+    }
+  ],
+  "userVerification": "required",
+  "extensions": {}
+}

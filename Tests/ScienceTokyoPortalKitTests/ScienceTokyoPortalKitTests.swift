@@ -419,6 +419,75 @@ struct ScienceTokyoPortalKitTests {
         let idBytes = Data(base64urlDecodedData: credential["id"] as? String ?? "")
         #expect(credentialId == idBytes)
     }
+
+    @Test func validateFIDO2LoginOptionsの正常系テスト() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        let json = try! String(contentsOf: Bundle.module.url(forResource: "FIDO2LoginOptions", withExtension: "json")!)
+
+        #expect(try! portal.validateFIDO2LoginOptions(json: json))
+    }
+
+    @Test func validateFIDO2LoginOptionsの異常系テスト() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        #expect(try! !portal.validateFIDO2LoginOptions(json: #"{}"#))
+        #expect(try! !portal.validateFIDO2LoginOptions(json: #"{"challenge":"","rpId":"isct.ex-tic.com","allowCredentials":[{"id":"x"}]}"#))
+    }
+
+    @Test func extractFIDO2AuthenticityTokenのテスト() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "UserNamePage", withExtension: "html")!)
+
+        let token = try portal.extractFIDO2AuthenticityToken(html: html)
+        #expect(token != nil)
+        #expect(token!.isEmpty == false)
+    }
+
+    @Test func createAssertionの正常系テスト() throws {
+        let json = try! String(contentsOf: Bundle.module.url(forResource: "FIDO2LoginOptions", withExtension: "json")!)
+        let credentialId = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+        let privateKey = try Ecc.generatePrivateKey()
+        let credential = FIDO2Credential(credentialId: credentialId, privateKey: privateKey)
+
+        let assertion = try createAssertion(from: json, credential: credential)
+
+        #expect(assertion != nil)
+        guard let assertion = assertion else { return }
+        #expect(assertion["credential_id"] == credentialId)
+
+        // client_data_jsonの中身の検証
+        let cdjData = Data(base64urlDecodedData: assertion["client_data_json"] ?? "")!
+        let cdj = String(data: cdjData, encoding: .utf8)!
+        #expect(cdj.contains("\"type\":\"webauthn.get\""))
+        #expect(cdj.contains("\"challenge\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\""))
+        #expect(cdj.contains("isct.ex-tic.com"))
+
+        // authenticator_data (37バイト) = rpIdHash || flags(UP|UV) || signCount
+        let authData = Data(base64urlDecodedData: assertion["authenticator_data"] ?? "")!
+        #expect(authData.count == 37)
+        #expect(SHA256.hash(data: Data("isct.ex-tic.com".utf8)) == Data(authData[0..<32]))
+        #expect(authData[32] == 0x05)
+
+        // 署名が公開鍵で検証できること
+        let signatureData = Data(base64urlDecodedData: assertion["signature"] ?? "")!
+        let signature = try P256.Signing.ECDSASignature(derRepresentation: signatureData)
+        let message = authData + Data(SHA256.hash(data: cdjData))
+        let verifyingKey = try P256.Signing.PrivateKey(rawRepresentation: privateKey).publicKey
+        #expect(verifyingKey.isValidSignature(signature, for: message))
+    }
+
+    @Test func createAssertionの異常系テスト() throws {
+        let json = try! String(contentsOf: Bundle.module.url(forResource: "FIDO2LoginOptions", withExtension: "json")!)
+        let privateKey = try Ecc.generatePrivateKey()
+        /// allowCredentialsに含まれない資格情報IDを使うと失敗する
+        let credential = FIDO2Credential(credentialId: "NOT_IN_ALLOW_LIST", privateKey: privateKey)
+
+        let assertion = try createAssertion(from: json, credential: credential)
+
+        #expect(assertion == nil)
+    }
 }
 
 extension Data {

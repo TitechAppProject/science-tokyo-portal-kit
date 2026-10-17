@@ -101,6 +101,57 @@ func createCredential(from input: String, username: String, privateKey: Data) th
     return RegistrationOutput(json: output, credentialId: credentialIdBase64)
 }
 
+/// 入力JSON文字列を元に、WebAuthn認証処理（navigator.credentials.get()相当）を
+/// シミュレーションしてログイン用のフォーム値を生成する関数
+///
+/// - Parameters:
+///   - input: /auth/session/fido2/new のレスポンスJSON文字列
+///   - credential: ログインに使う FIDO2 資格情報 (登録時に返されたもの)
+/// - Returns: /auth/session/fido2 に送るフォーム値。パースに失敗した場合はnil
+func createAssertion(from input: String, credential: FIDO2Credential) throws -> [String: String]? {
+    guard
+        let data = input.data(using: .utf8),
+        let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+        let challenge = json["challenge"] as? String,
+        !challenge.isEmpty,
+        let rpId = json["rpId"] as? String,
+        !rpId.isEmpty,
+        let allowCredentials = json["allowCredentials"] as? [[String: Any]]
+    else {
+        return nil
+    }
+    // 登録した資格情報がサーバー側の許可リストに含まれていることを確認する
+    guard allowCredentials.contains(where: { ($0["id"] as? String) == credential.credentialId }) else {
+        return nil
+    }
+
+    // clientDataJSONの作成 (WebAuthn spec の webauthn.get)
+    let clientData: [String: Any] = [
+        "type": "webauthn.get",
+        "challenge": challenge,
+        "origin": "https://\(rpId)",
+    ]
+    let clientDataJSONData = try JSONSerialization.data(withJSONObject: clientData, options: [])
+    let clientDataBase64 = base64url(clientDataJSONData)
+
+    // authenticatorData (37バイト): rpIdHash || flags || signCount
+    let rpIdHash = Data(SHA256.hash(data: rpId.data(using: .utf8)!))
+    var authData = rpIdHash
+    authData.append(UInt8(UP | UV))  // UP | UV
+    withUnsafeBytes(of: UInt32(0).bigEndian) { authData.append(contentsOf: $0) }
+
+    // 署名対象: authenticatorData || SHA256(clientDataJSON)
+    let signedData = authData + Data(SHA256.hash(data: clientDataJSONData))
+    let signature = try Ecc.sign(message: signedData, privateKey: credential.privateKey)
+
+    return [
+        "credential_id": credential.credentialId,
+        "client_data_json": clientDataBase64,
+        "authenticator_data": base64url(authData),
+        "signature": base64url(signature),
+    ]
+}
+
 /// 登録処理の出力結果
 struct RegistrationOutput {
     /// relay2 に送るJSON辞書
