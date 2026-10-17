@@ -5,14 +5,11 @@ import FoundationNetworking
 #endif
 
 struct FIDO2LoginSubmitRequest: HTTPRequest {
-    let url: URL = URL(string: BaseURL.origin + "/auth/session/fido2")!
+    let url: URL
 
     var method: HTTPMethod = .post
 
     var headerFields: [String: String]? = [
-        "Referer": BaseURL.origin + "/auth/session",
-        "Host": BaseURL.host,
-        "Origin": BaseURL.origin,
         "Connection": "keep-alive",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -27,10 +24,13 @@ struct FIDO2LoginSubmitRequest: HTTPRequest {
 
     var body: [String: String]?
 
-    init(authenticityToken: String, identifier: String, assertion: [String: String]) {
+    init(form: FIDO2LoginForm, identifier: String, assertion: [String: String]) {
+        url = form.submitURL
+        headerFields?["Referer"] = form.pageURL.absoluteString
+        headerFields?["Origin"] = form.origin.value
         var body = [
             "utf8": "\u{2713}",
-            "authenticity_token": authenticityToken,
+            "authenticity_token": form.authenticityToken,
             "identifier": identifier,
         ]
         for (key, value) in assertion {

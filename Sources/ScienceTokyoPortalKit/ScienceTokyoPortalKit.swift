@@ -58,6 +58,10 @@ public struct ScienceTokyoPortal {
         self.httpClient = HTTPClientImpl(urlSession: urlSession, userAgent: userAgent)
     }
 
+    init(httpClient: HTTPClient) {
+        self.httpClient = httpClient
+    }
+
     /// 接続先をモックサーバ (https://extic-mock.isct.app) に切り替える
     /// 開発時のテストアカウントによるログイン経路用。
     /// Extic SSO と LMS 双方を mock に向ける。
@@ -178,8 +182,11 @@ public struct ScienceTokyoPortal {
     ///   - account: ログイン情報 (パスワードやTOTPは不要)
     ///   - credential: setFIDO2で登録した資格情報
     public func loginWithFIDO2(account: ScienceTokyoPortalAccount, credential: FIDO2Credential) async throws {
-        /// ユーザー名ページの取得
-        let userNamePageHtml = try await fetchUserNamePage()
+        /// リダイレクト後のページURLを相対URLの解決に使う。
+        let pageRequest = UserNamePageRequest()
+        let pageResponse = try await httpClient.send(pageRequest)
+        let userNamePageHtml = pageResponse.html
+        let pageURL = pageResponse.responseUrl ?? pageRequest.url
         /// 既にログインしている場合
         if try validateResourceListPage(html: userNamePageHtml) {
             throw ScienceTokyoPortalLoginError.alreadyLoggedin
@@ -188,12 +195,12 @@ public struct ScienceTokyoPortal {
         guard try validateUserNamePage(html: userNamePageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidUserNamePage
         }
-        /// FIDO2フォームのauthenticity_tokenを取得
-        guard let fido2AuthenticityToken = try extractFIDO2AuthenticityToken(html: userNamePageHtml) else {
+        /// FIDO2フォームからCSRFトークンと送信先を取得
+        guard let fido2Form = try parseFIDO2LoginForm(html: userNamePageHtml, pageURL: pageURL) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Page
         }
         /// チャレンジを取得
-        let fido2OptionsJson = try await fetchFIDO2LoginOptions(identifier: account.username)
+        let fido2OptionsJson = try await fetchFIDO2LoginOptions(form: fido2Form, identifier: account.username)
         guard try validateFIDO2LoginOptions(json: fido2OptionsJson) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2LoginOptions
         }
@@ -202,7 +209,7 @@ public struct ScienceTokyoPortal {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Credential
         }
         /// 認証結果を送信 (待機ページが返る)
-        let waitingPageHtml = try await submitFIDO2Login(authenticityToken: fido2AuthenticityToken, identifier: account.username, assertion: assertion)
+        let waitingPageHtml = try await submitFIDO2Login(form: fido2Form, identifier: account.username, assertion: assertion)
         /// 待機ページのバリデーション
         guard try validateWaitingPage(html: waitingPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Login
@@ -210,7 +217,7 @@ public struct ScienceTokyoPortal {
         /// Inputタグの取得
         let waitingPageHtmlInputs = try parseHTMLInput(html: waitingPageHtml)
         /// リソース一覧ページを取得
-        let resourceListPageHtml = try await fetchResourceListPage(htmlInputs: waitingPageHtmlInputs, referer: BaseURL.origin + "/auth/session/fido2")
+        let resourceListPageHtml = try await fetchResourceListPage(htmlInputs: waitingPageHtmlInputs, referer: fido2Form.submitURL.absoluteString)
         guard try validateResourceListPage(html: resourceListPageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidResourceListPage
         }
@@ -425,21 +432,22 @@ public struct ScienceTokyoPortal {
     }
 
     /// FIDO2ログイン用のチャレンジを取得
+    /// - Parameter form: FIDO2フォームから取得した設定
     /// - Parameter identifier: ユーザー名
     /// - Returns: PublicKeyCredentialRequestOptionsのJSON
-    private func fetchFIDO2LoginOptions(identifier: String) async throws -> String {
-        let request = FIDO2LoginOptionsRequest(identifier: identifier)
+    private func fetchFIDO2LoginOptions(form: FIDO2LoginForm, identifier: String) async throws -> String {
+        let request = FIDO2LoginOptionsRequest(form: form, identifier: identifier)
         return try await httpClient.send(request).html
     }
 
     /// FIDO2ログインの認証結果を送信
     /// - Parameters:
-    ///   - authenticityToken: FIDO2フォームのauthenticity_token
+    ///   - form: FIDO2フォームから取得した設定
     ///   - identifier: ユーザー名
     ///   - assertion: アサーションのフォーム値
     /// - Returns: 待機ページのHTML
-    private func submitFIDO2Login(authenticityToken: String, identifier: String, assertion: [String: String]) async throws -> String {
-        let request = FIDO2LoginSubmitRequest(authenticityToken: authenticityToken, identifier: identifier, assertion: assertion)
+    private func submitFIDO2Login(form: FIDO2LoginForm, identifier: String, assertion: [String: String]) async throws -> String {
+        let request = FIDO2LoginSubmitRequest(form: form, identifier: identifier, assertion: assertion)
         return try await httpClient.send(request).html
     }
 
@@ -626,6 +634,12 @@ public struct ScienceTokyoPortal {
             return nil
         }
         return token
+    }
+
+    func parseFIDO2LoginForm(html: String, pageURL: URL) throws -> FIDO2LoginForm? {
+        let doc = try HTML(html: html, encoding: .utf8)
+        guard let element = fido2LoginForm(in: doc) else { return nil }
+        return FIDO2LoginForm(element: element, pageURL: pageURL)
     }
 
     /// 表示用のIDではなく、FIDO2用の設定属性または送信フィールドでフォームを識別する。

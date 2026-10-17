@@ -10,9 +10,6 @@ struct FIDO2LoginOptionsRequest: HTTPRequest {
     var method: HTTPMethod = .get
 
     var headerFields: [String: String]? = [
-        "Referer": BaseURL.origin + "/auth/session",
-        "Host": BaseURL.host,
-        "Origin": BaseURL.origin,
         "Connection": "keep-alive",
         "Accept": "application/json, text/javascript, */*; q=0.01",
         "Accept-Encoding": "br, gzip, deflate",
@@ -26,9 +23,11 @@ struct FIDO2LoginOptionsRequest: HTTPRequest {
 
     var body: [String: String]? = nil
 
-    init(identifier: String) {
-        var components = URLComponents(string: BaseURL.origin + "/auth/session/fido2/new")!
-        components.queryItems = [URLQueryItem(name: "identifier", value: identifier)]
+    init(form: FIDO2LoginForm, identifier: String) {
+        var components = URLComponents(url: form.optionsURL, resolvingAgainstBaseURL: true)!
+        components.queryItems = (components.queryItems ?? []).filter { $0.name != "identifier" } + [URLQueryItem(name: "identifier", value: identifier)]
         url = components.url!
+        headerFields?["Referer"] = form.pageURL.absoluteString
+        headerFields?["Origin"] = form.origin.value
     }
 }
