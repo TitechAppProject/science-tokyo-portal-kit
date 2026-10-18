@@ -21,7 +21,22 @@ public enum ScienceTokyoPortalLoginError: Error, Equatable {
     case invalidFIDO2LoginOptions
     case invalidFIDO2Login
 
+    /// FIDO2表示名がExticのルール (半角英数のみ・1〜100文字) に合っていない
+    case invalidFIDO2DisplayName
+    /// FIDO2表示名が同じアカウントに既に登録されている
+    case duplicateFIDO2DisplayName
+
     case alreadyLoggedin
+}
+
+/// ExticがFIDO2認証器の表示名に求めるルール: 半角英数 (ASCII英数字) のみ・1文字以上・100文字以下。
+/// アカウント内での一意性はここでは判定せず、setFIDO2内で登録済み表示名と照合する。
+public func isValidFIDO2DisplayName(_ displayName: String) -> Bool {
+    guard !displayName.isEmpty, displayName.count <= 100 else { return false }
+    let allowed = CharacterSet(
+        charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    )
+    return displayName.unicodeScalars.allSatisfy { allowed.contains($0) }
 }
 
 /// FIDO2ログインに必要な認証情報。
@@ -150,20 +165,28 @@ public struct ScienceTokyoPortal {
 
     /// ログイン済みのセッションを使ってFIDO2のセットアップを行う
     /// - Parameter account: ログイン情報
-    /// - Parameter displayName: 認証器の表示名。同じアカウントで追加登録する場合は別の名前を指定する。
+    /// - Parameter displayName: 認証器の表示名。半角英数のみ・100文字以内・同じアカウント内で一意。
     /// - Returns: FIDO2ログインに必要な資格情報 (呼び出し側で保存する)
-    public func setFIDO2(account: ScienceTokyoPortalAccount, displayName: String = "TitechApp") async throws -> FIDO2Credential {
+    /// - Throws: `invalidFIDO2DisplayName` (書式違反), `duplicateFIDO2DisplayName` (表示名の重複)
+    public func setFIDO2(account: ScienceTokyoPortalAccount, displayName: String) async throws -> FIDO2Credential {
+        /// 表示名の入力バリデーション (半角英数・100文字以下)
+        guard isValidFIDO2DisplayName(displayName) else {
+            throw ScienceTokyoPortalLoginError.invalidFIDO2DisplayName
+        }
         /// FIDO2設定ページの取得
         let fido2PageHtml = try await fetchFIDO2Page()
         /// FIDO2設定ページのバリデーション
         guard let csrfToken = try extractFIDO2SettingsCSRFToken(html: fido2PageHtml) else {
             throw ScienceTokyoPortalLoginError.invalidFIDO2Page
         }
+        /// 同じ表示名の認証器が登録済みでないか事前確認 (表示名はアカウント内で一意)
+        if fido2AuthenticatorDisplayNames(html: fido2PageHtml).contains(displayName) {
+            throw ScienceTokyoPortalLoginError.duplicateFIDO2DisplayName
+        }
         /// 設定用のリクエスト(relay前の準備)
         let fido2SettingsJson = try await submitFIDO2Settings(csrfToken: csrfToken, displayName: displayName)
-        guard try validateFIDO2Settings(json: fido2SettingsJson) else {
-            throw ScienceTokyoPortalLoginError.invalidFIDO2Settings
-        }
+        /// サーバの検証結果を確認する (重複・書式違反は専用エラーに分類)
+        try evaluateFIDO2SettingsResponse(json: fido2SettingsJson)
         /// チャレンジを取得するrelay1
         let fido2Relay1Json = try await submitFIDO2Relay1(csrfToken: csrfToken, username: account.username, displayName: displayName)
         guard try validateFIDO2Relay1(json: fido2Relay1Json) else {
@@ -579,6 +602,48 @@ public struct ScienceTokyoPortal {
             return false
         }
         return object["status"] as? Bool == true
+    }
+
+    /// FIDO2設定(relay前)のレスポンスを検証する。
+    /// 成功時は何もせず、失敗時はサーバのメッセージに応じたエラーを投げる。
+    /// サーバのメッセージは Accept-Language により日本語・英語のどちらでも返るため、両対応する。
+    /// - Throws: `duplicateFIDO2DisplayName` (表示名の重複), `invalidFIDO2DisplayName` (書式違反), `invalidFIDO2Settings` (その他)
+    func evaluateFIDO2SettingsResponse(json: String) throws {
+        guard
+            let data = json.data(using: .utf8),
+            let object = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+        else {
+            throw ScienceTokyoPortalLoginError.invalidFIDO2Settings
+        }
+        if object["status"] as? Bool == true {
+            return
+        }
+        let message = object["validateMsg"] as? String ?? ""
+        let normalized = message.lowercased()
+        if message.contains("重複") || normalized.contains("duplicate") {
+            throw ScienceTokyoPortalLoginError.duplicateFIDO2DisplayName
+        }
+        if message.contains("半角英数") || normalized.contains("single-byte alphanumeric") {
+            throw ScienceTokyoPortalLoginError.invalidFIDO2DisplayName
+        }
+        throw ScienceTokyoPortalLoginError.invalidFIDO2Settings
+    }
+
+    /// FIDO2設定ページから登録済み認証器の表示名を抽出する。
+    /// 実ページのテーブル構造: `tr#authenticator-N > td#b-displayName-N > span`
+    /// 構造が変わって解析できない場合は空配列を返し、登録自体は妨げない。
+    func fido2AuthenticatorDisplayNames(html: String) -> [String] {
+        guard let doc = try? HTML(html: html, encoding: .utf8) else { return [] }
+        return doc.css("tr").compactMap { row in
+            guard row["id"]?.hasPrefix("authenticator-") == true,
+                let nameCell = row.css("td").first(where: { $0["id"]?.hasPrefix("b-displayName-") == true }),
+                let name = nameCell.css("span").first?.text
+            else {
+                return nil
+            }
+            let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+            return trimmed.isEmpty ? nil : trimmed
+        }
     }
 
     /// FIDO2 Relay1のバリデーション

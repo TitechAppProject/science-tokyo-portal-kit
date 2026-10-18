@@ -19,7 +19,7 @@ struct FIDO2FlowTests {
         ])
         let portal = ScienceTokyoPortal(httpClient: client)
         let account = ScienceTokyoPortalAccount(username: "abcd1234", password: "", totpSecret: nil)
-        let credential = try await portal.setFIDO2(account: account, displayName: "Second device")
+        let credential = try await portal.setFIDO2(account: account, displayName: "SecondDevice")
         #expect(credential.username == "abcd1234")
         #expect(credential.rpId == BaseURL.host)
         #expect(client.requests.count == 4)
@@ -30,8 +30,8 @@ struct FIDO2FlowTests {
         let relayData = try #require(client.requests[2].httpBody)
         let preBody = try #require(JSONSerialization.jsonObject(with: preData) as? [String: Any])
         let relayBody = try #require(JSONSerialization.jsonObject(with: relayData) as? [String: Any])
-        #expect(preBody["displayName"] as? String == "Second device")
-        #expect(relayBody["credentialAlias"] as? String == "Second device")
+        #expect(preBody["displayName"] as? String == "SecondDevice")
+        #expect(relayBody["credentialAlias"] as? String == "SecondDevice")
     }
 
     @Test func settingsValidationUsesTheFormStructure() throws {
@@ -41,6 +41,91 @@ struct FIDO2FlowTests {
         #expect(try !portal.validateFIDO2Page(html: "<body>FIDO2 service unavailable</body>"))
         #expect(try !portal.validateFIDO2Page(html: form.replacingOccurrences(of: "value='token'", with: "value=''")))
         #expect(try !portal.validateFIDO2Page(html: form + form))
+    }
+
+    @Test func displayNameValidationAcceptsHalfWidthAlphanumerics() {
+        #expect(isValidFIDO2DisplayName("fido2check"))
+        #expect(isValidFIDO2DisplayName("MacBookPro14"))
+        #expect(isValidFIDO2DisplayName("A"))
+        #expect(isValidFIDO2DisplayName("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"))
+        #expect(isValidFIDO2DisplayName(String(repeating: "a", count: 100)))
+    }
+
+    @Test func displayNameValidationRejectsNonAlphanumericOrOversizedNames() {
+        #expect(!isValidFIDO2DisplayName(""))
+        #expect(!isValidFIDO2DisplayName("fido2-check"))
+        #expect(!isValidFIDO2DisplayName("fido2 check"))
+        #expect(!isValidFIDO2DisplayName("fido2.check"))
+        #expect(!isValidFIDO2DisplayName("表示名"))
+        #expect(!isValidFIDO2DisplayName("ｆｉｄｏ２"))  // 全角
+        #expect(!isValidFIDO2DisplayName(String(repeating: "a", count: 101)))
+    }
+
+    @Test func registrationRejectsInvalidDisplayNameWithoutSendingRequests() async throws {
+        let client = FIDO2ScriptedClient(responses: [])
+        let portal = ScienceTokyoPortal(httpClient: client)
+        let account = ScienceTokyoPortalAccount(username: "abcd1234", password: "", totpSecret: nil)
+        for name in ["", "fido2-check", "表示名", String(repeating: "a", count: 101)] {
+            await #expect(throws: ScienceTokyoPortalLoginError.invalidFIDO2DisplayName) {
+                try await portal.setFIDO2(account: account, displayName: name)
+            }
+        }
+        #expect(client.requests.isEmpty)
+    }
+
+    @Test func registrationDetectsDuplicateDisplayNameInSettingsPage() async throws {
+        let row = "<tr id='authenticator-0'><td id='b-displayName-0'><span>test</span></td></tr>"
+        let form = "<form><input name='editDisplayName'><input name='editRemarks'><input name='_csrf' value='token'></form>"
+        let client = FIDO2ScriptedClient(responses: [("<body>\(form)\(row)</body>", nil)])
+        let portal = ScienceTokyoPortal(httpClient: client)
+        let account = ScienceTokyoPortalAccount(username: "abcd1234", password: "", totpSecret: nil)
+        await #expect(throws: ScienceTokyoPortalLoginError.duplicateFIDO2DisplayName) {
+            try await portal.setFIDO2(account: account, displayName: "test")
+        }
+        #expect(client.requests.count == 1)
+    }
+
+    @Test func registrationIgnoresOtherDisplayNameTableRows() async throws {
+        let row = "<tr id='authenticator-1'><td id='b-displayName-1'><span>iPhone &amp; Mac</span></td></tr>"
+        let form = "<form><input name='editDisplayName'><input name='editRemarks'><input name='_csrf' value='token'></form>"
+        let relayURL = try #require(Bundle.module.url(forResource: "FIDO2Relay1Response", withExtension: "json"))
+        let relay = try String(contentsOf: relayURL, encoding: .utf8)
+        let client = FIDO2ScriptedClient(responses: [
+            ("<body>\(form)\(row)</body>", nil), (#"{"status":true}"#, nil), (relay, nil), (#"{"statusCode":1200}"#, nil),
+        ])
+        let portal = ScienceTokyoPortal(httpClient: client)
+        let account = ScienceTokyoPortalAccount(username: "abcd1234", password: "", totpSecret: nil)
+        let credential = try await portal.setFIDO2(account: account, displayName: "NewDevice")
+        #expect(credential.rpId == BaseURL.host)
+        #expect(client.requests.count == 4)
+    }
+
+    @Test func settingsResponseClassifiesDisplayNameErrors() throws {
+        let portal = ScienceTokyoPortal(urlSession: .shared)
+
+        func expect(_ json: String, _ expected: ScienceTokyoPortalLoginError) {
+            do {
+                try portal.evaluateFIDO2SettingsResponse(json: json)
+                Issue.record("should throw \(expected) for \(json)")
+            } catch let error as ScienceTokyoPortalLoginError {
+                #expect(error == expected)
+            } catch {
+                Issue.record("unexpected error \(error)")
+            }
+        }
+
+        // 日本語メッセージ
+        expect(#"{"status":false,"validateMsg":"表示名が重複しています。"}"#, .duplicateFIDO2DisplayName)
+        expect(#"{"status":false,"validateMsg":"表示名は半角英数で入力してください。"}"#, .invalidFIDO2DisplayName)
+        // 英語メッセージ (Accept-Languageにより英語でも返る)
+        expect(#"{"status":false,"validateMsg":"Duplicate display name."}"#, .duplicateFIDO2DisplayName)
+        expect(#"{"status":false,"validateMsg":"The display name must be entered using single-byte alphanumeric characters."}"#, .invalidFIDO2DisplayName)
+        // その他の失敗
+        expect(#"{"status":false,"validateMsg":"別の理由です。"}"#, .invalidFIDO2Settings)
+        expect(#"{"status":false,"validateMsg":"An unexpected error occurred."}"#, .invalidFIDO2Settings)
+
+        // 成功レスポンスはエラーにならない
+        try portal.evaluateFIDO2SettingsResponse(json: #"{"status":true}"#)
     }
 
     @Test func loginUsesAdvertisedEndpoints() async throws {
